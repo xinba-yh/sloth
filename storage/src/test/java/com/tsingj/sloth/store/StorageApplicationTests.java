@@ -86,23 +86,71 @@ class StorageApplicationTests {
     }
 
     /**
-     * 1000W 1S 20W
+     * 1000W 1S 25W
+     *
      * @throws IOException
      */
     @Test
     void bufferedOutPutStreamTest() throws IOException {
         String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
         BufferedOutputStream bouput = new BufferedOutputStream(
-                new FileOutputStream("temp4.data",true));
+                new FileOutputStream("temp4.data", true));
         long start2 = System.currentTimeMillis();
         for (int i = 0; i < 10000000; i++) {
-            bouput.write((i+","+message+"\n").getBytes(StandardCharsets.UTF_8));
+            bouput.write((i + "," + message + "\n").getBytes(StandardCharsets.UTF_8));
             bouput.flush();
         }
         bouput.close();
         long stop2 = System.currentTimeMillis();
-        long time2 = stop2-start2;
-        System.out.println("BufferedWriter的时间差为："+ time2 +" 毫秒");
+        long time2 = stop2 - start2;
+        System.out.println("BufferedWriter的时间差为：" + time2 + " 毫秒");
+    }
+
+
+    /**
+     * 1000W 5S  1S 200W
+     *
+     * @throws IOException
+     */
+    @Test
+    void bufferedOutPutStreamEndFlushTest() throws IOException {
+        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
+        BufferedOutputStream bouput = new BufferedOutputStream(
+                new FileOutputStream("temp5.data", true));
+        long start2 = System.currentTimeMillis();
+        for (int i = 0; i < 10000000; i++) {
+            bouput.write((i + "," + message + "\n").getBytes(StandardCharsets.UTF_8));
+        }
+        bouput.flush();
+        bouput.close();
+        long stop2 = System.currentTimeMillis();
+        long time2 = stop2 - start2;
+        System.out.println("BufferedWriter的时间差为：" + time2 + " 毫秒");
+    }
+
+
+    /**
+     * 1000W 5S  1S 200W
+     *
+     * @throws IOException
+     */
+    @Test
+    void bufferedOutPutStreamCountFlushTest() throws IOException {
+        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
+        BufferedOutputStream bouput = new BufferedOutputStream(
+                new FileOutputStream("temp6.data", true));
+        long start2 = System.currentTimeMillis();
+        for (int i = 0; i < 10000000; i++) {
+            bouput.write((i + "," + message + "\n").getBytes(StandardCharsets.UTF_8));
+            if (i % 1000 == 0) {
+                bouput.flush();
+            }
+        }
+
+        bouput.close();
+        long stop2 = System.currentTimeMillis();
+        long time2 = stop2 - start2;
+        System.out.println("BufferedWriter的时间差为：" + time2 + " 毫秒");
     }
 
 }
