@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store;
+package com.tsingj.sloth.store.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
