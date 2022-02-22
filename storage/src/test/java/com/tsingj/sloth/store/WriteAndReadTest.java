@@ -2,9 +2,11 @@ package com.tsingj.sloth.store;
 
 import com.tsingj.sloth.store.log.LogManager;
 import com.tsingj.sloth.store.utils.CrcUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -85,46 +87,73 @@ public class WriteAndReadTest {
         System.out.println("fileSize:" + fileSize);
 
 
-        //按照指定offset进行二分查找 查找position 待补充....
-        long lo = 0;
-        long hi = fileSize;
-        long mid = (lo + hi) / 2;
-        System.out.println("mid:" + mid);
-        indexReader.seek(mid);
-        long offset = indexReader.readLong();
-        long position = indexReader.readLong();
-        System.out.println("offset:" + offset + ",position:" + position);
 
-        //查询消息体
+        StopWatch sw = new StopWatch();
+        //按照指定offset进行二分查找
+        for (int i = 1; i <= 1000; i++) {
+            sw.start();
+            long searchOffset = i;
+            //获取offset开头
+            long lowerPosition = 0;
+            //获取offset结尾
+            long upperPosition = fileSize - 16;
+            long logPosition = lookUp(searchOffset, lowerPosition, upperPosition, indexReader);
+            if (logPosition == -1) {
+                break;
+            }
+            log.info("offset:" + searchOffset + ",logPosition:" + logPosition);
 
-        logReader.seek(position);
-        int msgSize = logReader.readInt();
-        int version = logReader.read();
-        int crc = logReader.readInt();
-        byte[] payload = new byte[msgSize];
-        logReader.read(payload);
-        System.out.println("msgSize:" + msgSize + ",version:" + version + ",crc:" + crc + ",payload:" + new String(payload, StandardCharsets.UTF_8));
-        int checkCrc = CrcUtil.crc32(payload);
-        System.out.println(crc == checkCrc ? "check success" : "check fail!");
-
-
-//
-//        //读取16字节
-//        for (int i = 0; i < 1000; i++) {
-//            indexReader.seek(i * 16);
-//            long offset = indexReader.readLong();
-//            long position = indexReader.readLong();
-//            System.out.println("offset:" + offset + ",position:" + position);
-//        }
-
-
-//        ByteBuffer indexByteBuffer = ByteBuffer.wrap(indexByte);
-//        long offset = indexByteBuffer.getLong();
-//        long position = indexByteBuffer.getLong();
-//        System.out.println("offset:" + offset + ",position:" + position);
+            //查询消息体
+            logReader.seek(logPosition);
+            int msgSize = logReader.readInt();
+            int version = logReader.read();
+            int crc = logReader.readInt();
+            byte[] payload = new byte[msgSize];
+            logReader.read(payload);
+            log.info("msgSize:" + msgSize + ",version:" + version + ",crc:" + crc + ",payload:" + new String(payload, StandardCharsets.UTF_8));
+            int checkCrc = CrcUtil.crc32(payload);
+            log.info(crc == checkCrc ? "check success" : "check fail!");
+            sw.stop();
+        }
+        log.info("" + sw.getTotalTimeMillis());
 
         logReader.close();
         indexReader.close();
         timeIndexReader.close();
+    }
+
+    private long lookUp(long searchOffset, long lowerPosition, long upperPosition, RandomAccessFile indexReader) throws IOException {
+        long logPosition;
+        while (true) {
+            long midOffPosition = (lowerPosition + upperPosition) / 2;
+            midOffPosition = midOffPosition - midOffPosition % 16;
+            long midIndexOffset = getOffsetByPosition(indexReader, midOffPosition);
+            if (midIndexOffset == searchOffset) {
+                logPosition = getLogPosition(indexReader, midOffPosition);
+                return logPosition;
+            } else if (lowerPosition > upperPosition) {
+                log.warn("can't found it");
+                logPosition = -1;
+                return logPosition;
+            } else {
+                if (midIndexOffset < searchOffset) {
+                    lowerPosition = midOffPosition + 16; //it's in upper half
+                } else {
+                    upperPosition = midOffPosition - 16; //it's in lower half
+                }
+            }
+        }
+    }
+
+    private long getLogPosition(RandomAccessFile indexReader, long indexPosition) throws IOException {
+        indexReader.seek(indexPosition + 8);
+        return indexReader.readLong();
+    }
+
+    private long getOffsetByPosition(RandomAccessFile indexReader, long position) throws IOException {
+        indexReader.seek(position);
+        long offset = indexReader.readLong();
+        log.info("position:" + position + "offset:" + offset);
+        return offset;
     }
 }
