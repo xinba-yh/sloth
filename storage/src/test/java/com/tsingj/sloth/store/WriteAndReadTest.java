@@ -87,20 +87,12 @@ public class WriteAndReadTest {
         System.out.println("fileSize:" + fileSize);
 
 
-
         StopWatch sw = new StopWatch();
         //按照指定offset进行二分查找
         for (int i = 1; i <= 1000; i++) {
             sw.start();
             long searchOffset = i;
-            //获取offset开头
-            long lowerPosition = 0;
-            //获取offset结尾
-            long upperPosition = fileSize - 16;
-            long logPosition = lookUp(searchOffset, lowerPosition, upperPosition, indexReader);
-            if (logPosition == -1) {
-                break;
-            }
+            long logPosition = getLogPosition(indexReader, (searchOffset - 1) * 16L);
             log.info("offset:" + searchOffset + ",logPosition:" + logPosition);
 
             //查询消息体
@@ -111,8 +103,8 @@ public class WriteAndReadTest {
             byte[] payload = new byte[msgSize];
             logReader.read(payload);
             log.info("msgSize:" + msgSize + ",version:" + version + ",crc:" + crc + ",payload:" + new String(payload, StandardCharsets.UTF_8));
-            int checkCrc = CrcUtil.crc32(payload);
-            log.info(crc == checkCrc ? "check success" : "check fail!");
+//            int checkCrc = CrcUtil.crc32(payload);
+//            log.info(crc == checkCrc ? "check success" : "check fail!");
             sw.stop();
         }
         log.info("" + sw.getTotalTimeMillis());
