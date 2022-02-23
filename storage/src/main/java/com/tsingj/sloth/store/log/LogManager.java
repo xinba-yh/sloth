@@ -67,6 +67,10 @@ public class LogManager {
         return LogInfo.builder().msgSize(msgSize).version(version).crc(crc).payload(payload).build();
     }
 
+    public static int countMessageBodyBytes(int msgSize) {
+        return VERSION_LENGTH + CRC_LENGTH + msgSize;
+    }
+
     public static int countNextMessagePosition(int msgSize) {
         return OFFSET_LENGTH + MSG_SIZE_LENGTH + VERSION_LENGTH + CRC_LENGTH + msgSize;
     }
