@@ -11,7 +11,6 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 @Slf4j
@@ -138,8 +137,7 @@ public class WriteAndReadTest {
         BufferedOutputStream timeIndexWriter = new BufferedOutputStream(new FileOutputStream(timeIndexFile, true));
         long offset = 0L;
         long position = 0L;
-        List<Integer> offsetIndexArr = Arrays.asList(1, 16, 50, 61, 62, 62, 68, 77, 81, 103, 109, 123, 128, 130, 133, 144, 152, 189, 193, 199, 199, 209, 213, 235, 237, 255, 288, 303, 303, 312, 313, 328, 332, 342, 347, 349, 351, 375, 397, 414, 430, 441, 463, 488, 489, 492, 493, 498, 517, 519, 535, 560, 565, 568, 583, 591, 594, 599, 604, 611, 615, 615, 629, 629, 634, 636, 665, 680, 684, 687, 687, 688, 703, 712, 718, 724, 727, 728, 741, 758, 776, 789, 805, 808, 824, 828, 838, 863, 863, 873, 884, 889, 896, 902, 912, 933, 951, 965, 966, 971, 974);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 5000000; i++) {
             offset = offset + 1;
             //写数据
             String data = "i+" + i + ",hello world.";
@@ -149,7 +147,7 @@ public class WriteAndReadTest {
 
             //写index  offset -> position
             //稀疏索引方式写入
-            if (offsetIndexArr.contains(i + 1)) {
+            if (offset == 1 || offset % 10 == 0) {
                 ByteBuffer indexByteBuffer = ByteBuffer.allocate(16);
                 indexByteBuffer.putLong(offset);
                 indexByteBuffer.putLong(position);
@@ -190,11 +188,13 @@ public class WriteAndReadTest {
         System.out.println("fileSize:" + fileSize);
 
 
+        int[] random = random(1000);
+
         StopWatch sw = new StopWatch();
         //按照指定offset进行二分查找
         for (int i = 1; i <= 1000; i++) {
             sw.start();
-            long searchOffset = i;
+            long searchOffset = random[i - 1];
             long startLogPosition = lookUp(searchOffset, fileSize / 16, indexReader);
 //            log.info("offset:" + searchOffset + ",startLogPosition:" + startLogPosition);
             if (startLogPosition == -1) {
@@ -202,10 +202,9 @@ public class WriteAndReadTest {
                 sw.stop();
                 continue;
             }
-            sw.stop();
             //查询消息体
             getLogPositionSlotRange(logReader, searchOffset, startLogPosition, FileUtils.sizeOf(logFile));
-
+            sw.stop();
         }
         log.info("" + sw.getTotalTimeMillis());
 
@@ -266,7 +265,6 @@ public class WriteAndReadTest {
                 log.info("searchOffset:" + searchOffset + ",offset:" + offset + ",msgSize:" + msgSize + ",version:" + version + ",crc:" + crc + ",payload:" + new String(payload, StandardCharsets.UTF_8));
                 int checkCrc = CrcUtil.crc32(payload);
 //                log.info(crc == checkCrc ? "check success" : "check fail!");
-
                 logPosition = position;
                 break;
             } else {
@@ -286,26 +284,21 @@ public class WriteAndReadTest {
         return indexReader.readLong();
     }
 
-    @Test
-    public void random() {
-        int max = 100;
+    private int[] random(int num) {
         int i = 1;
         Random random = new Random();
-        int[] id = new int[max];
-        id[0] = random.nextInt(1000);
-        while (i < max) {
-            if (id[i] != random.nextInt(1000)) {
-                id[i] = random.nextInt(1000);
+        int[] id = new int[num];
+        id[0] = random.nextInt(5000000);
+        while (i < num) {
+            if (id[i] != random.nextInt(5000000)) {
+                id[i] = random.nextInt(5000000);
             } else {
                 continue;
             }
             i++;
         }
-        StringBuilder sb = new StringBuilder();
         Arrays.sort(id);
-        for (int j : id) {
-            sb.append(j).append(",");
-        }
-        System.out.println(sb);
+        System.out.println(Arrays.toString(id));
+        return id;
     }
 }
