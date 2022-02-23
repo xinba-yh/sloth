@@ -9,6 +9,7 @@ import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -81,17 +82,21 @@ public class WriteAndReadSparseIndexOnMmapTest {
     }
 
     /**
-     * 1W次读取 1204
+     * 1W次读取 4037 - 5807 ``` what's happened ???
+     *
      * @throws IOException
      */
     @Test
     public void readTestSparseIndex() throws IOException {
         File logFile = new File(LOG_PATH);
-        FileChannel logReader = new RandomAccessFile(logFile, "rw").getChannel();
+        FileChannel logFileChannel = new RandomAccessFile(logFile, "rw").getChannel();
+        MappedByteBuffer logReader = logFileChannel.map(FileChannel.MapMode.READ_ONLY, 0, 1024 * 1024 * 200);
         File indexFile = new File(OFFSET_INDEX_PATH);
-        FileChannel indexReader = new RandomAccessFile(indexFile, "rw").getChannel();
+        FileChannel indexFileChannel = new RandomAccessFile(indexFile, "rw").getChannel();
+        MappedByteBuffer indexReader = indexFileChannel.map(FileChannel.MapMode.READ_ONLY, 0, 1024 * 1024 * 10);
+
         File timeIndexFile = new File(TIME_INDEX_PATH);
-        FileChannel timeIndexReader = new RandomAccessFile(timeIndexFile, "rw").getChannel();
+        FileChannel timeIndexReader = new RandomAccessFile(timeIndexFile, "r").getChannel();
 
         //native方法获取文件大小
         long fileSize = FileUtils.sizeOf(indexFile);
@@ -118,12 +123,12 @@ public class WriteAndReadSparseIndexOnMmapTest {
         }
         log.info("" + sw.getTotalTimeMillis());
 
-        logReader.close();
-        indexReader.close();
+        logFileChannel.close();
+        indexFileChannel.close();
         timeIndexReader.close();
     }
 
-    private long lookUp(long searchOffset, long entries, FileChannel indexReader) throws IOException {
+    private long lookUp(long searchOffset, long entries, MappedByteBuffer indexReader) throws IOException {
         //index为空，返回-1
         if (entries == 0) {
             return -1;
@@ -155,25 +160,19 @@ public class WriteAndReadSparseIndexOnMmapTest {
     }
 
 
-    private Long getLogPositionSlotRange(FileChannel logReader, long searchOffset, long startPosition, long maxPosition) throws IOException {
+    private Long getLogPositionSlotRange(MappedByteBuffer logReader, long searchOffset, long startPosition, long maxPosition) throws IOException {
         Long logPosition = null;
         long position = startPosition;
         while (position < maxPosition) {
             //查询消息体
-            logReader.position(position);
-            ByteBuffer headerByteBuffer = ByteBuffer.allocate(12);
-            logReader.read(headerByteBuffer);
-            headerByteBuffer.rewind();
-            long offset = headerByteBuffer.getLong();
-            int msgSize = headerByteBuffer.getInt();
+            logReader.position(Math.toIntExact(position));
+            long offset = logReader.getLong();
+            int msgSize = logReader.getInt();
             if (searchOffset == offset) {
-                ByteBuffer bodyByteBuffer = ByteBuffer.allocate(LogManager.countMessageBodyBytes(msgSize));
-                logReader.read(bodyByteBuffer);
-                bodyByteBuffer.rewind();
-                byte version = bodyByteBuffer.get();
-                int crc = bodyByteBuffer.getInt();
+                byte version = logReader.get();
+                int crc = logReader.getInt();
                 byte[] payload = new byte[msgSize];
-                bodyByteBuffer.get(payload);
+                logReader.get(payload);
 //                log.info("searchOffset:" + searchOffset + ",offset:" + offset + ",msgSize:" + msgSize + ",version:" + version + ",crc:" + crc + ",payload:" + new String(payload, StandardCharsets.UTF_8));
                 int checkCrc = CrcUtil.crc32(payload);
 //                log.info(crc == checkCrc ? "check success" : "check fail!");
@@ -190,20 +189,14 @@ public class WriteAndReadSparseIndexOnMmapTest {
         return logPosition;
     }
 
-    private long getOffsetByPosition(FileChannel indexReader, long position) throws IOException {
-        indexReader.position(position);
-        ByteBuffer byteBuffer = ByteBuffer.allocate(8);
-        int read = indexReader.read(byteBuffer);
-        byteBuffer.rewind();
-        return byteBuffer.getLong();
+    private long getOffsetByPosition(MappedByteBuffer indexReader, long position) throws IOException {
+        indexReader.position(Math.toIntExact(position));
+        return indexReader.getLong();
     }
 
-    private long getLogPosition(FileChannel indexReader, long indexPosition) throws IOException {
-        indexReader.position(indexPosition + 8);
-        ByteBuffer byteBuffer = ByteBuffer.allocate(8);
-        int read = indexReader.read(byteBuffer);
-        byteBuffer.rewind();
-        return byteBuffer.getLong();
+    private long getLogPosition(MappedByteBuffer indexReader, long indexPosition) throws IOException {
+        indexReader.position(Math.toIntExact(indexPosition + 8));
+        return indexReader.getLong();
     }
 
 

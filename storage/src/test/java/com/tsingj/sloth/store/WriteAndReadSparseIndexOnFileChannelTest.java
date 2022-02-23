@@ -81,7 +81,7 @@ public class WriteAndReadSparseIndexOnFileChannelTest {
     }
 
     /**
-     * 1W次读取 1204
+     * 1W次读取 929 -> 1000
      * @throws IOException
      */
     @Test
