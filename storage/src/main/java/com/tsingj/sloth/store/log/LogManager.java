@@ -17,6 +17,11 @@ public class LogManager {
     //------------------------------以下为固定大小------------------------------
 
     /**
+     * offset长度
+     */
+    private static final int OFFSET_LENGTH = 8;
+
+    /**
      * 消息长度
      */
     private static final int MSG_SIZE_LENGTH = 4;
@@ -38,8 +43,9 @@ public class LogManager {
     private static final byte VERSION = 1;
 
 
-    public static byte[] buildLog(byte[] payload) {
-        ByteBuffer byteBuffer = ByteBuffer.allocate(MSG_SIZE_LENGTH + VERSION_LENGTH + CRC_LENGTH + payload.length);
+    public static byte[] buildLog(long offset, byte[] payload) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(OFFSET_LENGTH + MSG_SIZE_LENGTH + VERSION_LENGTH + CRC_LENGTH + payload.length);
+        byteBuffer.putLong(offset);
         byteBuffer.putInt(payload.length);
         byteBuffer.put(VERSION);
         byteBuffer.putInt(CrcUtil.crc32(payload));
@@ -59,6 +65,10 @@ public class LogManager {
         byte[] payload = new byte[msgSize];
         wrap.get(payload);
         return LogInfo.builder().msgSize(msgSize).version(version).crc(crc).payload(payload).build();
+    }
+
+    public static int countNextMessagePosition(int msgSize) {
+        return OFFSET_LENGTH + MSG_SIZE_LENGTH + VERSION_LENGTH + CRC_LENGTH + msgSize;
     }
 
     @Data
