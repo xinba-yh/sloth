@@ -18,38 +18,48 @@ import java.util.Random;
 public class WriteAndReadSparseIndexOnFileChannelTest {
 
     private static final String LOG_NAME = "temp1";
-    private static final String LOG_PATH = LOG_NAME + ".data";
+    private static final String LOG_PATH = LOG_NAME + ".log";
     private static final String OFFSET_INDEX_PATH = LOG_NAME + ".index";
     private static final String TIME_INDEX_PATH = LOG_NAME + ".timeindex";
 
 
+    /**
+     * fileChannel write slow
+     */
     @Test
     public void writeTestSparseIndex() throws IOException {
         File logFile = new File(LOG_PATH);
         if (logFile.exists()) {
             logFile.delete();
         }
-        BufferedOutputStream logWriter = new BufferedOutputStream(new FileOutputStream(logFile, true));
+        FileChannel logWriter = new FileOutputStream(logFile, true).getChannel();
+
         File indexFile = new File(OFFSET_INDEX_PATH);
         if (indexFile.exists()) {
             indexFile.delete();
         }
-        BufferedOutputStream indexWriter = new BufferedOutputStream(new FileOutputStream(indexFile, true));
+        FileChannel indexWriter = new FileOutputStream(indexFile, true).getChannel();
+
         File timeIndexFile = new File(TIME_INDEX_PATH);
         if (timeIndexFile.exists()) {
             timeIndexFile.delete();
         }
+        FileChannel timeIndexWriter = new FileOutputStream(timeIndexFile, true).getChannel();
 
-        BufferedOutputStream timeIndexWriter = new BufferedOutputStream(new FileOutputStream(timeIndexFile, true));
+
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024);
+
         long offset = 0L;
         long position = 0L;
-        for (int i = 0; i < 5000000; i++) {
+        for (int i = 0; i < 5000000 * 5; i++) {
             offset = offset + 1;
+            byteBuffer.clear();
             //写数据
             String data = "i+" + i + ",hello world.";
             byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
             byte[] logBytes = LogManager.buildLog(offset, dataBytes);
-            logWriter.write(logBytes);
+            byteBuffer.put(logBytes);
+            logWriter.write(byteBuffer);
 
             //写index  offset -> position
             //稀疏索引方式写入
@@ -57,31 +67,48 @@ public class WriteAndReadSparseIndexOnFileChannelTest {
                 ByteBuffer indexByteBuffer = ByteBuffer.allocate(16);
                 indexByteBuffer.putLong(offset);
                 indexByteBuffer.putLong(position);
-                indexWriter.write(indexByteBuffer.array());
+                indexWriter.write(indexByteBuffer);
 
                 //写timeindex timestamp -> offset
                 ByteBuffer timeIndexByteBuffer = ByteBuffer.allocate(16);
                 timeIndexByteBuffer.putLong(System.currentTimeMillis());
                 timeIndexByteBuffer.putLong(offset);
-                timeIndexWriter.write(timeIndexByteBuffer.array());
+                timeIndexWriter.write(timeIndexByteBuffer);
             }
 
             //增加物理位移量
             position = position + logBytes.length;
         }
 
-        logWriter.flush();
-        indexWriter.flush();
-        timeIndexWriter.flush();
-
+        logWriter.force(true);
         logWriter.close();
+        indexWriter.force(true);
         indexWriter.close();
+        timeIndexWriter.force(true);
         timeIndexWriter.close();
 
     }
 
+    @Test
+    public void readTestMore() throws IOException {
+        for (int i = 0; i < 10; i++) {
+            readTestSparseIndex();
+        }
+    }
+
     /**
-     * 1W次读取 929 -> 1000
+     * 1W次读取
+     * 22:50:23.217 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 856
+     * 22:50:24.108 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 884
+     * 22:50:24.895 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 783
+     * 22:50:25.670 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 772
+     * 22:50:26.475 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 801
+     * 22:50:27.220 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 742
+     * 22:50:28.002 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 778
+     * 22:50:28.769 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 763
+     * 22:50:29.533 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 761
+     * 22:50:30.315 [main] INFO com.tsingj.sloth.store.WriteAndReadSparseIndexOnFileChannelTest - 779
+     *
      * @throws IOException
      */
     @Test
@@ -221,7 +248,7 @@ public class WriteAndReadSparseIndexOnFileChannelTest {
             i++;
         }
         Arrays.sort(id);
-        System.out.println(Arrays.toString(id));
+//        System.out.println(Arrays.toString(id));
         return id;
     }
 }

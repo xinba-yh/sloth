@@ -42,7 +42,8 @@ public class WriteAndReadSparseIndexOnRandomAccessTest {
         BufferedOutputStream timeIndexWriter = new BufferedOutputStream(new FileOutputStream(timeIndexFile, true));
         long offset = 0L;
         long position = 0L;
-        for (int i = 0; i < 5000000; i++) {
+
+        for (int i = 0; i < 5000000 * 5; i++) {
             offset = offset + 1;
             //写数据
             String data = "i+" + i + ",hello world.";
@@ -67,6 +68,13 @@ public class WriteAndReadSparseIndexOnRandomAccessTest {
 
             //增加物理位移量
             position = position + logBytes.length;
+
+            if (offset % 500 == 0) {
+                logWriter.flush();
+                indexWriter.flush();
+                timeIndexWriter.flush();
+            }
+
         }
 
         logWriter.flush();
@@ -81,16 +89,17 @@ public class WriteAndReadSparseIndexOnRandomAccessTest {
 
     /**
      * 1W -> 4082
+     *
      * @throws IOException
      */
     @Test
     public void readTestSparseIndex() throws IOException {
         File logFile = new File(LOG_PATH);
-        RandomAccessFile logReader = new RandomAccessFile(logFile, "rw");
+        RandomAccessFile logReader = new RandomAccessFile(logFile, "rws");
         File indexFile = new File(OFFSET_INDEX_PATH);
-        RandomAccessFile indexReader = new RandomAccessFile(indexFile, "rw");
+        RandomAccessFile indexReader = new RandomAccessFile(indexFile, "rws");
         File timeIndexFile = new File(TIME_INDEX_PATH);
-        RandomAccessFile timeIndexReader = new RandomAccessFile(timeIndexFile, "rw");
+        RandomAccessFile timeIndexReader = new RandomAccessFile(timeIndexFile, "rws");
 
         //native方法获取文件大小
         long fileSize = FileUtils.sizeOf(indexFile);

@@ -81,6 +81,13 @@ public class WriteAndReadSparseIndexOnMmapTest {
 
     }
 
+    @Test
+    public void readTestMore() throws IOException {
+        for (int i = 0; i < 10; i++) {
+            readTestSparseIndex();
+        }
+    }
+
     /**
      * 1W次读取 4037 - 5807 ``` what's happened ???
      *
@@ -173,7 +180,7 @@ public class WriteAndReadSparseIndexOnMmapTest {
                 int crc = logReader.getInt();
                 byte[] payload = new byte[msgSize];
                 logReader.get(payload);
-//                log.info("searchOffset:" + searchOffset + ",offset:" + offset + ",msgSize:" + msgSize + ",version:" + version + ",crc:" + crc + ",payload:" + new String(payload, StandardCharsets.UTF_8));
+//                log.info("searchOffset:" + searchOffset + ",offset:" + startPosition + ",msgSize:" + msgSize + ",version:" + version + ",crc:" + crc + ",payload:" + new String(payload, StandardCharsets.UTF_8));
                 int checkCrc = CrcUtil.crc32(payload);
 //                log.info(crc == checkCrc ? "check success" : "check fail!");
                 logPosition = position;
