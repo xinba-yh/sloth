@@ -1,6 +1,6 @@
 package com.tsingj.sloth.store;
 
-import com.tsingj.sloth.store.log.LogManager;
+import com.tsingj.sloth.store.datalog.DataLogManager;
 import com.tsingj.sloth.store.utils.CrcUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -57,7 +57,7 @@ public class WriteAndReadSparseIndexOnFileChannelTest {
             //写数据
             String data = "i+" + i + ",hello world.";
             byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
-            byte[] logBytes = LogManager.buildLog(offset, dataBytes);
+            byte[] logBytes = DataLogManager.buildLog(offset, dataBytes);
             byteBuffer.put(logBytes);
             logWriter.write(byteBuffer);
 
@@ -194,7 +194,7 @@ public class WriteAndReadSparseIndexOnFileChannelTest {
             long offset = headerByteBuffer.getLong();
             int msgSize = headerByteBuffer.getInt();
             if (searchOffset == offset) {
-                ByteBuffer bodyByteBuffer = ByteBuffer.allocate(LogManager.countMessageBodyBytes(msgSize));
+                ByteBuffer bodyByteBuffer = ByteBuffer.allocate(DataLogManager.countMessageBodyBytes(msgSize));
                 logReader.read(bodyByteBuffer);
                 bodyByteBuffer.rewind();
                 byte version = bodyByteBuffer.get();
@@ -207,7 +207,7 @@ public class WriteAndReadSparseIndexOnFileChannelTest {
                 logPosition = position;
                 break;
             } else {
-                position = position + LogManager.countNextMessagePosition(msgSize);
+                position = position + DataLogManager.countNextMessagePosition(msgSize);
             }
         }
 

@@ -1,6 +1,6 @@
 package com.tsingj.sloth.store;
 
-import com.tsingj.sloth.store.log.LogManager;
+import com.tsingj.sloth.store.datalog.DataLogManager;
 import com.tsingj.sloth.store.utils.CrcUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -10,8 +10,6 @@ import org.springframework.util.StopWatch;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Random;
 
 @Slf4j
 public class WriteAndReadTest {
@@ -47,7 +45,7 @@ public class WriteAndReadTest {
             //写数据
             String data = "i+" + i + ",hello world.";
             byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
-            byte[] logBytes = LogManager.buildLog(offset, dataBytes);
+            byte[] logBytes = DataLogManager.buildLog(offset, dataBytes);
             logWriter.write(logBytes);
 
             //写index  offset -> position

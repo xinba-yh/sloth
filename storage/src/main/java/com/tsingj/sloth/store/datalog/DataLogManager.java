@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store.log;
+package com.tsingj.sloth.store.datalog;
 
 
 import com.tsingj.sloth.store.utils.CrcUtil;
@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 /**
  * @author yanghao
  */
-public class LogManager {
+public class DataLogManager {
 
     //------------------------------以下为固定大小------------------------------
 
@@ -53,7 +53,7 @@ public class LogManager {
         return byteBuffer.array();
     }
 
-    public static LogInfo parseLogInfo(byte[] msgBytes) {
+    public static DataLogEntity parseLogInfo(byte[] msgBytes) {
         ByteBuffer wrap = ByteBuffer.wrap(msgBytes);
         //前4位 int类型 msgSize
         int msgSize = wrap.getInt();
@@ -64,7 +64,7 @@ public class LogManager {
         //按照msgSize读取指定大小的payload
         byte[] payload = new byte[msgSize];
         wrap.get(payload);
-        return LogInfo.builder().msgSize(msgSize).version(version).crc(crc).payload(payload).build();
+        return DataLogEntity.builder().msgSize(msgSize).version(version).crc(crc).payload(payload).build();
     }
 
     public static int countMessageBodyBytes(int msgSize) {
@@ -78,7 +78,7 @@ public class LogManager {
     @Data
     @Builder
     @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class LogInfo {
+    public static class DataLogEntity {
         /**
          * payload大小
          */

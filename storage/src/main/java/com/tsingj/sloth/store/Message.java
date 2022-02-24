@@ -5,18 +5,57 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
+import java.util.Map;
+
 /**
  * @author yanghao
+ * message基本属性和存储属性放在一个类里，不再做额外的copy。
  */
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Message {
+public class Message implements Serializable {
 
-    Long id;
+    //--------------------基本属性--------------------
 
-    String data;
+    String topic;
 
-    Long createTime;
+    Map<String, String> properties;
+
+    int partition;
+
+    byte[] body;
+
+
+    //--------------------存储属性--------------------
+
+    long offset;
+
+    /**
+     * 存储大小
+     */
+    int storeSize;
+
+    /**
+     * 存储时间
+     */
+    long storeTimestamp;
+
+    /**
+     * 版本号
+     */
+    byte version;
+
+    /**
+     * message大小
+     */
+    int msgSize;
+
+    /**
+     * body crc校验码
+     */
+    int crc;
+
 
 }

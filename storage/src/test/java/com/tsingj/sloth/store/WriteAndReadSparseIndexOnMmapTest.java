@@ -1,6 +1,6 @@
 package com.tsingj.sloth.store;
 
-import com.tsingj.sloth.store.log.LogManager;
+import com.tsingj.sloth.store.datalog.DataLogManager;
 import com.tsingj.sloth.store.utils.CrcUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -49,7 +49,7 @@ public class WriteAndReadSparseIndexOnMmapTest {
             //写数据
             String data = "i+" + i + ",hello world.";
             byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
-            byte[] logBytes = LogManager.buildLog(offset, dataBytes);
+            byte[] logBytes = DataLogManager.buildLog(offset, dataBytes);
             logWriter.write(logBytes);
 
             //写index  offset -> position
@@ -186,7 +186,7 @@ public class WriteAndReadSparseIndexOnMmapTest {
                 logPosition = position;
                 break;
             } else {
-                position = position + LogManager.countNextMessagePosition(msgSize);
+                position = position + DataLogManager.countNextMessagePosition(msgSize);
             }
         }
 
