@@ -1,5 +1,7 @@
 package com.tsingj.sloth.store.utils;
 
+import com.tsingj.sloth.store.Result;
+import com.tsingj.sloth.store.Results;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
@@ -16,7 +18,7 @@ public class CompressUtil {
     @Slf4j
     public static class GZIP {
 
-        public static byte[] compress(byte[] str) {
+        public static Result<byte[]> compress(byte[] str) {
             if (str == null || str.length == 0) {
                 return null;
             }
@@ -24,29 +26,28 @@ public class CompressUtil {
             try (GZIPOutputStream gzip = new GZIPOutputStream(out)) {
                 gzip.write(str);
             } catch (IOException e) {
-                log.error("compress fail!",e);
-                return null;
+                log.error("GZIP compress fail!", e);
+                return Results.failure("GZIP compress fail! " + e.getMessage());
             }
-            return out.toByteArray();
+            return Results.success(out.toByteArray());
         }
 
 
-        public static byte[] uncompress(byte[] compressed) {
-            byte[] decompressed;
+        public static Result<byte[]> uncompress(byte[] compressed) {
             try (ByteArrayOutputStream out = new ByteArrayOutputStream();
                  ByteArrayInputStream in = new ByteArrayInputStream(compressed);
-                 GZIPInputStream ginzip = new GZIPInputStream(in);) {
+                 GZIPInputStream ginzip = new GZIPInputStream(in)) {
                 byte[] buffer = new byte[1024];
                 int offset;
                 while ((offset = ginzip.read(buffer)) != -1) {
                     out.write(buffer, 0, offset);
                 }
-                decompressed = out.toByteArray();
+                return Results.success(out.toByteArray());
             } catch (IOException e) {
-                log.error("compress fail!",e);
-                return null;
+                log.error("compress fail!", e);
+                return Results.failure("compress fail!" + e.getMessage());
             }
-            return decompressed;
+
         }
 
     }

@@ -3,11 +3,10 @@ package com.tsingj.sloth.store.datalog;
 import com.tsingj.sloth.store.*;
 import com.tsingj.sloth.store.utils.CompressUtil;
 import com.tsingj.sloth.store.utils.CrcUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -15,46 +14,58 @@ import java.util.Map;
 /**
  * @author yanghao
  */
+@Slf4j
 @Component
 public class DataLog {
 
-    @Autowired
-    private DataLogFileSet dataLogFileManager;
+    private final DataLogFileSet dataLogFileSet;
+
+    public DataLog(DataLogFileSet dataLogFileSet) {
+        this.dataLogFileSet = dataLogFileSet;
+    }
 
     public PutMessageResult putMessage(Message message) {
-
+        String topic = message.getTopic();
+        int partition = message.getPartition();
         //------------------补充并获取存储信息------------------
-        //set 计算偏移量
-        message.setOffset(1L);
+
         //set 存储时间
         message.setStoreTimestamp(System.currentTimeMillis());
         //set crc
         message.setCrc(CrcUtil.crc32(message.getBody()));
         //set version  1-127
         message.setVersion(CommonConstants.CURRENT_VERSION);
-        //encode message
-        byte[] encode = StoreEncoder.encode(message);
-        if (encode == null) {
-            return PutMessageResult.builder().status(PutMessageStatus.DATA_ENCODE_FAIL).build();
-        }
-        DataLogFile dataLogFile = null;
-        //2、获取文件操作
-        try {
-            dataLogFile = dataLogFileManager.getLatestDataLogFile(message.getTopic(), message.getPartition(), encode.length);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (dataLogFile == null) {
-            return PutMessageResult.builder().status(PutMessageStatus.LOG_FILE_OPERATION_FAIL).build();
-        }
-        try {
-            dataLogFile.doAppend(encode);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //5、存储log
 
-        return PutMessageResult.builder().status(PutMessageStatus.OK).build();
+        DataLogFile latestDataLogFile = dataLogFileSet.getLatestDataLogFile(topic, partition);
+        //lock start
+        long offset;
+        if (latestDataLogFile == null || latestDataLogFile.isFull()) {
+            offset = latestDataLogFile == null ? 0 : latestDataLogFile.incrementOffsetAndGet();
+            latestDataLogFile = dataLogFileSet.getLatestDataLogFile(topic, partition, offset);
+            if (latestDataLogFile == null) {
+                log.error("create dataLog files error, topic: " + topic + " partition: " + partition);
+                return PutMessageResult.builder().status(PutMessageStatus.CREATE_LOG_FILE_FAILED).build();
+            }
+        } else {
+            offset = latestDataLogFile.incrementOffsetAndGet();
+        }
+        //set 偏移量
+        //新创建文件 -> 0 | 当前+1
+        //已有未满文件当前+1
+        message.setOffset(offset);
+        //encode message
+        Result<byte[]> encodeResult = StoreEncoder.encode(message);
+        if (!encodeResult.success()) {
+            return PutMessageResult.builder().status(PutMessageStatus.DATA_ENCODE_FAIL).errorMsg(encodeResult.getMsg()).build();
+        }
+        byte[] messageBytes = encodeResult.getData();
+
+        //追加文件
+        Result appendResult = latestDataLogFile.doAppend(messageBytes, offset, message.getStoreTimestamp());
+        if (!appendResult.success()) {
+            return PutMessageResult.builder().status(PutMessageStatus.LOG_FILE_APPEND_FAIL).errorMsg(appendResult.getMsg()).build();
+        }
+        return PutMessageResult.builder().status(PutMessageStatus.OK).offset(offset).build();
     }
 
     private static int calStoreLength(int bodyLen, int topicLen, int propertiesLen) {
@@ -74,7 +85,7 @@ public class DataLog {
 
     public static class StoreEncoder {
 
-        public static byte[] encode(Message message) {
+        public static Result<byte[]> encode(Message message) {
             //---------------基础属性----------------
             byte[] topic = message.getTopic().getBytes(StandardCharsets.UTF_8);
             byte topicLen = (byte) topic.length;
@@ -83,10 +94,11 @@ public class DataLog {
             int propertiesLen = properties.length;
             //now used GZIP compress
             //todo get compress way in properties
-            byte[] body = CompressUtil.GZIP.compress(message.getBody());
-            if (body == null) {
-                return null;
+            Result<byte[]> compressResult = CompressUtil.GZIP.compress(message.getBody());
+            if (!compressResult.success()) {
+                return compressResult;
             }
+            byte[] body = compressResult.getData();
             int bodyLen = body.length;
             //---------------存储附加属性----------------
             long offset = message.getOffset();
@@ -122,7 +134,7 @@ public class DataLog {
             storeByteBuffer.putInt(bodyLen);
             //12、msgBody - cal
             storeByteBuffer.put(body);
-            return storeByteBuffer.array();
+            return Results.success(storeByteBuffer.array());
         }
 
         private static String messageProperties2String(Map<String, String> properties) {

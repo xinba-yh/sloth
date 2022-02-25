@@ -34,7 +34,7 @@ public class StorageProperties {
     int dataFlushInterval = 500;
 
     /**
-     * max message size
+     * expect max message size
      */
     int messageMaxSize = 1024 * 1024 * 4;
 }

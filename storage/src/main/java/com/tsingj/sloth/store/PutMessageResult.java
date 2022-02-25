@@ -19,8 +19,13 @@ public class PutMessageResult {
     PutMessageStatus status;
 
     /**
-     *
+     * 错误信息
      */
     String errorMsg;
+
+    /**
+     * offset
+     */
+    Long offset;
 
 }
