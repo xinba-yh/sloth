@@ -24,17 +24,23 @@ public class StorageProperties {
     String dataPath = System.getProperty("user.home") + File.separator + "data";
 
     /**
-     * segment max fileSize default 1G
-     */
-    int segmentMaxFileSize = 1024 * 1024 * 1024;
-
-    /**
      * flush data to disk interval
      */
     int dataFlushInterval = 500;
 
     /**
-     * expect max message size
+     * max message size
      */
     int messageMaxSize = 1024 * 1024 * 4;
+
+    /**
+     * expect segment max fileSize ,  default 1G
+     */
+    int segmentMaxFileSize = 1024 * 1024;
+
+    /**
+     * sparse index interval bytes
+     */
+    int logIndexIntervalBytes = 1024 * 4;
+
 }

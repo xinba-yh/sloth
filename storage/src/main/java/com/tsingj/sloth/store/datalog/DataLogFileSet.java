@@ -3,7 +3,6 @@ package com.tsingj.sloth.store.datalog;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -20,9 +19,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class DataLogFileSet {
 
+    private final StorageProperties storageProperties;
 
-    @Autowired
-    private StorageProperties storageProperties;
+    public DataLogFileSet(StorageProperties storageProperties) {
+        this.storageProperties = storageProperties;
+    }
 
     /**
      * 文件与内存映射。
@@ -69,7 +70,7 @@ public class DataLogFileSet {
         String timeIndexPath = dir + File.separator + fileName + ".timeindex";
         DataLogFile newDataLogFile;
         try {
-            newDataLogFile = new DataLogFile(logPath, offsetIndexPath, timeIndexPath, startOffset, storageProperties.getMessageMaxSize());
+            newDataLogFile = new DataLogFile(logPath, offsetIndexPath, timeIndexPath, startOffset, storageProperties.getSegmentMaxFileSize(),storageProperties.getLogIndexIntervalBytes());
         } catch (FileNotFoundException e) {
             return null;
         }
