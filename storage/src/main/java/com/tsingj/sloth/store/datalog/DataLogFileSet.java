@@ -117,9 +117,14 @@ public class DataLogFileSet {
                     upper = mid - 1;
                 }
             }
-            int finalLower = lower;
-            Optional<DataLogFile> logFileOptional = dataLogFiles.parallelStream().filter(o -> o.getFileFromOffset() == finalLower).findFirst();
-            return logFileOptional.orElse(null);
+            return dataLogFiles.get(lower);
+//            int finalLower = lower;
+
+//            Optional<DataLogFile> logFileOptional = dataLogFiles.parallelStream().filter(o -> o.getFileFromOffset() == finalLower).findFirst();
+//            if(!logFileOptional.isPresent()){
+//                System.out.println("find bug!");
+//            }
+//            return logFileOptional.orElse(null);
         }
     }
 }

@@ -112,7 +112,7 @@ public class DataLog {
         ByteBuffer storeByteBuffer = getMessageResult.getData();
         Result<Message> decodeResult = StoreDecoder.decode(offset, storeByteBuffer);
         if (decodeResult.failure()) {
-            return GetMessageResult.builder().status(GetMessageStatus.OFFSET_FOUND_NULL).build();
+            return GetMessageResult.builder().status(GetMessageStatus.MESSAGE_DECODE_FAIL).build();
         }
         return GetMessageResult.builder().status(GetMessageStatus.FOUND).message(decodeResult.getData()).build();
     }
@@ -196,6 +196,8 @@ public class DataLog {
         public static Result<Message> decode(long offset, ByteBuffer storeByteBuffer) {
             try {
                 Message message = new Message();
+                //position reset
+                storeByteBuffer.flip();
                 //1、offset - 8
                 message.setOffset(offset);
                 //2、storeSize - 4
@@ -235,7 +237,7 @@ public class DataLog {
                 message.setBody(body);
                 return Results.success(message);
             } catch (Throwable e) {
-                log.warn("store log message decode error.");
+                log.error("store log message decode error.", e);
                 return Results.failure("store log message decode error.");
             }
         }
