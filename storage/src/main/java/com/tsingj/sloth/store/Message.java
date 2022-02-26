@@ -1,8 +1,6 @@
 package com.tsingj.sloth.store;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
@@ -15,6 +13,8 @@ import java.util.Map;
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Message implements Serializable {
 
     //--------------------基本属性--------------------

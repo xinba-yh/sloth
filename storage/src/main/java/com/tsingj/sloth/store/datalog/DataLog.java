@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +26,12 @@ public class DataLog {
         this.dataLogFileSet = dataLogFileSet;
     }
 
+    /**
+     * 消息存储
+     *
+     * @param message
+     * @return
+     */
     public PutMessageResult putMessage(Message message) {
         String topic = message.getTopic();
         int partition = message.getPartition();
@@ -69,17 +77,44 @@ public class DataLog {
     }
 
     private static int calStoreLength(int bodyLen, int topicLen, int propertiesLen) {
-        return DataLogConstants.KeyBytes.STORE +
-                DataLogConstants.KeyBytes.STORE_TIMESTAMP +
-                DataLogConstants.KeyBytes.VERSION +
-                DataLogConstants.KeyBytes.TOPIC +
+        return DataLogConstants.MessageKeyBytes.STORE +
+                DataLogConstants.MessageKeyBytes.STORE_TIMESTAMP +
+                DataLogConstants.MessageKeyBytes.VERSION +
+                DataLogConstants.MessageKeyBytes.TOPIC +
                 topicLen +
-                DataLogConstants.KeyBytes.PARTITiON +
-                DataLogConstants.KeyBytes.PROPERTIES +
+                DataLogConstants.MessageKeyBytes.PARTITION +
+                DataLogConstants.MessageKeyBytes.PROPERTIES +
                 propertiesLen +
-                DataLogConstants.KeyBytes.CRC +
-                DataLogConstants.KeyBytes.BODY_SIZE +
+                DataLogConstants.MessageKeyBytes.CRC +
+                DataLogConstants.MessageKeyBytes.BODY_SIZE +
                 bodyLen;
+    }
+
+    /**
+     * 按照offset获取消息
+     *
+     * @param topic
+     * @param partition
+     * @param offset
+     * @return
+     */
+    public GetMessageResult getMessage(String topic, int partition, long offset) {
+        List<DataLogFile> dataLogFiles = dataLogFileSet.getDataLogFiles(topic, partition);
+        if (dataLogFiles == null) {
+            return GetMessageResult.builder().status(GetMessageStatus.PARTITION_NO_MESSAGE).build();
+        }
+
+        DataLogFile dataLogFile = dataLogFileSet.findDataLogFileByOffset(dataLogFiles, offset);
+        Result<ByteBuffer> getMessageResult = dataLogFile.getMessage(offset);
+        if (getMessageResult.failure()) {
+            return GetMessageResult.builder().status(GetMessageStatus.OFFSET_FOUND_NULL).build();
+        }
+        ByteBuffer storeByteBuffer = getMessageResult.getData();
+        Result<Message> decodeResult = StoreDecoder.decode(offset, storeByteBuffer);
+        if (decodeResult.failure()) {
+            return GetMessageResult.builder().status(GetMessageStatus.OFFSET_FOUND_NULL).build();
+        }
+        return GetMessageResult.builder().status(GetMessageStatus.FOUND).message(decodeResult.getData()).build();
     }
 
 
@@ -109,7 +144,7 @@ public class DataLog {
             int storeLen = calStoreLength(bodyLen, topicLen, propertiesLen);
 
             //------ build append buffer ----
-            ByteBuffer storeByteBuffer = ByteBuffer.allocate(DataLogConstants.KeyBytes.OFFSET + storeLen);
+            ByteBuffer storeByteBuffer = ByteBuffer.allocate(DataLogConstants.MessageKeyBytes.OFFSET + storeLen);
             //1、offset - 8
             storeByteBuffer.putLong(offset);
             //2、storeSize - 4
@@ -158,8 +193,65 @@ public class DataLog {
 
     public static class StoreDecoder {
 
-        public static Message decode(long offset, byte[] storeBytes) {
-            return null;
+        public static Result<Message> decode(long offset, ByteBuffer storeByteBuffer) {
+            try {
+                Message message = new Message();
+                //1、offset - 8
+                message.setOffset(offset);
+                //2、storeSize - 4
+                message.setStoreSize(storeByteBuffer.capacity());
+                //3、storeTimeStamp - 8
+                long storeTimestamp = storeByteBuffer.getLong();
+                message.setStoreTimestamp(storeTimestamp);
+                //4、version - 1
+                byte version = storeByteBuffer.get();
+                message.setVersion(version);
+                //5、topicLen - 1
+                byte topicLen = storeByteBuffer.get();
+                //6、topic - cal
+                byte[] topicBytes = new byte[topicLen];
+                storeByteBuffer.get(topicBytes);
+                String topic = new String(topicBytes, StandardCharsets.UTF_8);
+                message.setTopic(topic);
+                //7、partitionId - 4
+                int partition = storeByteBuffer.getInt();
+                message.setPartition(partition);
+                //8、propertiesLen - 4
+                int propertiesLen = storeByteBuffer.getInt();
+                //9、properties - cal
+                byte[] propertiesBytes = new byte[propertiesLen];
+                storeByteBuffer.get(propertiesBytes);
+                Map<String, String> properties = string2messageProperties(new String(propertiesBytes, StandardCharsets.UTF_8));
+                message.setProperties(properties);
+                //10、crc - 4
+                int crc = storeByteBuffer.getInt();
+                message.setCrc(crc);
+                //11、msgSize - 4
+                int msgSize = storeByteBuffer.getInt();
+                message.setMsgSize(msgSize);
+                //12、msgBody - cal
+                byte[] body = new byte[msgSize];
+                storeByteBuffer.get(body);
+                message.setBody(body);
+                return Results.success(message);
+            } catch (Throwable e) {
+                log.warn("store log message decode error.");
+                return Results.failure("store log message decode error.");
+            }
+        }
+
+        private static Map<String, String> string2messageProperties(final String properties) {
+            Map<String, String> map = new HashMap<>(1);
+            if (properties != null) {
+                String[] items = properties.split(CommonConstants.PROPERTY_SEPARATOR);
+                for (String i : items) {
+                    String[] nv = i.split(CommonConstants.NAME_VALUE_SEPARATOR);
+                    if (2 == nv.length) {
+                        map.put(nv[0], nv[1]);
+                    }
+                }
+            }
+            return map;
         }
 
     }

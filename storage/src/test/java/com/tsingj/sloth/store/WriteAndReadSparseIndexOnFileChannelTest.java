@@ -32,34 +32,41 @@ public class WriteAndReadSparseIndexOnFileChannelTest {
         if (logFile.exists()) {
             logFile.delete();
         }
-        FileChannel logWriter = new FileOutputStream(logFile, true).getChannel();
+        FileChannel logWriter = new RandomAccessFile(logFile, "rw").getChannel();
 
         File indexFile = new File(OFFSET_INDEX_PATH);
         if (indexFile.exists()) {
             indexFile.delete();
         }
-        FileChannel indexWriter = new FileOutputStream(indexFile, true).getChannel();
+        FileChannel indexWriter = new RandomAccessFile(indexFile, "rw").getChannel();
 
         File timeIndexFile = new File(TIME_INDEX_PATH);
         if (timeIndexFile.exists()) {
             timeIndexFile.delete();
         }
-        FileChannel timeIndexWriter = new FileOutputStream(timeIndexFile, true).getChannel();
+        FileChannel timeIndexWriter = new RandomAccessFile(timeIndexFile, "rw").getChannel();
 
 
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(8092);
 
         long offset = 0L;
         long position = 0L;
-        for (int i = 0; i < 5000000 * 5; i++) {
+        long buffer = 0l;
+        for (int i = 0; i < 2000000 * 5; i++) {
             offset = offset + 1;
-            byteBuffer.clear();
+
             //写数据
-            String data = "i+" + i + ",hello world.";
+            String data = "i+" + i + ",hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.";
             byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
             byte[] logBytes = DataLogManager.buildLog(offset, dataBytes);
             byteBuffer.put(logBytes);
-            logWriter.write(byteBuffer);
+
+            buffer = buffer + logBytes.length;
+            if (buffer > 7500) {
+                logWriter.write(byteBuffer);
+                byteBuffer.flip();
+                buffer = 0;
+            }
 
             //写index  offset -> position
             //稀疏索引方式写入

@@ -12,6 +12,7 @@ import org.springframework.util.StopWatch;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 @Slf4j
@@ -27,7 +28,7 @@ public class StorageEngineTest {
 
     private static final String topic = "test-topic";
 
-    private static final int count = 800000;
+    private static final int count = 100;
 
     private static final int threadNum = 1;
 
@@ -80,6 +81,17 @@ public class StorageEngineTest {
 
     @Test
     public void getMessageTest() {
+        putMessageTest();
+        Random random = new Random(count);
+        for (int i = 0; i < 10; i++) {
+            GetMessageResult getMessageResult;
+            if(i == 0){
+                getMessageResult = storageEngine.getMessage(topic, 0, 0);
+            }else{
+                getMessageResult = storageEngine.getMessage(topic,0,random.nextInt());
+            }
+            System.out.println(getMessageResult);
+        }
 
     }
 

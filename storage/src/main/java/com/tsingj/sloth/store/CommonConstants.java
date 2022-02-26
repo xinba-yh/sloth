@@ -8,6 +8,8 @@ public class CommonConstants {
 
     public static final int DATA_LOG_STORE_WAIN_TIME = 100;
 
+    public static final int DATA_LOG_FIND_WAIN_TIME = 100;
+
     public static final byte CURRENT_VERSION = 1;
 
 

@@ -18,6 +18,7 @@ public class StorageEngine implements Storage {
 
     private final StorageProperties storageProperties;
 
+
     public StorageEngine(DataLog dataLog, StorageProperties storageProperties) {
         this.dataLog = dataLog;
         this.storageProperties = storageProperties;
@@ -58,7 +59,22 @@ public class StorageEngine implements Storage {
     }
 
     @Override
-    public GetMessageResult getMessage(String topic, int partitionId, long offset) {
-        return null;
+    public GetMessageResult getMessage(String topic, int partition, long offset) {
+
+        if (topic.length() > Byte.MAX_VALUE) {
+            String errorMsg = "message topic length too long, max length " + Byte.MAX_VALUE + "!";
+            log.warn(errorMsg);
+            return GetMessageResult.builder().status(GetMessageStatus.TOPIC_ILLEGAL).errorMsg(errorMsg).build();
+        }
+
+        long beginTime = System.currentTimeMillis();
+        GetMessageResult getMessageResult = dataLog.getMessage(topic, partition, offset);
+        long costTime = System.currentTimeMillis() - beginTime;
+        if (costTime > CommonConstants.DATA_LOG_FIND_WAIN_TIME) {
+            log.warn("getMessage cost time(ms)={}", costTime);
+        }
+        return getMessageResult;
     }
+
+
 }

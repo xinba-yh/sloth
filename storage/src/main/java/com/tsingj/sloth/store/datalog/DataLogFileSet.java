@@ -1,5 +1,6 @@
 package com.tsingj.sloth.store.datalog;
 
+import com.tsingj.sloth.store.DataLogConstants;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author yanghao
@@ -65,12 +69,12 @@ public class DataLogFileSet {
             }
         }
         String fileName = CommonUtil.offset2FileName(startOffset);
-        String logPath = dir + File.separator + fileName + ".data";
-        String offsetIndexPath = dir + File.separator + fileName + ".index";
-        String timeIndexPath = dir + File.separator + fileName + ".timeindex";
+        String logPath = dir + File.separator + fileName + DataLogConstants.FileSuffix.LOG;
+        String offsetIndexPath = dir + File.separator + fileName + DataLogConstants.FileSuffix.OFFSET_INDEX;
+        String timeIndexPath = dir + File.separator + fileName + DataLogConstants.FileSuffix.TIMESTAMP_INDEX;
         DataLogFile newDataLogFile;
         try {
-            newDataLogFile = new DataLogFile(logPath, offsetIndexPath, timeIndexPath, startOffset, storageProperties.getSegmentMaxFileSize(),storageProperties.getLogIndexIntervalBytes());
+            newDataLogFile = new DataLogFile(logPath, offsetIndexPath, timeIndexPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
         } catch (FileNotFoundException e) {
             return null;
         }
@@ -83,4 +87,39 @@ public class DataLogFileSet {
         return newDataLogFile;
     }
 
+    public List<DataLogFile> getDataLogFiles(String topic, int partition) {
+        List<DataLogFile> dataLogFiles = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        if (CollectionUtils.isEmpty(dataLogFiles)) {
+            return null;
+        } else {
+            return dataLogFiles;
+        }
+    }
+
+    public DataLogFile findDataLogFileByOffset(List<DataLogFile> dataLogFiles, long offset) {
+        //only one file just return.
+        if (dataLogFiles.size() == 1) {
+            return dataLogFiles.get(0);
+            //if latest file offset lower search offset.
+        } else if (dataLogFiles.get(dataLogFiles.size() - 1).getFileFromOffset() < offset) {
+            return dataLogFiles.get(dataLogFiles.size() - 1);
+        } else {
+            //binary search
+            List<Long> fileOffsetList = dataLogFiles.parallelStream().map(DataLogFile::getFileFromOffset).collect(Collectors.toList());
+            int lower = 0;
+            int upper = fileOffsetList.size() - 1;
+            while (lower < upper) {
+                int mid = (lower + upper + 1) / 2;
+                long midValue = fileOffsetList.get(mid);
+                if (midValue <= offset) {
+                    lower = mid;
+                } else {
+                    upper = mid - 1;
+                }
+            }
+            int finalLower = lower;
+            Optional<DataLogFile> logFileOptional = dataLogFiles.parallelStream().filter(o -> o.getFileFromOffset() == finalLower).findFirst();
+            return logFileOptional.orElse(null);
+        }
+    }
 }

@@ -28,22 +28,22 @@ public class WriteAndReadSparseIndexOnRandomAccessTest {
         if (logFile.exists()) {
             logFile.delete();
         }
-        BufferedOutputStream logWriter = new BufferedOutputStream(new FileOutputStream(logFile, true));
+        RandomAccessFile logWriter = new RandomAccessFile(logFile, "rw");
         File indexFile = new File(OFFSET_INDEX_PATH);
         if (indexFile.exists()) {
             indexFile.delete();
         }
-        BufferedOutputStream indexWriter = new BufferedOutputStream(new FileOutputStream(indexFile, true));
+        RandomAccessFile indexWriter = new RandomAccessFile(indexFile, "rw");
         File timeIndexFile = new File(TIME_INDEX_PATH);
         if (timeIndexFile.exists()) {
             timeIndexFile.delete();
         }
 
-        BufferedOutputStream timeIndexWriter = new BufferedOutputStream(new FileOutputStream(timeIndexFile, true));
+        RandomAccessFile timeIndexWriter = new RandomAccessFile(timeIndexFile, "rw");
         long offset = 0L;
         long position = 0L;
 
-        for (int i = 0; i < 5000000 * 5; i++) {
+        for (int i = 0; i < 500000 * 5; i++) {
             offset = offset + 1;
             //写数据
             String data = "i+" + i + ",hello world.";
@@ -69,17 +69,7 @@ public class WriteAndReadSparseIndexOnRandomAccessTest {
             //增加物理位移量
             position = position + logBytes.length;
 
-            if (offset % 500 == 0) {
-                logWriter.flush();
-                indexWriter.flush();
-                timeIndexWriter.flush();
-            }
-
         }
-
-        logWriter.flush();
-        indexWriter.flush();
-        timeIndexWriter.flush();
 
         logWriter.close();
         indexWriter.close();
