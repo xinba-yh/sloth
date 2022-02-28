@@ -21,7 +21,9 @@ public class StorageProperties {
     /**
      * storage path
      */
-    String dataPath = System.getProperty("user.home") + File.separator + "data";
+//    String dataPath = System.getProperty("user.home") + File.separator + "data";
+
+    String dataPath = "/Users/yanghao" + File.separator + "data";
 
 
     /**

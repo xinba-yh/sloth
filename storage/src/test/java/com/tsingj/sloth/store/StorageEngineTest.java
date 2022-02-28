@@ -44,9 +44,12 @@ public class StorageEngineTest {
     @Test
     public void putMessageTest() {
         //------------------clear----------------------
+        File file = new File(storageProperties.getDataPath() + File.separator + topic);
+        if (file.exists()) {
+            file.delete();
+        }
 
         long startTime = System.currentTimeMillis();
-
         final CountDownLatch countDownLatch = new CountDownLatch(threadNum);
         for (int i = 0; i < threadNum; i++) {
             int finalI = i;
@@ -148,7 +151,7 @@ public class StorageEngineTest {
 
     @Test
     public void offsetIndexReaderTest() throws IOException {
-        File file = new File("data/test-topic/0/00000000000000000000.index");
+        File file = new File(storageProperties.getDataPath() + File.separator + topic + File.separator + 0 + File.separator + "00000000000000000000.index");
         FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
 
         for (int i = 0; i < 100; i++) {

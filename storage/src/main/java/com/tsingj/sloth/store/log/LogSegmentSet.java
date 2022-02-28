@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Component
 public class LogSegmentSet {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogSegment.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogSegmentSet.class);
 
     private final StorageProperties storageProperties;
 
@@ -56,7 +56,7 @@ public class LogSegmentSet {
         }
 
         //创建文件
-        String topicPartitionDirPath = "data" + File.separator + topic + File.separator + partition;
+        String topicPartitionDirPath = storageProperties.getDataPath() + File.separator + topic + File.separator + partition;
         File dir = new File(topicPartitionDirPath);
         if (!dir.exists()) {
             boolean mkdirs = dir.mkdirs();
@@ -83,7 +83,7 @@ public class LogSegmentSet {
         return newLogSegment;
     }
 
-    public List<LogSegment> getDataLogFiles(String topic, int partition) {
+    public List<LogSegment> getLogSegments(String topic, int partition) {
         List<LogSegment> logSegments = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
         if (CollectionUtils.isEmpty(logSegments)) {
             return null;
@@ -92,7 +92,7 @@ public class LogSegmentSet {
         }
     }
 
-    public LogSegment findDataLogFileByOffset(List<LogSegment> logSegments, long offset) {
+    public LogSegment findLogSegmentByOffset(List<LogSegment> logSegments, long offset) {
         //only one file just return.
         if (logSegments.size() == 1) {
             return logSegments.get(0);

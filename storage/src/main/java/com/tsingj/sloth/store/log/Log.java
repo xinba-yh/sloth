@@ -101,12 +101,12 @@ public class Log {
      * @return
      */
     public GetMessageResult getMessage(String topic, int partition, long offset) {
-        List<LogSegment> logSegments = logSegmentSet.getDataLogFiles(topic, partition);
+        List<LogSegment> logSegments = logSegmentSet.getLogSegments(topic, partition);
         if (logSegments == null) {
             return GetMessageResult.builder().status(GetMessageStatus.PARTITION_NO_MESSAGE).build();
         }
 
-        LogSegment logSegment = logSegmentSet.findDataLogFileByOffset(logSegments, offset);
+        LogSegment logSegment = logSegmentSet.findLogSegmentByOffset(logSegments, offset);
         Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
         if (getMessageResult.failure()) {
             return GetMessageResult.builder().status(GetMessageStatus.OFFSET_FOUND_NULL).build();
