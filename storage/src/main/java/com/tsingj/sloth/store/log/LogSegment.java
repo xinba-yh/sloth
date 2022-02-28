@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store.datalog;
+package com.tsingj.sloth.store.log;
 
 import com.tsingj.sloth.store.*;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import java.nio.channels.FileChannel;
  * @author yanghao
  */
 @Slf4j
-public class DataLogFile {
+public class LogSegment {
 
     /**
      * 文件开始offset
@@ -46,22 +46,15 @@ public class DataLogFile {
     private BufferedOutputStream logWriter;
 
     /**
-     * offsetIndex物理文件
+     * log offsetIndex
      */
-    private File offsetIndexFile;
-
-    private FileChannel offsetIndexReader;
-
-    private BufferedOutputStream offsetIndexWriter;
+    private OffsetIndex offsetIndex;
 
     /**
-     * timeIndex物理文件
+     * log timeIndex
      */
-    private File timeIndexFile;
+    private TimeIndex timeIndex;
 
-    private FileChannel timeIndexReader;
-
-    private BufferedOutputStream timeIndexWriter;
 
     /**
      * 记录上一次索引项添加后, 多少bytes的新消息存进来
@@ -74,24 +67,20 @@ public class DataLogFile {
     private int logIndexIntervalBytes;
 
 
-    public DataLogFile(String logPath, String offsetIndexPath, String timeIndexPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
-        this.firstInit(logPath, offsetIndexPath, timeIndexPath, startOffset, maxFileSize, logIndexIntervalBytes);
+    public LogSegment(String logPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
+        this.firstInit(logPath, startOffset, maxFileSize, logIndexIntervalBytes);
     }
 
-    private void firstInit(String logPath, String offsetIndexPath, String timeIndexPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
+    private void firstInit(String logPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
         //init log file operator
-        logFile = new File(logPath);
+        logFile = new File(logPath + DataLogConstants.FileSuffix.LOG);
         this.logWriter = new BufferedOutputStream(new FileOutputStream(logFile, true));
         this.logReader = new RandomAccessFile(logFile, "r").getChannel();
-        //init offsetIndex file operator
-        offsetIndexFile = new File(offsetIndexPath);
-        this.offsetIndexWriter = new BufferedOutputStream(new FileOutputStream(offsetIndexFile, true));
-        this.offsetIndexReader = new RandomAccessFile(offsetIndexFile, "r").getChannel();
-        //init timeIndex file operator
-        timeIndexFile = new File(timeIndexPath);
-        this.timeIndexWriter = new BufferedOutputStream(new FileOutputStream(timeIndexFile, true));
-        this.timeIndexReader = new RandomAccessFile(timeIndexFile, "r").getChannel();
-        log.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath, offsetIndexPath, timeIndexPath);
+        //init offsetIndex
+        this.offsetIndex = new OffsetIndex(logPath);
+        //init timeIndex
+        this.timeIndex = new TimeIndex(logPath);
+        log.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath + DataLogConstants.FileSuffix.LOG, logPath + DataLogConstants.FileSuffix.OFFSET_INDEX, logPath + DataLogConstants.FileSuffix.TIMESTAMP_INDEX);
 
         this.maxFileSize = maxFileSize;
         this.currentOffset = startOffset;
@@ -112,26 +101,17 @@ public class DataLogFile {
             this.logWriter.write(data);
             this.logWriter.flush();
 
-            // TODO: 2022/2/25 抽象至offsetIndex和timestampIndex
             //记录上一次index插入后，新存入的消息
             long recordBytes = this.recordBytesSinceLastIndexAppend(data.length);
             if (offset == 0 || recordBytes >= this.logIndexIntervalBytes) {
                 /*
                  * 2、append offset index
                  */
-                ByteBuffer indexByteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
-                indexByteBuffer.putLong(offset);
-                indexByteBuffer.putLong(offset == 0 ? 0 : this.wrotePosition + 1);
-                offsetIndexWriter.write(indexByteBuffer.array());
-                offsetIndexWriter.flush();
+                this.offsetIndex.addIndex(offset, offset == 0 ? 0L : this.wrotePosition);
                 /*
                  * 3、append time index
                  */
-                ByteBuffer timeIndexByteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
-                timeIndexByteBuffer.putLong(storeTimestamp);
-                timeIndexByteBuffer.putLong(offset);
-                this.timeIndexWriter.write(timeIndexByteBuffer.array());
-                offsetIndexWriter.flush();
+                this.timeIndex.addIndex(storeTimestamp, offset);
 
                 //reset index append bytes.
                 this.resetBytesSinceLastIndexAppend();
@@ -173,13 +153,14 @@ public class DataLogFile {
 
     public Result<ByteBuffer> getMessage(long offset) {
         //1、lookup logPosition slot range
-        Result<Long> lookUpResult = this.indexLookUpStartPosition(offset, (int) (FileUtils.sizeOf(offsetIndexFile) / DataLogConstants.INDEX_BYTES));
+        Result<IndexEntry.OffsetPosition> lookUpResult = this.offsetIndex.lookUp(offset);
         if (lookUpResult.failure()) {
             return Results.failure(lookUpResult.getMsg());
         }
         //2、slot logFile position find real position
         // TODO: 2022/2/25 add endPosition. maxMessageSize+slotSize || lookUp返回下一个索引的下标
-        Long startPosition = lookUpResult.getData();
+        IndexEntry.OffsetPosition indexEntry = lookUpResult.getData();
+        Long startPosition =indexEntry.getPosition();
         Long endPosition = FileUtils.sizeOf(logFile);
         Result<Long> logPositionResult = this.findLogPositionSlotRange(offset, startPosition, endPosition);
         //3、get log bytes
@@ -244,58 +225,6 @@ public class DataLogFile {
         return Results.success(logPosition);
     }
 
-    //lookup logPosition slot range
-    private Result<Long> indexLookUpStartPosition(long searchOffset, int entries) {
-        //index为空，返回-1
-        if (entries == 0) {
-            return Results.success(0L);
-        }
-        //最小值大与查询值，从头找。  PS:务必将第一条索引插入。
-        Result<Long> getFirstOffsetResult = getIndexFileFirstOffset();
-        if (!getFirstOffsetResult.success()) {
-            return getFirstOffsetResult;
-        }
-        long startOffset = getFirstOffsetResult.getData();
-        if (startOffset >= searchOffset) {
-            return Results.success(0L);
-        }
-        //开始二分查找 <= searchOffset的最大值
-        long lower = 0L;
-        long upper = entries - 1;
-        while (lower < upper) {
-            //这样的操作是为了让 mid 标志 取高位，否则会出现死循环
-            long mid = (lower + upper + 1) / 2;
-            Result<Long> result = getIndexFilePositionOffset(mid * DataLogConstants.INDEX_BYTES);
-            if (!result.success()) {
-                return result;
-            }
-            long found = result.getData();
-            if (found <= searchOffset) {
-                lower = mid;
-            } else {
-                upper = mid - 1;
-            }
-        }
-        //其实这里无论返回lower 还是upper都行，循环的退出时间是lower==upper。
-        return Results.success(lower * DataLogConstants.INDEX_BYTES);
-    }
 
-    private Result<Long> getIndexFilePositionOffset(long indexPosition) {
-        try {
-            this.offsetIndexReader.position(indexPosition + DataLogConstants.IndexKeyBytes.KEY);
-            ByteBuffer byteBuffer = ByteBuffer.allocate(DataLogConstants.IndexKeyBytes.VALUE);
-            offsetIndexReader.read(byteBuffer);
-            byteBuffer.rewind();
-            return Results.success(byteBuffer.getLong());
-        } catch (IOException e) {
-            log.error("offset indexFileReader position operation fail!", e);
-            return Results.failure("offset indexFileReader position operation fail!");
-        }
-
-    }
-
-    private Result<Long> getIndexFileFirstOffset() {
-        return getIndexFilePositionOffset(0);
-    }
 
 }

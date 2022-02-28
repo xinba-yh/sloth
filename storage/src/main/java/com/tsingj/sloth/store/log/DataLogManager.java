@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store.datalog;
+package com.tsingj.sloth.store.log;
 
 
 import com.tsingj.sloth.store.utils.CrcUtil;

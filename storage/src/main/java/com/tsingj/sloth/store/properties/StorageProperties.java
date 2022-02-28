@@ -23,6 +23,7 @@ public class StorageProperties {
      */
     String dataPath = System.getProperty("user.home") + File.separator + "data";
 
+
     /**
      * flush data to disk interval
      */

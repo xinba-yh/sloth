@@ -1,8 +1,9 @@
 package com.tsingj.sloth.store;
 
-import com.tsingj.sloth.store.datalog.DataLog;
+import com.tsingj.sloth.store.log.Log;
 import com.tsingj.sloth.store.properties.StorageProperties;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,17 +11,19 @@ import org.springframework.stereotype.Service;
  *
  * @author yanghao
  */
-@Slf4j
+
 @Service
 public class StorageEngine implements Storage {
 
-    private final DataLog dataLog;
+    private static final Logger logger = LoggerFactory.getLogger(StorageEngine.class);
+
+    private final Log log;
 
     private final StorageProperties storageProperties;
 
 
-    public StorageEngine(DataLog dataLog, StorageProperties storageProperties) {
-        this.dataLog = dataLog;
+    public StorageEngine(Log log, StorageProperties storageProperties) {
+        this.log = log;
         this.storageProperties = storageProperties;
     }
 
@@ -39,21 +42,21 @@ public class StorageEngine implements Storage {
 
         if (message.getTopic().length() > Byte.MAX_VALUE) {
             String errorMsg = "message topic length too long, max length " + Byte.MAX_VALUE + "!";
-            log.warn(errorMsg);
+            logger.warn(errorMsg);
             return PutMessageResult.builder().status(PutMessageStatus.MESSAGE_ILLEGAL).errorMsg(errorMsg).build();
         }
 
         if (message.getBody().length > storageProperties.getMessageMaxSize()) {
             String errorMsg = "message body length too long, max length " + storageProperties.getMessageMaxSize() + "!";
-            log.warn(errorMsg);
+            logger.warn(errorMsg);
             return PutMessageResult.builder().status(PutMessageStatus.MESSAGE_ILLEGAL).errorMsg(errorMsg).build();
         }
 
         long beginTime = System.currentTimeMillis();
-        PutMessageResult result = dataLog.putMessage(message);
+        PutMessageResult result = log.putMessage(message);
         long costTime = System.currentTimeMillis() - beginTime;
         if (costTime > CommonConstants.DATA_LOG_STORE_WAIN_TIME) {
-            log.warn("putMessage cost time(ms)={}, bodyLength={}", costTime, message.getBody().length);
+            logger.warn("putMessage cost time(ms)={}, bodyLength={}", costTime, message.getBody().length);
         }
         return result;
     }
@@ -63,15 +66,15 @@ public class StorageEngine implements Storage {
 
         if (topic.length() > Byte.MAX_VALUE) {
             String errorMsg = "message topic length too long, max length " + Byte.MAX_VALUE + "!";
-            log.warn(errorMsg);
+            logger.warn(errorMsg);
             return GetMessageResult.builder().status(GetMessageStatus.TOPIC_ILLEGAL).errorMsg(errorMsg).build();
         }
 
         long beginTime = System.currentTimeMillis();
-        GetMessageResult getMessageResult = dataLog.getMessage(topic, partition, offset);
+        GetMessageResult getMessageResult = log.getMessage(topic, partition, offset);
         long costTime = System.currentTimeMillis() - beginTime;
         if (costTime > CommonConstants.DATA_LOG_FIND_WAIN_TIME) {
-            log.warn("getMessage cost time(ms)={}", costTime);
+            logger.warn("getMessage cost time(ms)={}", costTime);
         }
         return getMessageResult;
     }

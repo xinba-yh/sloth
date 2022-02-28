@@ -11,6 +11,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Random;
@@ -29,7 +33,7 @@ public class StorageEngineTest {
 
     private static final String topic = "test-topic";
 
-    private static final int count = 1000000;
+    private static final int count = 10000;
 
     private static final int threadNum = 1;
 
@@ -40,12 +44,6 @@ public class StorageEngineTest {
     @Test
     public void putMessageTest() {
         //------------------clear----------------------
-        String dataPath = storageProperties.getDataPath();
-        log.info("dataPath:{}", dataPath);
-        File file = new File(dataPath);
-        if (file.exists()) {
-            file.delete();
-        }
 
         long startTime = System.currentTimeMillis();
 
@@ -85,12 +83,12 @@ public class StorageEngineTest {
         //mock data
         putMessageTest();
         try {
-            Thread.sleep(10);
+            Thread.sleep(1000);
         } catch (InterruptedException ignored) {
         }
 
         //random get message
-        int loopCount = 10000;
+        int loopCount = 50;
         StopWatch sw = new StopWatch();
         int[] random = this.random(loopCount);
         sw.start();
@@ -107,6 +105,11 @@ public class StorageEngineTest {
 
     @Test
     public void simpleDataPutGetTest() {
+        File file = new File("/Users/yanghao/IdeaProjects/sloth/storage/data");
+        if (file.exists()) {
+            file.delete();
+        }
+
         String helloWorld = "hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.";
         Message message = Message.builder().topic(topic).partition(0).body(helloWorld.getBytes(StandardCharsets.UTF_8)).build();
         PutMessageResult putMessageResult1 = storageEngine.putMessage(message);
@@ -122,6 +125,7 @@ public class StorageEngineTest {
 
         GetMessageResult getMessageResult2 = storageEngine.getMessage(topic, 0, 1L);
         Assert.isTrue(getMessageResult2.getStatus() == GetMessageStatus.FOUND);
+        System.out.println(getMessageResult2);
     }
 
     private int[] random(int num) {
@@ -140,6 +144,20 @@ public class StorageEngineTest {
         Arrays.sort(id);
         System.out.println(Arrays.toString(id));
         return id;
+    }
+
+    @Test
+    public void offsetIndexReaderTest() throws IOException {
+        File file = new File("data/test-topic/0/00000000000000000000.index");
+        FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
+
+        for (int i = 0; i < 100; i++) {
+            ByteBuffer byteBuffer = ByteBuffer.allocate(16);
+            fileChannel.read(byteBuffer);
+            byteBuffer.flip();
+            log.info("offset:{} position:{}", byteBuffer.getLong(), byteBuffer.getLong());
+        }
+
     }
 
 }

@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store;
+package com.tsingj.sloth.store.log;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -32,6 +32,14 @@ public class IndexEntry {
             this.indexValue = position;
         }
 
+        public long getOffset() {
+            return this.indexKey;
+        }
+
+        public long getPosition() {
+            return this.getIndexValue();
+        }
+
     }
 
     @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -42,6 +50,13 @@ public class IndexEntry {
             this.indexValue = offset;
         }
 
+        private long getTimestamp() {
+            return this.indexKey;
+        }
+
+        private long getOffset() {
+            return this.indexValue;
+        }
     }
 
 }

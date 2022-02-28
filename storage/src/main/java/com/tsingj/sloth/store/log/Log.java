@@ -1,9 +1,10 @@
-package com.tsingj.sloth.store.datalog;
+package com.tsingj.sloth.store.log;
 
 import com.tsingj.sloth.store.*;
 import com.tsingj.sloth.store.utils.CompressUtil;
 import com.tsingj.sloth.store.utils.CrcUtil;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 
@@ -16,14 +17,15 @@ import java.util.Map;
 /**
  * @author yanghao
  */
-@Slf4j
 @Component
-public class DataLog {
+public class Log {
 
-    private final DataLogFileSet dataLogFileSet;
+    private static final Logger logger = LoggerFactory.getLogger(Log.class);
 
-    public DataLog(DataLogFileSet dataLogFileSet) {
-        this.dataLogFileSet = dataLogFileSet;
+    private final LogSegmentSet logSegmentSet;
+
+    public Log(LogSegmentSet logSegmentSet) {
+        this.logSegmentSet = logSegmentSet;
     }
 
     /**
@@ -44,18 +46,18 @@ public class DataLog {
         //set version  1-127
         message.setVersion(CommonConstants.CURRENT_VERSION);
 
-        DataLogFile latestDataLogFile = dataLogFileSet.getLatestDataLogFile(topic, partition);
+        LogSegment latestLogSegment = logSegmentSet.getLatestDataLogFile(topic, partition);
         //lock start
         long offset;
-        if (latestDataLogFile == null || latestDataLogFile.isFull()) {
-            offset = latestDataLogFile == null ? 0 : latestDataLogFile.incrementOffsetAndGet();
-            latestDataLogFile = dataLogFileSet.getLatestDataLogFile(topic, partition, offset);
-            if (latestDataLogFile == null) {
-                log.error("create dataLog files error, topic: " + topic + " partition: " + partition);
+        if (latestLogSegment == null || latestLogSegment.isFull()) {
+            offset = latestLogSegment == null ? 0 : latestLogSegment.incrementOffsetAndGet();
+            latestLogSegment = logSegmentSet.getLatestDataLogFile(topic, partition, offset);
+            if (latestLogSegment == null) {
+                logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
                 return PutMessageResult.builder().status(PutMessageStatus.CREATE_LOG_FILE_FAILED).build();
             }
         } else {
-            offset = latestDataLogFile.incrementOffsetAndGet();
+            offset = latestLogSegment.incrementOffsetAndGet();
         }
         //set 偏移量
         //新创建文件 -> 0 | 当前+1
@@ -69,7 +71,7 @@ public class DataLog {
         byte[] messageBytes = encodeResult.getData();
 
         //追加文件
-        Result appendResult = latestDataLogFile.doAppend(messageBytes, offset, message.getStoreTimestamp());
+        Result appendResult = latestLogSegment.doAppend(messageBytes, offset, message.getStoreTimestamp());
         if (!appendResult.success()) {
             return PutMessageResult.builder().status(PutMessageStatus.LOG_FILE_APPEND_FAIL).errorMsg(appendResult.getMsg()).build();
         }
@@ -99,13 +101,13 @@ public class DataLog {
      * @return
      */
     public GetMessageResult getMessage(String topic, int partition, long offset) {
-        List<DataLogFile> dataLogFiles = dataLogFileSet.getDataLogFiles(topic, partition);
-        if (dataLogFiles == null) {
+        List<LogSegment> logSegments = logSegmentSet.getDataLogFiles(topic, partition);
+        if (logSegments == null) {
             return GetMessageResult.builder().status(GetMessageStatus.PARTITION_NO_MESSAGE).build();
         }
 
-        DataLogFile dataLogFile = dataLogFileSet.findDataLogFileByOffset(dataLogFiles, offset);
-        Result<ByteBuffer> getMessageResult = dataLogFile.getMessage(offset);
+        LogSegment logSegment = logSegmentSet.findDataLogFileByOffset(logSegments, offset);
+        Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
         if (getMessageResult.failure()) {
             return GetMessageResult.builder().status(GetMessageStatus.OFFSET_FOUND_NULL).build();
         }
@@ -237,7 +239,7 @@ public class DataLog {
                 message.setBody(body);
                 return Results.success(message);
             } catch (Throwable e) {
-                log.error("store log message decode error.", e);
+                logger.error("store log message decode error.", e);
                 return Results.failure("store log message decode error.");
             }
         }

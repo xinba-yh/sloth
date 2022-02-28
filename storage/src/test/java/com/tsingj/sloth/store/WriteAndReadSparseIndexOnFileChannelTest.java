@@ -1,6 +1,6 @@
 package com.tsingj.sloth.store;
 
-import com.tsingj.sloth.store.datalog.DataLogManager;
+import com.tsingj.sloth.store.log.DataLogManager;
 import com.tsingj.sloth.store.utils.CrcUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
