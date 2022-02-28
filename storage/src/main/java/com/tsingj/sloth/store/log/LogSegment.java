@@ -102,7 +102,7 @@ public class LogSegment {
              * 1、append log
              */
             this.logWriter.write(data);
-//            this.logWriter.flush();
+            this.logWriter.flush();
 
             //记录上一次index插入后，新存入的消息
             long recordBytes = this.recordBytesSinceLastIndexAppend(data.length);

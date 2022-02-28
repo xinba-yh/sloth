@@ -80,7 +80,7 @@ public class Log {
     }
 
     private static int calStoreLength(int bodyLen, int topicLen, int propertiesLen) {
-        return  DataLogConstants.MessageKeyBytes.STORE_TIMESTAMP +
+        return DataLogConstants.MessageKeyBytes.STORE_TIMESTAMP +
                 DataLogConstants.MessageKeyBytes.VERSION +
                 DataLogConstants.MessageKeyBytes.TOPIC +
                 topicLen +
@@ -110,12 +110,15 @@ public class Log {
 //        sw.stop();
 //        sw.start("logSegmentSet.findLogSegmentByOffset");
         LogSegment logSegment = logSegmentSet.findLogSegmentByOffset(logSegments, offset);
+        if (logSegment == null) {
+            return GetMessageResult.builder().status(GetMessageStatus.LOG_SEGMENT_NOT_FOUND).build();
+        }
 //        sw.stop();
         sw.start("logSegment.getMessage");
         Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
         sw.stop();
         if (getMessageResult.failure()) {
-            return GetMessageResult.builder().status(GetMessageStatus.OFFSET_FOUND_NULL).build();
+            return GetMessageResult.builder().status(GetMessageStatus.OFFSET_NOT_FOUND).build();
         }
         sw.start("logSegment.StoreDecoder.decode");
         ByteBuffer storeByteBuffer = getMessageResult.getData();

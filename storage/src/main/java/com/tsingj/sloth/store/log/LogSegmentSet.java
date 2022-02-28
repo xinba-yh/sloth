@@ -10,7 +10,9 @@ import org.springframework.util.CollectionUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -93,29 +95,12 @@ public class LogSegmentSet {
     }
 
     public LogSegment findLogSegmentByOffset(List<LogSegment> logSegments, long offset) {
-        //only one file just return.
-        if (logSegments.size() == 1) {
-            return logSegments.get(0);
-            //if latest file offset lower search offset.
-        } else if (logSegments.get(logSegments.size() - 1).getFileFromOffset() < offset) {
-            return logSegments.get(logSegments.size() - 1);
-        } else {
-            //binary search
-            List<Long> fileOffsetList = logSegments.parallelStream().map(LogSegment::getFileFromOffset).collect(Collectors.toList());
-            int lower = 0;
-            int upper = fileOffsetList.size() - 1;
-            while (lower < upper) {
-                int mid = (lower + upper + 1) / 2;
-                long midValue = fileOffsetList.get(mid);
-                if (midValue <= offset) {
-                    lower = mid;
-                } else {
-                    upper = mid - 1;
-                }
-            }
-            LogSegment logSegment = logSegments.get(lower);
-            logger.debug("offset:{} find DataLogFIle startOffset:{}", offset, logSegment.getFileFromOffset());
-            return logSegment;
+        Optional<LogSegment> firstLtSearchOffsetOptional = logSegments.parallelStream().sorted(Comparator.comparing(LogSegment::getFileFromOffset, Comparator.reverseOrder())).filter(o -> o.getFileFromOffset() <= offset).findFirst();
+        if (!firstLtSearchOffsetOptional.isPresent()) {
+            return null;
         }
+        LogSegment logSegment = firstLtSearchOffsetOptional.get();
+        logger.debug("offset:{} find logSegment startOffset:{}", offset, logSegment.getFileFromOffset());
+        return logSegment;
     }
 }

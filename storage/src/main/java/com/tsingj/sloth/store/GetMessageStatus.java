@@ -10,7 +10,9 @@ public enum GetMessageStatus {
 
     FOUND,
 
-    OFFSET_FOUND_NULL,
+    OFFSET_NOT_FOUND,
+
+    LOG_SEGMENT_NOT_FOUND,
 
     MESSAGE_DECODE_FAIL,
 

@@ -36,7 +36,7 @@ public class StorageEngineTest {
 
     private static final String topic = "test-topic";
 
-    private static final int count = 10000000;
+    private static final int count = 300000;
 
     private static final int threadNum = 1;
 
@@ -99,7 +99,7 @@ public class StorageEngineTest {
         }
 
         //random get message
-        int loopCount = 100000;
+        int loopCount = 30000;
         StopWatch sw = new StopWatch();
         int[] random = this.random(loopCount);
         sw.start();
@@ -137,7 +137,7 @@ public class StorageEngineTest {
         File file = new File(storageProperties.getDataPath() + File.separator + topic + File.separator + 0 + File.separator + "00000000000000000000.index");
         FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < file.length() / 16; i++) {
             ByteBuffer byteBuffer = ByteBuffer.allocate(16);
             fileChannel.read(byteBuffer);
             byteBuffer.flip();
@@ -149,11 +149,14 @@ public class StorageEngineTest {
     public void offsetIndexTest() throws FileNotFoundException {
         String filePath = storageProperties.getDataPath() + File.separator + topic + File.separator + 0 + File.separator + "00000000000000000000";
         OffsetIndex offsetIndex = new OffsetIndex(filePath);
-        long[] queryOffsets = new long[]{577, 724, 910, 1149, 1215, 1324, 1515, 1642, 1722, 1883, 1886, 2075, 2122, 2178, 2350, 2409, 2450, 2490, 2634, 2999, 3003, 3191, 3761, 4047, 4280, 4432, 4570, 5207, 5327, 5580, 5943, 6199, 6340, 6661, 6791, 7208, 7739, 7748, 8339, 8377, 8429, 8598, 8639, 8663, 9014, 9254, 9450, 9853, 9889, 9945};
+        long[] queryOffsets = new long[]{9993, 9998};
         for (long offset : queryOffsets) {
             Result<IndexEntry.OffsetPosition> offsetPositionResult = offsetIndex.lookUp(offset);
             if (offsetPositionResult.failure()) {
                 log.warn("find offset {} fail! ", offset);
+            } else {
+                IndexEntry.OffsetPosition offsetPosition = offsetPositionResult.getData();
+                log.info("offset:{} position:{}", offsetPosition.getOffset(), offsetPosition.getPosition());
             }
         }
     }
