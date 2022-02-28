@@ -2,7 +2,8 @@ package com.tsingj.sloth.store.utils;
 
 import com.tsingj.sloth.store.Result;
 import com.tsingj.sloth.store.Results;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,8 +16,9 @@ import java.util.zip.GZIPOutputStream;
  */
 public class CompressUtil {
 
-    @Slf4j
     public static class GZIP {
+
+        private static final Logger logger = LoggerFactory.getLogger(CompressUtil.class);
 
         public static Result<byte[]> compress(byte[] str) {
             if (str == null || str.length == 0) {
@@ -26,7 +28,7 @@ public class CompressUtil {
             try (GZIPOutputStream gzip = new GZIPOutputStream(out)) {
                 gzip.write(str);
             } catch (IOException e) {
-                log.error("GZIP compress fail!", e);
+                logger.error("GZIP compress fail!", e);
                 return Results.failure("GZIP compress fail! " + e.getMessage());
             }
             return Results.success(out.toByteArray());
@@ -44,7 +46,7 @@ public class CompressUtil {
                 }
                 return Results.success(out.toByteArray());
             } catch (IOException e) {
-                log.error("compress fail!", e);
+                logger.error("compress fail!", e);
                 return Results.failure("compress fail!" + e.getMessage());
             }
 

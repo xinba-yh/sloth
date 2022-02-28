@@ -2,7 +2,8 @@ package com.tsingj.sloth.store.log;
 
 import com.tsingj.sloth.store.properties.StorageProperties;
 import com.tsingj.sloth.store.utils.CommonUtil;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -16,9 +17,10 @@ import java.util.stream.Collectors;
 /**
  * @author yanghao
  */
-@Slf4j
 @Component
 public class LogSegmentSet {
+
+    private static final Logger logger = LoggerFactory.getLogger(LogSegment.class);
 
     private final StorageProperties storageProperties;
 
@@ -59,20 +61,15 @@ public class LogSegmentSet {
         if (!dir.exists()) {
             boolean mkdirs = dir.mkdirs();
             if (mkdirs) {
-                log.info("create datalog dir {} success.", dir);
+                logger.info("create datalog dir {} success.", dir);
             } else {
-                log.error("datalog dir make fail!");
-                return null;
+                throw new RuntimeException("datalog dir make fail!");
             }
         }
         String fileName = CommonUtil.offset2FileName(startOffset);
         String logPath = dir + File.separator + fileName;
-//        + DataLogConstants.FileSuffix.LOG;
-//        String offsetIndexPath = dir + File.separator + fileName + DataLogConstants.FileSuffix.OFFSET_INDEX;
-//        String timeIndexPath = dir + File.separator + fileName + DataLogConstants.FileSuffix.TIMESTAMP_INDEX;
         LogSegment newLogSegment;
         try {
-//            newDataLogSegment = new DataLogSegment(logName, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
             newLogSegment = new LogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
         } catch (FileNotFoundException e) {
             return null;
@@ -117,7 +114,7 @@ public class LogSegmentSet {
                 }
             }
             LogSegment logSegment = logSegments.get(lower);
-            log.debug("offset:{} find DataLogFIle startOffset:{}", offset, logSegment.getFileFromOffset());
+            logger.debug("offset:{} find DataLogFIle startOffset:{}", offset, logSegment.getFileFromOffset());
             return logSegment;
         }
     }

@@ -3,8 +3,9 @@ package com.tsingj.sloth.store.log;
 import com.tsingj.sloth.store.DataLogConstants;
 import com.tsingj.sloth.store.Result;
 import com.tsingj.sloth.store.Results;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -13,9 +14,9 @@ import java.nio.channels.FileChannel;
 /**
  * @author yanghao
  */
-@Slf4j
 public class OffsetIndex {
 
+    private static final Logger logger = LoggerFactory.getLogger(OffsetIndex.class);
     /**
      * offsetIndex物理文件
      */
@@ -89,7 +90,7 @@ public class OffsetIndex {
         if(offsetPosition == null){
             return Results.failure("offset:{} can't find offsetIndex!");
         }
-        log.debug("offset:{} find offsetIndex:{} {}", searchKey, offsetPosition.getIndexKey(),offsetPosition.getIndexValue());
+        logger.debug("offset:{} find offsetIndex:{} {}", searchKey, offsetPosition.getIndexKey(),offsetPosition.getIndexValue());
         //其实这里无论返回lower 还是upper都行，循环的退出时间是lower==upper。
         return Results.success(offsetPosition);
     }
@@ -102,7 +103,7 @@ public class OffsetIndex {
             byteBuffer.rewind();
             return Results.success(new IndexEntry.OffsetPosition(byteBuffer.getLong(), byteBuffer.getLong()));
         } catch (IOException e) {
-            log.error("offset indexFileReader position operation fail!", e);
+            logger.error("offset indexFileReader position operation fail!", e);
             return Results.failure("offset indexFileReader position operation fail!");
         }
 

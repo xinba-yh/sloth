@@ -1,8 +1,9 @@
 package com.tsingj.sloth.store.log;
 
 import com.tsingj.sloth.store.*;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -11,8 +12,9 @@ import java.nio.channels.FileChannel;
 /**
  * @author yanghao
  */
-@Slf4j
 public class LogSegment {
+
+    private static final Logger logger = LoggerFactory.getLogger(LogSegment.class);
 
     /**
      * 文件开始offset
@@ -80,7 +82,7 @@ public class LogSegment {
         this.offsetIndex = new OffsetIndex(logPath);
         //init timeIndex
         this.timeIndex = new TimeIndex(logPath);
-        log.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath + DataLogConstants.FileSuffix.LOG, logPath + DataLogConstants.FileSuffix.OFFSET_INDEX, logPath + DataLogConstants.FileSuffix.TIMESTAMP_INDEX);
+        logger.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath + DataLogConstants.FileSuffix.LOG, logPath + DataLogConstants.FileSuffix.OFFSET_INDEX, logPath + DataLogConstants.FileSuffix.TIMESTAMP_INDEX);
 
         this.maxFileSize = maxFileSize;
         this.currentOffset = startOffset;
@@ -122,7 +124,7 @@ public class LogSegment {
 
             return Results.success();
         } catch (IOException e) {
-            log.error("log append fail!", e);
+            logger.error("log append fail!", e);
             return Results.failure("log append fail!" + e.getMessage());
         }
     }
@@ -189,7 +191,7 @@ public class LogSegment {
 //            messageByteBuffer.put(storeByteBuffer.array());
 //            return Results.success(messageByteBuffer.array());
         } catch (IOException e) {
-            log.error("get message by position {} , IO operation fail!", position, e);
+            logger.error("get message by position {} , IO operation fail!", position, e);
             return Results.failure("get message by position {} IO operation fail!");
         }
     }
@@ -213,13 +215,13 @@ public class LogSegment {
                     position = position + (DataLogConstants.MessageKeyBytes.OFFSET + storeSize);
                 }
             } catch (IOException e) {
-                log.error("find offset:{} IO operation fail!", searchOffset, e);
+                logger.error("find offset:{} IO operation fail!", searchOffset, e);
                 return Results.failure("find offset:" + searchOffset + " IO operation fail!");
             }
         }
 
         if (logPosition == null) {
-            log.warn("file:{} , position start:{} end:{}, find offset:{} fail!", logFile.getName(), startPosition, endPosition, searchOffset);
+            logger.warn("file:{} , position start:{} end:{}, find offset:{} fail!", logFile.getName(), startPosition, endPosition, searchOffset);
             return Results.failure("offset " + searchOffset + " find fail!");
         }
         return Results.success(logPosition);
