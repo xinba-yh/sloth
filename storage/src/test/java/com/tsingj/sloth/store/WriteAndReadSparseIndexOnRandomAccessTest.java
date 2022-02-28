@@ -95,6 +95,8 @@ public class WriteAndReadSparseIndexOnRandomAccessTest {
         long fileSize = FileUtils.sizeOf(indexFile);
         System.out.println("fileSize:" + fileSize);
 
+        System.out.println("fileSize1:" + indexFile.length());
+
 
         int[] random = random(10000);
 

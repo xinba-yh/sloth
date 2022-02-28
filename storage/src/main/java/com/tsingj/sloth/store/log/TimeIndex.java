@@ -36,7 +36,7 @@ public class TimeIndex {
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
         this.fileWriter.write(indexByteBuffer.array());
-        this.fileWriter.flush();
+//        this.fileWriter.flush();
     }
 
     public long getFileSize() {

@@ -6,6 +6,7 @@ import com.tsingj.sloth.store.utils.CrcUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 
 import java.nio.ByteBuffer;
@@ -79,8 +80,7 @@ public class Log {
     }
 
     private static int calStoreLength(int bodyLen, int topicLen, int propertiesLen) {
-        return DataLogConstants.MessageKeyBytes.STORE +
-                DataLogConstants.MessageKeyBytes.STORE_TIMESTAMP +
+        return  DataLogConstants.MessageKeyBytes.STORE_TIMESTAMP +
                 DataLogConstants.MessageKeyBytes.VERSION +
                 DataLogConstants.MessageKeyBytes.TOPIC +
                 topicLen +
@@ -101,21 +101,31 @@ public class Log {
      * @return
      */
     public GetMessageResult getMessage(String topic, int partition, long offset) {
+        StopWatch sw = new StopWatch();
+//        sw.start("logSegmentSet.getLogSegments");
         List<LogSegment> logSegments = logSegmentSet.getLogSegments(topic, partition);
         if (logSegments == null) {
             return GetMessageResult.builder().status(GetMessageStatus.PARTITION_NO_MESSAGE).build();
         }
-
+//        sw.stop();
+//        sw.start("logSegmentSet.findLogSegmentByOffset");
         LogSegment logSegment = logSegmentSet.findLogSegmentByOffset(logSegments, offset);
+//        sw.stop();
+        sw.start("logSegment.getMessage");
         Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
+        sw.stop();
         if (getMessageResult.failure()) {
             return GetMessageResult.builder().status(GetMessageStatus.OFFSET_FOUND_NULL).build();
         }
+        sw.start("logSegment.StoreDecoder.decode");
         ByteBuffer storeByteBuffer = getMessageResult.getData();
         Result<Message> decodeResult = StoreDecoder.decode(offset, storeByteBuffer);
         if (decodeResult.failure()) {
             return GetMessageResult.builder().status(GetMessageStatus.MESSAGE_DECODE_FAIL).build();
         }
+        sw.stop();
+        logger.debug(sw.prettyPrint() + "\n total mills:" + sw.getTotalTimeMillis());
+        logger.debug("-------------------------------------------------------------");
         return GetMessageResult.builder().status(GetMessageStatus.FOUND).message(decodeResult.getData()).build();
     }
 
@@ -146,7 +156,7 @@ public class Log {
             int storeLen = calStoreLength(bodyLen, topicLen, propertiesLen);
 
             //------ build append buffer ----
-            ByteBuffer storeByteBuffer = ByteBuffer.allocate(DataLogConstants.MessageKeyBytes.OFFSET + storeLen);
+            ByteBuffer storeByteBuffer = ByteBuffer.allocate(DataLogConstants.MessageKeyBytes.LOG_OVERHEAD + storeLen);
             //1、offset - 8
             storeByteBuffer.putLong(offset);
             //2、storeSize - 4

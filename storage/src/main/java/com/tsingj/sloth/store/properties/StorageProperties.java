@@ -39,11 +39,11 @@ public class StorageProperties {
     /**
      * expect segment max fileSize ,  default 1G
      */
-    int segmentMaxFileSize = 1024 * 1024 * 10;
+    int segmentMaxFileSize = 1024 * 1024 * 256;
 
     /**
      * sparse index interval bytes
      */
-    int logIndexIntervalBytes = 1024 * 4;
+    int logIndexIntervalBytes = 1024 * 1;
 
 }

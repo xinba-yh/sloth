@@ -1,16 +1,19 @@
 package com.tsingj.sloth.store;
 
+import com.tsingj.sloth.store.log.IndexEntry;
+import com.tsingj.sloth.store.log.OffsetIndex;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -33,7 +36,7 @@ public class StorageEngineTest {
 
     private static final String topic = "test-topic";
 
-    private static final int count = 10000;
+    private static final int count = 10000000;
 
     private static final int threadNum = 1;
 
@@ -44,10 +47,15 @@ public class StorageEngineTest {
     @Test
     public void putMessageTest() {
         //------------------clear----------------------
-        File file = new File(storageProperties.getDataPath() + File.separator + topic);
-        if (file.exists()) {
-            file.delete();
+        String clearDir = storageProperties.getDataPath() + File.separator + topic;
+        System.out.println("prepare clear dir:" + clearDir);
+        File file = new File(clearDir);
+        try {
+            FileUtils.deleteDirectory(file);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
 
         long startTime = System.currentTimeMillis();
         final CountDownLatch countDownLatch = new CountDownLatch(threadNum);
@@ -91,7 +99,7 @@ public class StorageEngineTest {
         }
 
         //random get message
-        int loopCount = 50;
+        int loopCount = 100000;
         StopWatch sw = new StopWatch();
         int[] random = this.random(loopCount);
         sw.start();
@@ -104,31 +112,6 @@ public class StorageEngineTest {
         }
         sw.stop();
         log.info("data count {} , query {} times , cost:{}", count, loopCount, sw.getTotalTimeMillis());
-    }
-
-    @Test
-    public void simpleDataPutGetTest() {
-        File file = new File("/Users/yanghao/IdeaProjects/sloth/storage/data");
-        if (file.exists()) {
-            file.delete();
-        }
-
-        String helloWorld = "hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.";
-        Message message = Message.builder().topic(topic).partition(0).body(helloWorld.getBytes(StandardCharsets.UTF_8)).build();
-        PutMessageResult putMessageResult1 = storageEngine.putMessage(message);
-        System.out.println(putMessageResult1);
-        Assert.isTrue(putMessageResult1.getStatus() == PutMessageStatus.OK);
-        PutMessageResult putMessageResult2 = storageEngine.putMessage(message);
-        System.out.println(putMessageResult2);
-        Assert.isTrue(putMessageResult2.getStatus() == PutMessageStatus.OK);
-
-        GetMessageResult getMessageResult1 = storageEngine.getMessage(topic, 0, 0L);
-        System.out.println(getMessageResult1);
-        Assert.isTrue(getMessageResult1.getStatus() == GetMessageStatus.FOUND);
-
-        GetMessageResult getMessageResult2 = storageEngine.getMessage(topic, 0, 1L);
-        Assert.isTrue(getMessageResult2.getStatus() == GetMessageStatus.FOUND);
-        System.out.println(getMessageResult2);
     }
 
     private int[] random(int num) {
@@ -160,7 +143,19 @@ public class StorageEngineTest {
             byteBuffer.flip();
             log.info("offset:{} position:{}", byteBuffer.getLong(), byteBuffer.getLong());
         }
+    }
 
+    @Test
+    public void offsetIndexTest() throws FileNotFoundException {
+        String filePath = storageProperties.getDataPath() + File.separator + topic + File.separator + 0 + File.separator + "00000000000000000000";
+        OffsetIndex offsetIndex = new OffsetIndex(filePath);
+        long[] queryOffsets = new long[]{577, 724, 910, 1149, 1215, 1324, 1515, 1642, 1722, 1883, 1886, 2075, 2122, 2178, 2350, 2409, 2450, 2490, 2634, 2999, 3003, 3191, 3761, 4047, 4280, 4432, 4570, 5207, 5327, 5580, 5943, 6199, 6340, 6661, 6791, 7208, 7739, 7748, 8339, 8377, 8429, 8598, 8639, 8663, 9014, 9254, 9450, 9853, 9889, 9945};
+        for (long offset : queryOffsets) {
+            Result<IndexEntry.OffsetPosition> offsetPositionResult = offsetIndex.lookUp(offset);
+            if (offsetPositionResult.failure()) {
+                log.warn("find offset {} fail! ", offset);
+            }
+        }
     }
 
 }

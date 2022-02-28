@@ -6,6 +6,7 @@ import com.tsingj.sloth.store.Results;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -41,7 +42,7 @@ public class OffsetIndex {
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
         this.fileWriter.write(indexByteBuffer.array());
-        this.fileWriter.flush();
+//        this.fileWriter.flush();
     }
 
     public long getFileSize() {
@@ -54,28 +55,39 @@ public class OffsetIndex {
 
     //lookup logPosition slot range
     public Result<IndexEntry.OffsetPosition> lookUp(long searchKey) {
+        StopWatch sw = new StopWatch();
+        sw.start("getEntrySize");
         long entries = getEntrySize();
+        sw.stop();
         //index为空，返回-1
         if (entries == 0L) {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
+        sw.start("getIndexFileFirstOffset");
         //最小值大与查询值，从头找。  PS:务必将第一条索引插入。
         Result<IndexEntry.OffsetPosition> getFirstOffsetResult = getIndexFileFirstOffset();
+        sw.stop();
         if (!getFirstOffsetResult.success()) {
             return Results.failure(getIndexFileFirstOffset().getMsg());
         }
+
         long startOffset = getFirstOffsetResult.getData().getIndexKey();
         if (startOffset >= searchKey) {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
+
         //开始二分查找 <= searchOffset的最大值
         long lower = 0L;
         long upper = entries - 1;
-        IndexEntry.OffsetPosition offsetPosition = null;
+        IndexEntry.OffsetPosition offsetPosition;
+        int i = 0;
         while (lower < upper) {
+            i++;
             //这样的操作是为了让 mid 标志 取高位，否则会出现死循环
             long mid = (lower + upper + 1) / 2;
+            sw.start("loop" + i);
             Result<IndexEntry.OffsetPosition> result = getIndexEntryPositionOffset(mid * DataLogConstants.INDEX_BYTES);
+            sw.stop();
             if (!result.success()) {
                 return Results.failure(result.getMsg());
             }
@@ -87,10 +99,14 @@ public class OffsetIndex {
                 upper = mid - 1;
             }
         }
-        if(offsetPosition == null){
+
+        Result<IndexEntry.OffsetPosition> lowerOffsetPositionResult = getIndexEntryPositionOffset(lower * DataLogConstants.INDEX_BYTES);
+        if (lowerOffsetPositionResult.failure()) {
             return Results.failure("offset:{} can't find offsetIndex!");
         }
-        logger.debug("offset:{} find offsetIndex:{} {}", searchKey, offsetPosition.getIndexKey(),offsetPosition.getIndexValue());
+        offsetPosition = lowerOffsetPositionResult.getData();
+        logger.debug("offset:{} find offsetIndex:{} {}", searchKey, offsetPosition.getIndexKey(), offsetPosition.getIndexValue());
+        logger.debug("lookUp" + sw.prettyPrint() + "\ntotal:" + sw.getTotalTimeMillis());
         //其实这里无论返回lower 还是upper都行，循环的退出时间是lower==upper。
         return Results.success(offsetPosition);
     }

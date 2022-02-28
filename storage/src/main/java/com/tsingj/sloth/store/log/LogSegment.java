@@ -4,6 +4,7 @@ import com.tsingj.sloth.store.*;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -101,7 +102,7 @@ public class LogSegment {
              * 1、append log
              */
             this.logWriter.write(data);
-            this.logWriter.flush();
+//            this.logWriter.flush();
 
             //记录上一次index插入后，新存入的消息
             long recordBytes = this.recordBytesSinceLastIndexAppend(data.length);
@@ -154,15 +155,19 @@ public class LogSegment {
     }
 
     public Result<ByteBuffer> getMessage(long offset) {
+        StopWatch sw = new StopWatch();
+        sw.start("offsetIndex.lookUp");
         //1、lookup logPosition slot range
         Result<IndexEntry.OffsetPosition> lookUpResult = this.offsetIndex.lookUp(offset);
         if (lookUpResult.failure()) {
             return Results.failure(lookUpResult.getMsg());
         }
+        sw.stop();
         //2、slot logFile position find real position
         // TODO: 2022/2/25 add endPosition. maxMessageSize+slotSize || lookUp返回下一个索引的下标
+        sw.start("findLogPositionSlotRange");
         IndexEntry.OffsetPosition indexEntry = lookUpResult.getData();
-        Long startPosition =indexEntry.getPosition();
+        Long startPosition = indexEntry.getPosition();
         Long endPosition = FileUtils.sizeOf(logFile);
         Result<Long> logPositionResult = this.findLogPositionSlotRange(offset, startPosition, endPosition);
         //3、get log bytes
@@ -170,7 +175,12 @@ public class LogSegment {
             return Results.failure(logPositionResult.getMsg());
         }
         Long position = logPositionResult.getData();
-        return this.getMessageByPosition(position);
+        sw.stop();
+//        sw.start("getMessageByPosition");
+        Result<ByteBuffer> messageByPosition = this.getMessageByPosition(position);
+//        sw.stop();
+        logger.debug("getMessage:" + sw.prettyPrint() + "\n total:" + sw.getTotalTimeMillis());
+        return messageByPosition;
     }
 
     private Result<ByteBuffer> getMessageByPosition(Long position) {
@@ -185,11 +195,6 @@ public class LogSegment {
             ByteBuffer storeByteBuffer = ByteBuffer.allocate(storeSize);
             logReader.read(storeByteBuffer);
             return Results.success(storeByteBuffer);
-
-//            ByteBuffer messageByteBuffer= ByteBuffer.allocate(DataLogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
-//            messageByteBuffer.put(headerByteBuffer.array());
-//            messageByteBuffer.put(storeByteBuffer.array());
-//            return Results.success(messageByteBuffer.array());
         } catch (IOException e) {
             logger.error("get message by position {} , IO operation fail!", position, e);
             return Results.failure("get message by position {} IO operation fail!");
@@ -212,7 +217,7 @@ public class LogSegment {
                     logPosition = position;
                     break;
                 } else {
-                    position = position + (DataLogConstants.MessageKeyBytes.OFFSET + storeSize);
+                    position = position + (DataLogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
                 }
             } catch (IOException e) {
                 logger.error("find offset:{} IO operation fail!", searchOffset, e);
@@ -226,7 +231,6 @@ public class LogSegment {
         }
         return Results.success(logPosition);
     }
-
 
 
 }
