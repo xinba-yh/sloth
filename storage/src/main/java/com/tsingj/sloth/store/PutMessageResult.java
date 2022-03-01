@@ -1,31 +1,61 @@
 package com.tsingj.sloth.store;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
 /**
  * @author yanghao
  */
-@Data
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PutMessageResult {
 
     /**
      * 状态
      */
-    PutMessageStatus status;
+    private PutMessageStatus status;
 
     /**
      * 错误信息
      */
-    String errorMsg;
+    private String errorMsg;
 
     /**
      * offset
      */
-    Long offset;
+    private Long offset;
 
+    public PutMessageStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PutMessageStatus status) {
+        this.status = status;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public Long getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Long offset) {
+        this.offset = offset;
+    }
+
+    public PutMessageResult(PutMessageStatus status) {
+        this.status = status;
+    }
+
+    public PutMessageResult(PutMessageStatus status, String errorMsg) {
+        this.status = status;
+        this.errorMsg = errorMsg;
+    }
+
+    public PutMessageResult(PutMessageStatus status, Long offset) {
+        this.status = status;
+        this.offset = offset;
+    }
 }

@@ -3,7 +3,6 @@ package com.tsingj.sloth.store.log;
 import com.tsingj.sloth.store.DataLogConstants;
 import com.tsingj.sloth.store.Result;
 import com.tsingj.sloth.store.Results;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
@@ -23,15 +22,22 @@ public class OffsetIndex {
      */
     private File file;
 
-    private FileChannel fileReader;
+    /**
+     * 文件读写channel
+     */
+    private FileChannel fileChannel;
 
-    private BufferedOutputStream fileWriter;
+    /**
+     * offset index 数量
+     */
+    private long indexEntries;
 
     public OffsetIndex(String logPath) throws FileNotFoundException {
         //init offsetIndex file operator
         file = new File(logPath + DataLogConstants.FileSuffix.OFFSET_INDEX);
-        this.fileWriter = new BufferedOutputStream(new FileOutputStream(file, true));
-        this.fileReader = new RandomAccessFile(file, "r").getChannel();
+        this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
+
+        this.indexEntries = 0L;
     }
 
     public void addIndex(long key, long value) throws IOException {
@@ -41,23 +47,24 @@ public class OffsetIndex {
         ByteBuffer indexByteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
-        this.fileWriter.write(indexByteBuffer.array());
-        this.fileWriter.flush();
+        this.fileChannel.position(this.getWrotePosition());
+        this.fileChannel.write(indexByteBuffer);
+        this.incrementIndexEntries();
     }
 
-    public long getFileSize() {
-        return FileUtils.sizeOf(file);
+    private long getWrotePosition() {
+        return this.indexEntries * DataLogConstants.INDEX_BYTES;
     }
 
-    private long getEntrySize() {
-        return this.getFileSize() / DataLogConstants.INDEX_BYTES;
+    private void incrementIndexEntries() {
+        this.indexEntries = this.indexEntries + 1;
     }
 
     //lookup logPosition slot range
     public Result<IndexEntry.OffsetPosition> lookUp(long searchKey) {
         StopWatch sw = new StopWatch();
         sw.start("getEntrySize");
-        long entries = getEntrySize();
+        long entries = this.indexEntries;
         sw.stop();
         //index为空，返回-1
         if (entries == 0L) {
@@ -113,9 +120,9 @@ public class OffsetIndex {
 
     private Result<IndexEntry.OffsetPosition> getIndexEntryPositionOffset(long indexPosition) {
         try {
-            this.fileReader.position(indexPosition);
+            this.fileChannel.position(indexPosition);
             ByteBuffer byteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
-            this.fileReader.read(byteBuffer);
+            this.fileChannel.read(byteBuffer);
             byteBuffer.rewind();
             return Results.success(new IndexEntry.OffsetPosition(byteBuffer.getLong(), byteBuffer.getLong()));
         } catch (IOException e) {
@@ -129,4 +136,23 @@ public class OffsetIndex {
         return getIndexEntryPositionOffset(0);
     }
 
+    protected Result<IndexEntry.OffsetPosition> getIndexFileLastOffset() {
+        long entries = this.indexEntries;
+        if (entries == 0L) {
+            return Results.success(new IndexEntry.OffsetPosition(0, 0));
+        }
+        return getIndexEntryPositionOffset((entries - 1) * DataLogConstants.INDEX_BYTES);
+    }
+
+    public void loadLogs() {
+        //1、load indexEntries
+        this.indexEntries = this.file.length() / DataLogConstants.INDEX_BYTES;
+    }
+
+    public void flush() {
+        try {
+            this.fileChannel.force(true);
+        } catch (IOException ignored) {
+        }
+    }
 }

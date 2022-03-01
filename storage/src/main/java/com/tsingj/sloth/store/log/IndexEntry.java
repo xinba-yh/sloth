@@ -1,19 +1,22 @@
 package com.tsingj.sloth.store.log;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
 /**
  * @author yanghao
  */
-@Data
-@FieldDefaults(level = AccessLevel.PROTECTED)
 public class IndexEntry {
 
-    long indexKey;
+    private long indexKey;
 
-    long indexValue;
+    private long indexValue;
+
+    public long getIndexKey() {
+        return indexKey;
+    }
+
+    public long getIndexValue() {
+        return indexValue;
+    }
 
     @Override
     public String toString() {
@@ -24,16 +27,15 @@ public class IndexEntry {
     }
 
 
-    @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class OffsetPosition extends IndexEntry {
 
         public OffsetPosition(long offset, long position) {
-            this.indexKey = offset;
-            this.indexValue = position;
+            super.indexKey = offset;
+            super.indexValue = position;
         }
 
         public long getOffset() {
-            return this.indexKey;
+            return super.getIndexKey();
         }
 
         public long getPosition() {
@@ -42,20 +44,19 @@ public class IndexEntry {
 
     }
 
-    @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class TimestampOffset extends IndexEntry {
 
         public TimestampOffset(long timestamp, long offset) {
-            this.indexKey = timestamp;
-            this.indexValue = offset;
+            super.indexKey = timestamp;
+            super.indexValue = offset;
         }
 
         private long getTimestamp() {
-            return this.indexKey;
+            return super.indexKey;
         }
 
         private long getOffset() {
-            return this.indexValue;
+            return super.indexValue;
         }
     }
 

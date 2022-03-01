@@ -47,15 +47,15 @@ public class Log {
         //set version  1-127
         message.setVersion(CommonConstants.CURRENT_VERSION);
 
-        LogSegment latestLogSegment = logSegmentSet.getLatestDataLogFile(topic, partition);
+        LogSegment latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition);
         //lock start
         long offset;
         if (latestLogSegment == null || latestLogSegment.isFull()) {
             offset = latestLogSegment == null ? 0 : latestLogSegment.incrementOffsetAndGet();
-            latestLogSegment = logSegmentSet.getLatestDataLogFile(topic, partition, offset);
+            latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition, offset);
             if (latestLogSegment == null) {
                 logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
-                return PutMessageResult.builder().status(PutMessageStatus.CREATE_LOG_FILE_FAILED).build();
+                return new PutMessageResult(PutMessageStatus.CREATE_LOG_FILE_FAILED);
             }
         } else {
             offset = latestLogSegment.incrementOffsetAndGet();
@@ -65,18 +65,18 @@ public class Log {
         //已有未满文件当前+1
         message.setOffset(offset);
         //encode message
-        Result<byte[]> encodeResult = StoreEncoder.encode(message);
+        Result<ByteBuffer> encodeResult = StoreEncoder.encode(message);
         if (!encodeResult.success()) {
-            return PutMessageResult.builder().status(PutMessageStatus.DATA_ENCODE_FAIL).errorMsg(encodeResult.getMsg()).build();
+            return new PutMessageResult(PutMessageStatus.DATA_ENCODE_FAIL, encodeResult.getMsg());
         }
-        byte[] messageBytes = encodeResult.getData();
+        ByteBuffer messageBytes = encodeResult.getData();
 
         //追加文件
         Result appendResult = latestLogSegment.doAppend(messageBytes, offset, message.getStoreTimestamp());
         if (!appendResult.success()) {
-            return PutMessageResult.builder().status(PutMessageStatus.LOG_FILE_APPEND_FAIL).errorMsg(appendResult.getMsg()).build();
+            return new PutMessageResult(PutMessageStatus.LOG_FILE_APPEND_FAIL, appendResult.getMsg());
         }
-        return PutMessageResult.builder().status(PutMessageStatus.OK).offset(offset).build();
+        return new PutMessageResult(PutMessageStatus.OK, offset);
     }
 
     private static int calStoreLength(int bodyLen, int topicLen, int propertiesLen) {
@@ -105,37 +105,37 @@ public class Log {
 //        sw.start("logSegmentSet.getLogSegments");
         List<LogSegment> logSegments = logSegmentSet.getLogSegments(topic, partition);
         if (logSegments == null) {
-            return GetMessageResult.builder().status(GetMessageStatus.PARTITION_NO_MESSAGE).build();
+            return new GetMessageResult(GetMessageStatus.PARTITION_NO_MESSAGE);
         }
 //        sw.stop();
 //        sw.start("logSegmentSet.findLogSegmentByOffset");
         LogSegment logSegment = logSegmentSet.findLogSegmentByOffset(logSegments, offset);
         if (logSegment == null) {
-            return GetMessageResult.builder().status(GetMessageStatus.LOG_SEGMENT_NOT_FOUND).build();
+            return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }
 //        sw.stop();
         sw.start("logSegment.getMessage");
         Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
         sw.stop();
         if (getMessageResult.failure()) {
-            return GetMessageResult.builder().status(GetMessageStatus.OFFSET_NOT_FOUND).build();
+            return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, getMessageResult.getMsg());
         }
         sw.start("logSegment.StoreDecoder.decode");
         ByteBuffer storeByteBuffer = getMessageResult.getData();
         Result<Message> decodeResult = StoreDecoder.decode(offset, storeByteBuffer);
         if (decodeResult.failure()) {
-            return GetMessageResult.builder().status(GetMessageStatus.MESSAGE_DECODE_FAIL).build();
+            return new GetMessageResult(GetMessageStatus.MESSAGE_DECODE_FAIL, decodeResult.getMsg());
         }
         sw.stop();
         logger.debug(sw.prettyPrint() + "\n total mills:" + sw.getTotalTimeMillis());
         logger.debug("-------------------------------------------------------------");
-        return GetMessageResult.builder().status(GetMessageStatus.FOUND).message(decodeResult.getData()).build();
+        return new GetMessageResult(GetMessageStatus.FOUND, decodeResult.getData());
     }
 
 
     public static class StoreEncoder {
 
-        public static Result<byte[]> encode(Message message) {
+        public static Result<ByteBuffer> encode(Message message) {
             //---------------基础属性----------------
             byte[] topic = message.getTopic().getBytes(StandardCharsets.UTF_8);
             byte topicLen = (byte) topic.length;
@@ -146,7 +146,7 @@ public class Log {
             //todo get compress way in properties
             Result<byte[]> compressResult = CompressUtil.GZIP.compress(message.getBody());
             if (!compressResult.success()) {
-                return compressResult;
+                return Results.failure(compressResult.getMsg());
             }
             byte[] body = compressResult.getData();
             int bodyLen = body.length;
@@ -184,7 +184,9 @@ public class Log {
             storeByteBuffer.putInt(bodyLen);
             //12、msgBody - cal
             storeByteBuffer.put(body);
-            return Results.success(storeByteBuffer.array());
+            //复位position，append根据position写入。
+            storeByteBuffer.flip();
+            return Results.success(storeByteBuffer);
         }
 
         private static String messageProperties2String(Map<String, String> properties) {
@@ -211,8 +213,6 @@ public class Log {
         public static Result<Message> decode(long offset, ByteBuffer storeByteBuffer) {
             try {
                 Message message = new Message();
-                //position reset
-                storeByteBuffer.flip();
                 //1、offset - 8
                 message.setOffset(offset);
                 //2、storeSize - 4

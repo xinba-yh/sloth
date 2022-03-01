@@ -1,9 +1,6 @@
 package com.tsingj.sloth.store.properties;
 
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +11,6 @@ import java.io.File;
  */
 @Component
 @ConfigurationProperties(prefix = "storage")
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StorageProperties {
 
     /**
@@ -23,27 +18,67 @@ public class StorageProperties {
      */
 //    String dataPath = System.getProperty("user.home") + File.separator + "data";
 
-    String dataPath = "/Users/yanghao" + File.separator + "data";
+    private String dataPath = "/Users/yanghao" + File.separator + "data";
 
 
     /**
      * flush data to disk interval
      */
-    int dataFlushInterval = 500;
+    private int dataFlushInterval = 500;
 
     /**
      * max message size
      */
-    int messageMaxSize = 1024 * 1024 * 4;
+    private int messageMaxSize = 1024 * 1024 * 4;
 
     /**
      * expect segment max fileSize ,  default 1G
      */
-    int segmentMaxFileSize = 1024 * 1024 * 256;
+    private int segmentMaxFileSize = 1024 * 1024 * 256;
 
     /**
      * sparse index interval bytes
      */
-    int logIndexIntervalBytes = 1024 * 1;
+    private int logIndexIntervalBytes = 1024 * 1;
 
+
+    public String getDataPath() {
+        return dataPath;
+    }
+
+    public void setDataPath(String dataPath) {
+        this.dataPath = dataPath;
+    }
+
+    public int getDataFlushInterval() {
+        return dataFlushInterval;
+    }
+
+    public void setDataFlushInterval(int dataFlushInterval) {
+        this.dataFlushInterval = dataFlushInterval;
+    }
+
+    public int getMessageMaxSize() {
+        return messageMaxSize;
+    }
+
+    public void setMessageMaxSize(int messageMaxSize) {
+        this.messageMaxSize = messageMaxSize;
+    }
+
+    public int getSegmentMaxFileSize() {
+        return segmentMaxFileSize;
+    }
+
+    public void setSegmentMaxFileSize(int segmentMaxFileSize) {
+        this.segmentMaxFileSize = segmentMaxFileSize;
+    }
+
+    public int getLogIndexIntervalBytes() {
+        return logIndexIntervalBytes;
+    }
+
+    public void setLogIndexIntervalBytes(int logIndexIntervalBytes) {
+        this.logIndexIntervalBytes = logIndexIntervalBytes;
+    }
 }

@@ -3,19 +3,17 @@ package com.tsingj.sloth.store;
 import com.tsingj.sloth.store.log.IndexEntry;
 import com.tsingj.sloth.store.log.OffsetIndex;
 import com.tsingj.sloth.store.properties.StorageProperties;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
@@ -23,10 +21,11 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-@Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class StorageEngineTest {
+
+    private static final Logger log = LoggerFactory.getLogger(StorageEngineTest.class);
 
     @Autowired
     private StorageEngine storageEngine;
@@ -36,7 +35,7 @@ public class StorageEngineTest {
 
     private static final String topic = "test-topic";
 
-    private static final int count = 300000;
+    private static final int count = 1000;
 
     private static final int threadNum = 1;
 
@@ -46,17 +45,6 @@ public class StorageEngineTest {
      */
     @Test
     public void putMessageTest() {
-        //------------------clear----------------------
-        String clearDir = storageProperties.getDataPath() + File.separator + topic;
-        System.out.println("prepare clear dir:" + clearDir);
-        File file = new File(clearDir);
-        try {
-            FileUtils.deleteDirectory(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
         long startTime = System.currentTimeMillis();
         final CountDownLatch countDownLatch = new CountDownLatch(threadNum);
         for (int i = 0; i < threadNum; i++) {
@@ -65,7 +53,10 @@ public class StorageEngineTest {
                 //------------------test----------------------
                 String helloWorld = "hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.";
                 StopWatch sw = new StopWatch();
-                Message message = Message.builder().topic(topic).partition(finalI).body(helloWorld.getBytes(StandardCharsets.UTF_8)).build();
+                Message message = new Message();
+                message.setTopic(topic);
+                message.setPartition(finalI);
+                message.setBody(helloWorld.getBytes(StandardCharsets.UTF_8));
                 sw.start();
                 for (int i1 = 0; i1 < count; i1++) {
                     PutMessageResult putMessageResult = storageEngine.putMessage(message);
@@ -91,15 +82,8 @@ public class StorageEngineTest {
 
     @Test
     public void getMessageTest() {
-        //mock data
-        putMessageTest();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ignored) {
-        }
-
         //random get message
-        int loopCount = 30000;
+        int loopCount = 10;
         StopWatch sw = new StopWatch();
         int[] random = this.random(loopCount);
         sw.start();
@@ -108,6 +92,11 @@ public class StorageEngineTest {
             GetMessageResult result = storageEngine.getMessage(topic, 0, offset);
             if (result.getStatus() != GetMessageStatus.FOUND) {
                 log.warn("get msg fail,{}:{}! ", result.getStatus(), result.getErrorMsg());
+            } else {
+                if (offset != result.getMessage().getOffset()) {
+                    log.warn("get msg fail，query:{}，got:{}! ", offset, result.getMessage().getOffset());
+                }
+                log.info("get message offset:{} message:{}",offset,result.getMessage());
             }
         }
         sw.stop();
@@ -159,6 +148,11 @@ public class StorageEngineTest {
                 log.info("offset:{} position:{}", offsetPosition.getOffset(), offsetPosition.getPosition());
             }
         }
+    }
+
+    @Test
+    public void loadTest() {
+
     }
 
 }

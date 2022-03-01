@@ -1,5 +1,7 @@
 package com.tsingj.sloth.store.utils;
 
+import com.tsingj.sloth.store.DataLogConstants;
+
 import java.text.NumberFormat;
 
 /**
@@ -13,6 +15,11 @@ public class CommonUtil {
         nf.setMaximumFractionDigits(0);
         nf.setGroupingUsed(false);
         return nf.format(offset);
+    }
+
+    public static long fileName2Offset(String fileName) {
+        String segmentFileName = fileName.replace(DataLogConstants.FileSuffix.LOG, "");
+        return Long.parseLong(segmentFileName);
     }
 
 }

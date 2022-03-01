@@ -43,13 +43,13 @@ public class StorageEngine implements Storage {
         if (message.getTopic().length() > Byte.MAX_VALUE) {
             String errorMsg = "message topic length too long, max length " + Byte.MAX_VALUE + "!";
             logger.warn(errorMsg);
-            return PutMessageResult.builder().status(PutMessageStatus.MESSAGE_ILLEGAL).errorMsg(errorMsg).build();
+            return new PutMessageResult(PutMessageStatus.MESSAGE_ILLEGAL,errorMsg);
         }
 
         if (message.getBody().length > storageProperties.getMessageMaxSize()) {
             String errorMsg = "message body length too long, max length " + storageProperties.getMessageMaxSize() + "!";
             logger.warn(errorMsg);
-            return PutMessageResult.builder().status(PutMessageStatus.MESSAGE_ILLEGAL).errorMsg(errorMsg).build();
+            return new PutMessageResult(PutMessageStatus.MESSAGE_ILLEGAL,errorMsg);
         }
 
         long beginTime = System.currentTimeMillis();
@@ -67,7 +67,7 @@ public class StorageEngine implements Storage {
         if (topic.length() > Byte.MAX_VALUE) {
             String errorMsg = "message topic length too long, max length " + Byte.MAX_VALUE + "!";
             logger.warn(errorMsg);
-            return GetMessageResult.builder().status(GetMessageStatus.TOPIC_ILLEGAL).errorMsg(errorMsg).build();
+            return new GetMessageResult(GetMessageStatus.TOPIC_ILLEGAL,errorMsg);
         }
 
         long beginTime = System.currentTimeMillis();
