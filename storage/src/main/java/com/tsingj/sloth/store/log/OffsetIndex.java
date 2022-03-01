@@ -1,15 +1,17 @@
 package com.tsingj.sloth.store.log;
 
+import com.github.benmanes.caffeine.cache.*;
 import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.pojo.Result;
 import com.tsingj.sloth.store.pojo.Results;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Set;
 
 /**
  * @author yanghao
@@ -20,29 +22,36 @@ public class OffsetIndex {
     /**
      * offsetIndex物理文件
      */
-    private File file;
+    private final File file;
 
     /**
      * 文件读写channel
      */
-    private FileChannel fileChannel;
+    private final FileChannel fileChannel;
 
     /**
      * caffeine index cache
      */
+    private final Cache<Long, IndexEntry.OffsetPosition> warmIndexEntries;
 
+    /**
+     * 期望最大1M index缓存
+     */
+    private final int maxWarmIndexEntries = 1024 * 1024;
 
     /**
      * offset index 数量
      */
-    private long indexEntries;
+    private long indexSize;
 
     public OffsetIndex(String logPath) throws FileNotFoundException {
         //init offsetIndex file operator
         this.file = new File(logPath + LogConstants.FileSuffix.OFFSET_INDEX);
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
-
-        this.indexEntries = 0L;
+        //init other properties
+        this.indexSize = 0L;
+        //1m内存 index
+        this.warmIndexEntries = Caffeine.newBuilder().initialCapacity(maxWarmIndexEntries / LogConstants.INDEX_BYTES).recordStats().build();
     }
 
     public void addIndex(long key, long value) throws IOException {
@@ -55,31 +64,27 @@ public class OffsetIndex {
         indexByteBuffer.flip();
         this.fileChannel.position(this.getWrotePosition());
         this.fileChannel.write(indexByteBuffer);
+        this.warmIndexEntries.put(this.getWrotePosition(), new IndexEntry.OffsetPosition(key, value));
         this.incrementIndexEntries();
     }
 
     private long getWrotePosition() {
-        return this.indexEntries * LogConstants.INDEX_BYTES;
+        return this.indexSize * LogConstants.INDEX_BYTES;
     }
 
     private void incrementIndexEntries() {
-        this.indexEntries = this.indexEntries + 1;
+        this.indexSize = this.indexSize + 1;
     }
 
     //lookup logPosition slot range
     public Result<IndexEntry.OffsetPosition> lookUp(long searchKey) {
-        StopWatch sw = new StopWatch();
-        sw.start("getEntrySize");
-        long entries = this.indexEntries;
-        sw.stop();
+        long entries = this.indexSize;
         //index为空，返回-1
         if (entries == 0L) {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
-        sw.start("getIndexFileFirstOffset");
         //最小值大与查询值，从头找。  PS:务必将第一条索引插入。
         Result<IndexEntry.OffsetPosition> getFirstOffsetResult = getIndexFileFirstOffset();
-        sw.stop();
         if (!getFirstOffsetResult.success()) {
             return Results.failure(getIndexFileFirstOffset().getMsg());
         }
@@ -93,14 +98,10 @@ public class OffsetIndex {
         long lower = 0L;
         long upper = entries - 1;
         IndexEntry.OffsetPosition offsetPosition;
-        int i = 0;
         while (lower < upper) {
-            i++;
             //这样的操作是为了让 mid 标志 取高位，否则会出现死循环
             long mid = (lower + upper + 1) / 2;
-            sw.start("loop" + i);
             Result<IndexEntry.OffsetPosition> result = getIndexEntryPositionOffset(mid * LogConstants.INDEX_BYTES);
-            sw.stop();
             if (!result.success()) {
                 return Results.failure(result.getMsg());
             }
@@ -119,12 +120,21 @@ public class OffsetIndex {
         }
         offsetPosition = lowerOffsetPositionResult.getData();
         logger.debug("offset:{} find offsetIndex:{} {}", searchKey, offsetPosition.getIndexKey(), offsetPosition.getIndexValue());
-        logger.debug("lookUp" + sw.prettyPrint() + "\ntotal:" + sw.getTotalTimeMillis());
         //其实这里无论返回lower 还是upper都行，循环的退出时间是lower==upper。
         return Results.success(offsetPosition);
     }
 
     private Result<IndexEntry.OffsetPosition> getIndexEntryPositionOffset(long indexPosition) {
+        return getIndexEntryPositionOffset(indexPosition, true);
+    }
+
+    private Result<IndexEntry.OffsetPosition> getIndexEntryPositionOffset(long indexPosition, boolean useCache) {
+        if (useCache) {
+            IndexEntry.OffsetPosition offsetPosition = this.warmIndexEntries.getIfPresent(indexPosition);
+            if (offsetPosition != null) {
+                return Results.success(offsetPosition);
+            }
+        }
         try {
             this.fileChannel.position(indexPosition);
             ByteBuffer byteBuffer = ByteBuffer.allocate(LogConstants.INDEX_BYTES);
@@ -135,7 +145,6 @@ public class OffsetIndex {
             logger.error("offset indexFileReader position operation fail!", e);
             return Results.failure("offset indexFileReader position operation fail!");
         }
-
     }
 
     private Result<IndexEntry.OffsetPosition> getIndexFileFirstOffset() {
@@ -143,7 +152,7 @@ public class OffsetIndex {
     }
 
     protected Result<IndexEntry.OffsetPosition> getIndexFileLastOffset() {
-        long entries = this.indexEntries;
+        long entries = this.indexSize;
         if (entries == 0L) {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
@@ -151,8 +160,23 @@ public class OffsetIndex {
     }
 
     public void loadLogs() {
+        long fileLength = this.file.length();
         //1、load indexEntries
-        this.indexEntries = this.file.length() / LogConstants.INDEX_BYTES;
+        this.indexSize = fileLength / LogConstants.INDEX_BYTES;
+        //2、load warmEntries
+        long loadWarmPosition = fileLength > this.maxWarmIndexEntries ? fileLength - this.maxWarmIndexEntries : 0L;
+        logger.info("prepare load offsetIndex from position:{}", loadWarmPosition);
+        while (loadWarmPosition < fileLength) {
+            Result<IndexEntry.OffsetPosition> indexEntryPositionOffset = getIndexEntryPositionOffset(loadWarmPosition, false);
+            if (indexEntryPositionOffset.failure()) {
+                logger.warn("load index fail! {}", indexEntryPositionOffset.getMsg());
+                break;
+            }
+            IndexEntry.OffsetPosition data = indexEntryPositionOffset.getData();
+            this.warmIndexEntries.put(loadWarmPosition, data);
+            loadWarmPosition = loadWarmPosition + LogConstants.INDEX_BYTES;
+        }
+        logger.info("load offsetIndex success, current indexSize:{} warm indexEntrySize:{}", indexSize, this.warmIndexEntries.estimatedSize());
     }
 
     public void flush() {
@@ -160,5 +184,36 @@ public class OffsetIndex {
             this.fileChannel.force(true);
         } catch (IOException ignored) {
         }
+    }
+
+
+    public void freeNoWarmIndexCache() {
+        //计算超出maxWarmIndex长度
+        long cleanupCount = this.warmIndexEntries.estimatedSize() - this.maxWarmIndexEntries / LogConstants.INDEX_BYTES;
+        if (cleanupCount > 0) {
+            //this set is sorted
+            Set<@NonNull Long> positions = warmIndexEntries.asMap().keySet();
+            int i = 0;
+            for (Long key : positions) {
+                if (i >= cleanupCount) {
+                    break;
+                }
+                this.warmIndexEntries.invalidate(key);
+                i++;
+            }
+        }
+    }
+
+    public void showIndexCacheStats() {
+        logger.info("hitCount:" + this.warmIndexEntries.stats().hitCount() + " missCount:" + this.warmIndexEntries.stats().missCount());
+    }
+
+    public static void main(String[] args) {
+        Cache<Integer, Integer> cache = Caffeine.newBuilder().initialCapacity(100).recordStats().build();
+        for (int i = 0; i < 100; i++) {
+            cache.put(i, i);
+        }
+
+        System.out.println(cache.asMap().keySet());
     }
 }

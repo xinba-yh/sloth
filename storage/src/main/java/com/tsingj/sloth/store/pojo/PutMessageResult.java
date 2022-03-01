@@ -6,6 +6,20 @@ package com.tsingj.sloth.store.pojo;
  */
 public class PutMessageResult {
 
+    public PutMessageResult(PutMessageStatus status) {
+        this.status = status;
+    }
+
+    public PutMessageResult(PutMessageStatus status, String errorMsg) {
+        this.status = status;
+        this.errorMsg = errorMsg;
+    }
+
+    public PutMessageResult(PutMessageStatus status, Long offset) {
+        this.status = status;
+        this.offset = offset;
+    }
+
     /**
      * 状态
      */
@@ -45,17 +59,4 @@ public class PutMessageResult {
         this.offset = offset;
     }
 
-    public PutMessageResult(PutMessageStatus status) {
-        this.status = status;
-    }
-
-    public PutMessageResult(PutMessageStatus status, String errorMsg) {
-        this.status = status;
-        this.errorMsg = errorMsg;
-    }
-
-    public PutMessageResult(PutMessageStatus status, Long offset) {
-        this.status = status;
-        this.offset = offset;
-    }
 }

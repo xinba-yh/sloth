@@ -18,6 +18,14 @@ public class IndexEntry {
         return indexValue;
     }
 
+    public void setIndexKey(long indexKey) {
+        this.indexKey = indexKey;
+    }
+
+    public void setIndexValue(long indexValue) {
+        this.indexValue = indexValue;
+    }
+
     @Override
     public String toString() {
         return "IndexEntry{" +

@@ -42,7 +42,7 @@ public class StorageProperties {
     /**
      * sparse index interval bytes
      */
-    private int logIndexIntervalBytes = 1024 * 4;
+    private int logIndexIntervalBytes = 1024;
 
 
     public String getDataPath() {

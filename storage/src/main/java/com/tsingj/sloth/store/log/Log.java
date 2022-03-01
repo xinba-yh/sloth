@@ -103,34 +103,23 @@ public class Log {
      * @return
      */
     public GetMessageResult getMessage(String topic, int partition, long offset) {
-        StopWatch sw = new StopWatch();
-//        sw.start("logSegmentSet.getLogSegments");
         List<LogSegment> logSegments = logSegmentSet.getLogSegments(topic, partition);
         if (logSegments == null) {
             return new GetMessageResult(GetMessageStatus.PARTITION_NO_MESSAGE);
         }
-//        sw.stop();
-//        sw.start("logSegmentSet.findLogSegmentByOffset");
         LogSegment logSegment = logSegmentSet.findLogSegmentByOffset(logSegments, offset);
         if (logSegment == null) {
             return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }
-//        sw.stop();
-        sw.start("logSegment.getMessage");
         Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
-        sw.stop();
         if (getMessageResult.failure()) {
             return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, getMessageResult.getMsg());
         }
-        sw.start("logSegment.StoreDecoder.decode");
         ByteBuffer storeByteBuffer = getMessageResult.getData();
         Result<Message> decodeResult = StoreDecoder.decode(offset, storeByteBuffer);
         if (decodeResult.failure()) {
             return new GetMessageResult(GetMessageStatus.MESSAGE_DECODE_FAIL, decodeResult.getMsg());
         }
-        sw.stop();
-        logger.debug(sw.prettyPrint() + "\n total mills:" + sw.getTotalTimeMillis());
-        logger.debug("-------------------------------------------------------------");
         return new GetMessageResult(GetMessageStatus.FOUND, decodeResult.getData());
     }
 

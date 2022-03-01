@@ -7,7 +7,6 @@ import com.tsingj.sloth.store.utils.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.StopWatch;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -163,11 +162,11 @@ public class LogSegment {
             //记录上一次index插入后，新存入的消息
             int dataLen = log.capacity();
             long recordBytes = this.recordBytesSinceLastIndexAppend(dataLen);
-            if (offset == 0 || recordBytes >= this.logIndexIntervalBytes) {
+            if (offset == this.fileFromOffset || recordBytes >= this.logIndexIntervalBytes) {
                 /*
                  * 2、append offset index
                  */
-                this.offsetIndex.addIndex(offset, offset == 0 ? 0L : this.wrotePosition);
+                this.offsetIndex.addIndex(offset, offset == this.fileFromOffset ? 0L : this.wrotePosition);
                 /*
                  * 3、append time index
                  */
@@ -177,7 +176,6 @@ public class LogSegment {
                 this.resetBytesSinceLastIndexAppend();
             }
 
-            //根据append过的字节数，计算新的position
             incrementWrotePosition(dataLen);
 
             return Results.success();
@@ -212,17 +210,13 @@ public class LogSegment {
     }
 
     public Result<ByteBuffer> getMessage(long offset) {
-        StopWatch sw = new StopWatch();
-        sw.start("offsetIndex.lookUp");
         //1、lookup logPosition slot range
         Result<IndexEntry.OffsetPosition> lookUpResult = this.offsetIndex.lookUp(offset);
         if (lookUpResult.failure()) {
             return Results.failure(lookUpResult.getMsg());
         }
-        sw.stop();
         //2、slot logFile position find real position
         // TODO: 2022/2/25 add endPosition. maxMessageSize+slotSize || lookUp返回下一个索引的下标
-        sw.start("findLogPositionSlotRange");
         IndexEntry.OffsetPosition indexEntry = lookUpResult.getData();
         Long startPosition = indexEntry.getPosition();
         Long endPosition = this.wrotePosition;
@@ -232,11 +226,7 @@ public class LogSegment {
             return Results.failure(logPositionResult.getMsg());
         }
         Long position = logPositionResult.getData();
-        sw.stop();
-//        sw.start("getMessageByPosition");
         Result<ByteBuffer> messageByPosition = this.getMessageByPosition(position);
-//        sw.stop();
-        logger.debug("getMessage:" + sw.prettyPrint() + "\n total:" + sw.getTotalTimeMillis());
         return messageByPosition;
     }
 

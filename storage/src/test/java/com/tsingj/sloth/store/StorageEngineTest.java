@@ -51,7 +51,7 @@ public class StorageEngineTest {
             int finalI = i;
             Thread thread = new Thread(() -> {
                 //------------------test----------------------
-                String helloWorld = "hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.";
+                String helloWorld = "hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello worldorld.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello worldorld.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello worldorld.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello worldorld.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello worldorld.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello worldorld.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello worldorld.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.";
                 StopWatch sw = new StopWatch();
                 Message message = new Message();
                 message.setTopic(topic);
@@ -82,25 +82,27 @@ public class StorageEngineTest {
 
     @Test
     public void getMessageTest() {
-        //random get message
-        int loopCount = 10000;
-        StopWatch sw = new StopWatch();
-        int[] random = this.random(loopCount);
-        sw.start();
-        for (int i = 0; i < loopCount; i++) {
-            long offset = (i == 0) ? 0L : random[i];
-            GetMessageResult result = storageEngine.getMessage(topic, 0, offset);
-            if (result.getStatus() != GetMessageStatus.FOUND) {
-                log.warn("get msg fail,{}:{}! ", result.getStatus(), result.getErrorMsg());
-            } else {
-                if (offset != result.getMessage().getOffset()) {
-                    log.warn("get msg fail，query:{}，got:{}! ", offset, result.getMessage().getOffset());
-                }
+        for (int j = 0; j < 10; j++) {
+            //random get message
+            int loopCount = 10000;
+            StopWatch sw = new StopWatch();
+            int[] random = this.random(loopCount);
+            sw.start();
+            for (int i = 0; i < loopCount; i++) {
+                long offset = (i == 0) ? 0L : random[i];
+                GetMessageResult result = storageEngine.getMessage(topic, 0, offset);
+                if (result.getStatus() != GetMessageStatus.FOUND) {
+                    log.warn("get msg fail,{}:{}! ", result.getStatus(), result.getErrorMsg());
+                } else {
+                    if (offset != result.getMessage().getOffset()) {
+                        log.warn("get msg fail，query:{}，got:{}! ", offset, result.getMessage().getOffset());
+                    }
 //                log.info("get message offset:{} message:{}",offset,result.getMessage());
+                }
             }
+            sw.stop();
+            log.info("data count {} , query {} times , cost:{}", count, loopCount, sw.getTotalTimeMillis());
         }
-        sw.stop();
-        log.info("data count {} , query {} times , cost:{}", count, loopCount, sw.getTotalTimeMillis());
     }
 
     private int[] random(int num) {
@@ -117,13 +119,13 @@ public class StorageEngineTest {
             i++;
         }
         Arrays.sort(id);
-        System.out.println(Arrays.toString(id));
+//        System.out.println(Arrays.toString(id));
         return id;
     }
 
     @Test
     public void offsetIndexReaderTest() throws IOException {
-        File file = new File(storageProperties.getDataPath() + File.separator + topic + File.separator + 0 + File.separator + "00000000000000000000.index");
+        File file = new File(storageProperties.getDataPath() + File.separator + topic + File.separator + 0 + File.separator + "00000000000000008389.index");
         FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
 
         for (int i = 0; i < file.length() / 16; i++) {

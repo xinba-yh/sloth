@@ -13,8 +13,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author yanghao
@@ -61,17 +64,18 @@ public class LogManager implements SchedulingConfigurer {
                     if (segmentFiles == null || segmentFiles.length == 0) {
                         continue;
                     }
-                    for (File segmentFile : segmentFiles) {
+                    List<File> segmentFileSortedList = Arrays.stream(segmentFiles).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
+                    for (File segmentFile : segmentFileSortedList) {
                         String segmentFileName = segmentFile.getName();
-                        logger.info("prepare init topic:{} partition:{} segment:{}", topic, partition, segmentFileName);
                         if (segmentFileName.endsWith(LogConstants.FileSuffix.LOG)) {
+                            logger.info("prepare init topic:{} partition:{} segment:{}", topic, partition, segmentFileName);
                             LogSegment logSegment = LogSegment.loadLogs(segmentFile, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
                             logSegmentSet.addLogSegment(topic, partition, logSegment);
                         }
                     }
                 }
             }
-            logger.info("load segments success.");
+            logger.info("-------------------------------------------------load segments over----------------------------------------------------------------");
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -81,8 +85,25 @@ public class LogManager implements SchedulingConfigurer {
     @PreDestroy
     public void shutdown() {
         logger.trace("storage prepare destroy.");
+        showIndexCacheStats();
         flushDirtyLogs();
         logger.trace("storage destroy done.");
+    }
+
+    /**
+     * 输出indexCacheStats
+     */
+    private void showIndexCacheStats() {
+        Map<String, List<LogSegment>> logSegmentsMapping = logSegmentSet.getLogSegmentsMapping();
+        if (logSegmentsMapping.size() == 0) {
+            return;
+        }
+        for (Map.Entry<String, List<LogSegment>> entry : logSegmentsMapping.entrySet()) {
+            List<LogSegment> logSegments = entry.getValue();
+            for (LogSegment logSegment : logSegments) {
+                logSegment.getOffsetIndex().showIndexCacheStats();
+            }
+        }
     }
 
 
@@ -100,6 +121,7 @@ public class LogManager implements SchedulingConfigurer {
             for (LogSegment logSegment : logSegments) {
                 logSegment.flush();
                 logSegment.getOffsetIndex().flush();
+                logSegment.getOffsetIndex().freeNoWarmIndexCache();
                 logSegment.getTimeIndex().flush();
             }
         }
@@ -117,11 +139,11 @@ public class LogManager implements SchedulingConfigurer {
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        logger.info("add flushDirtyLogsTask interval:{}ms.", storageProperties.getLogFlushInterval());
+        logger.info("add flushDirtyLogsTask interval {}ms.", storageProperties.getLogFlushInterval());
         IntervalTask flushDirtyLogsTask = new IntervalTask(this::flushDirtyLogs, storageProperties.getLogFlushInterval(), 0);
         taskRegistrar.addFixedDelayTask(flushDirtyLogsTask);
 
-        logger.info("add cleanupLogs interval:{}ms.", storageProperties.getLogCleanupInterval());
+        logger.info("add cleanupLogs interval {}ms.", storageProperties.getLogCleanupInterval());
         IntervalTask cleanupLogsTask = new IntervalTask(this::cleanupLogs, storageProperties.getLogCleanupInterval(), 0);
         taskRegistrar.addFixedDelayTask(cleanupLogsTask);
     }
