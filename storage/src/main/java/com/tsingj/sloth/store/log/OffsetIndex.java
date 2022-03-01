@@ -1,8 +1,8 @@
 package com.tsingj.sloth.store.log;
 
-import com.tsingj.sloth.store.DataLogConstants;
-import com.tsingj.sloth.store.Result;
-import com.tsingj.sloth.store.Results;
+import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.pojo.Result;
+import com.tsingj.sloth.store.pojo.Results;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
@@ -39,7 +39,7 @@ public class OffsetIndex {
 
     public OffsetIndex(String logPath) throws FileNotFoundException {
         //init offsetIndex file operator
-        this.file = new File(logPath + DataLogConstants.FileSuffix.OFFSET_INDEX);
+        this.file = new File(logPath + LogConstants.FileSuffix.OFFSET_INDEX);
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
 
         this.indexEntries = 0L;
@@ -49,7 +49,7 @@ public class OffsetIndex {
         /*
          * add offset index
          */
-        ByteBuffer indexByteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
+        ByteBuffer indexByteBuffer = ByteBuffer.allocate(LogConstants.INDEX_BYTES);
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
         indexByteBuffer.flip();
@@ -59,7 +59,7 @@ public class OffsetIndex {
     }
 
     private long getWrotePosition() {
-        return this.indexEntries * DataLogConstants.INDEX_BYTES;
+        return this.indexEntries * LogConstants.INDEX_BYTES;
     }
 
     private void incrementIndexEntries() {
@@ -99,7 +99,7 @@ public class OffsetIndex {
             //这样的操作是为了让 mid 标志 取高位，否则会出现死循环
             long mid = (lower + upper + 1) / 2;
             sw.start("loop" + i);
-            Result<IndexEntry.OffsetPosition> result = getIndexEntryPositionOffset(mid * DataLogConstants.INDEX_BYTES);
+            Result<IndexEntry.OffsetPosition> result = getIndexEntryPositionOffset(mid * LogConstants.INDEX_BYTES);
             sw.stop();
             if (!result.success()) {
                 return Results.failure(result.getMsg());
@@ -113,7 +113,7 @@ public class OffsetIndex {
             }
         }
 
-        Result<IndexEntry.OffsetPosition> lowerOffsetPositionResult = getIndexEntryPositionOffset(lower * DataLogConstants.INDEX_BYTES);
+        Result<IndexEntry.OffsetPosition> lowerOffsetPositionResult = getIndexEntryPositionOffset(lower * LogConstants.INDEX_BYTES);
         if (lowerOffsetPositionResult.failure()) {
             return Results.failure("offset:{} can't find offsetIndex!");
         }
@@ -127,7 +127,7 @@ public class OffsetIndex {
     private Result<IndexEntry.OffsetPosition> getIndexEntryPositionOffset(long indexPosition) {
         try {
             this.fileChannel.position(indexPosition);
-            ByteBuffer byteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
+            ByteBuffer byteBuffer = ByteBuffer.allocate(LogConstants.INDEX_BYTES);
             this.fileChannel.read(byteBuffer);
             byteBuffer.rewind();
             return Results.success(new IndexEntry.OffsetPosition(byteBuffer.getLong(), byteBuffer.getLong()));
@@ -147,12 +147,12 @@ public class OffsetIndex {
         if (entries == 0L) {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
-        return getIndexEntryPositionOffset((entries - 1) * DataLogConstants.INDEX_BYTES);
+        return getIndexEntryPositionOffset((entries - 1) * LogConstants.INDEX_BYTES);
     }
 
     public void loadLogs() {
         //1、load indexEntries
-        this.indexEntries = this.file.length() / DataLogConstants.INDEX_BYTES;
+        this.indexEntries = this.file.length() / LogConstants.INDEX_BYTES;
     }
 
     public void flush() {

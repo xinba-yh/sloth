@@ -1,6 +1,8 @@
 package com.tsingj.sloth.store;
 
+import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.log.Log;
+import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,28 +30,18 @@ public class StorageEngine implements Storage {
     }
 
     @Override
-    public boolean load() {
-        return false;
-    }
-
-    @Override
-    public void close() {
-
-    }
-
-    @Override
     public PutMessageResult putMessage(Message message) {
 
         if (message.getTopic().length() > Byte.MAX_VALUE) {
             String errorMsg = "message topic length too long, max length " + Byte.MAX_VALUE + "!";
             logger.warn(errorMsg);
-            return new PutMessageResult(PutMessageStatus.MESSAGE_ILLEGAL,errorMsg);
+            return new PutMessageResult(PutMessageStatus.MESSAGE_ILLEGAL, errorMsg);
         }
 
         if (message.getBody().length > storageProperties.getMessageMaxSize()) {
             String errorMsg = "message body length too long, max length " + storageProperties.getMessageMaxSize() + "!";
             logger.warn(errorMsg);
-            return new PutMessageResult(PutMessageStatus.MESSAGE_ILLEGAL,errorMsg);
+            return new PutMessageResult(PutMessageStatus.MESSAGE_ILLEGAL, errorMsg);
         }
 
         long beginTime = System.currentTimeMillis();
@@ -67,7 +59,7 @@ public class StorageEngine implements Storage {
         if (topic.length() > Byte.MAX_VALUE) {
             String errorMsg = "message topic length too long, max length " + Byte.MAX_VALUE + "!";
             logger.warn(errorMsg);
-            return new GetMessageResult(GetMessageStatus.TOPIC_ILLEGAL,errorMsg);
+            return new GetMessageResult(GetMessageStatus.TOPIC_ILLEGAL, errorMsg);
         }
 
         long beginTime = System.currentTimeMillis();

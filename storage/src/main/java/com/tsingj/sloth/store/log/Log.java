@@ -1,6 +1,8 @@
 package com.tsingj.sloth.store.log;
 
-import com.tsingj.sloth.store.*;
+import com.tsingj.sloth.store.constants.CommonConstants;
+import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.utils.CompressUtil;
 import com.tsingj.sloth.store.utils.CrcUtil;
 import org.slf4j.Logger;
@@ -80,15 +82,15 @@ public class Log {
     }
 
     private static int calStoreLength(int bodyLen, int topicLen, int propertiesLen) {
-        return DataLogConstants.MessageKeyBytes.STORE_TIMESTAMP +
-                DataLogConstants.MessageKeyBytes.VERSION +
-                DataLogConstants.MessageKeyBytes.TOPIC +
+        return LogConstants.MessageKeyBytes.STORE_TIMESTAMP +
+                LogConstants.MessageKeyBytes.VERSION +
+                LogConstants.MessageKeyBytes.TOPIC +
                 topicLen +
-                DataLogConstants.MessageKeyBytes.PARTITION +
-                DataLogConstants.MessageKeyBytes.PROPERTIES +
+                LogConstants.MessageKeyBytes.PARTITION +
+                LogConstants.MessageKeyBytes.PROPERTIES +
                 propertiesLen +
-                DataLogConstants.MessageKeyBytes.CRC +
-                DataLogConstants.MessageKeyBytes.BODY_SIZE +
+                LogConstants.MessageKeyBytes.CRC +
+                LogConstants.MessageKeyBytes.BODY_SIZE +
                 bodyLen;
     }
 
@@ -159,7 +161,7 @@ public class Log {
             int storeLen = calStoreLength(bodyLen, topicLen, propertiesLen);
 
             //------ build append buffer ----
-            ByteBuffer storeByteBuffer = ByteBuffer.allocate(DataLogConstants.MessageKeyBytes.LOG_OVERHEAD + storeLen);
+            ByteBuffer storeByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeLen);
             //1、offset - 8
             storeByteBuffer.putLong(offset);
             //2、storeSize - 4

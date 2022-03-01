@@ -1,6 +1,8 @@
 package com.tsingj.sloth.store.log;
 
-import com.tsingj.sloth.store.*;
+import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.pojo.Result;
+import com.tsingj.sloth.store.pojo.Results;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +77,7 @@ public class LogSegment {
     }
 
     public static LogSegment loadLogs(File segmentFile, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
-        String logPath = segmentFile.getAbsolutePath().replace(DataLogConstants.FileSuffix.LOG, "");
+        String logPath = segmentFile.getAbsolutePath().replace(LogConstants.FileSuffix.LOG, "");
         long startOffset = CommonUtil.fileName2Offset(segmentFile.getName());
         /*
          * 1、初始化LogSegment、OffsetIndex、TimeIndex
@@ -114,12 +116,12 @@ public class LogSegment {
             while (position < endPosition) {
                 //查询消息体
                 logFileChannel.position(position);
-                ByteBuffer headerByteBuffer = ByteBuffer.allocate(DataLogConstants.MessageKeyBytes.LOG_OVERHEAD);
+                ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
                 logFileChannel.read(headerByteBuffer);
                 headerByteBuffer.rewind();
                 lastOffset = headerByteBuffer.getLong();
                 int storeSize = headerByteBuffer.getInt();
-                position = position + (DataLogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
+                position = position + (LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
             }
             return lastOffset;
         } catch (IOException e) {
@@ -131,13 +133,13 @@ public class LogSegment {
 
     private void initialization(String logPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
         //init log file operator
-        logFile = new File(logPath + DataLogConstants.FileSuffix.LOG);
+        logFile = new File(logPath + LogConstants.FileSuffix.LOG);
         this.logFileChannel = new RandomAccessFile(logFile, "rw").getChannel();
         //init offsetIndex
         this.offsetIndex = new OffsetIndex(logPath);
         //init timeIndex
         this.timeIndex = new TimeIndex(logPath);
-        logger.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath + DataLogConstants.FileSuffix.LOG, logPath + DataLogConstants.FileSuffix.OFFSET_INDEX, logPath + DataLogConstants.FileSuffix.TIMESTAMP_INDEX);
+        logger.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath + LogConstants.FileSuffix.LOG, logPath + LogConstants.FileSuffix.OFFSET_INDEX, logPath + LogConstants.FileSuffix.TIMESTAMP_INDEX);
 
         this.maxFileSize = maxFileSize;
         this.currentOffset = startOffset;
@@ -241,7 +243,7 @@ public class LogSegment {
     private Result<ByteBuffer> getMessageByPosition(Long position) {
         try {
             logFileChannel.position(position);
-            ByteBuffer headerByteBuffer = ByteBuffer.allocate(DataLogConstants.MessageKeyBytes.LOG_OVERHEAD);
+            ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
             logFileChannel.read(headerByteBuffer);
             headerByteBuffer.flip();
 
@@ -265,7 +267,7 @@ public class LogSegment {
             //查询消息体
             try {
                 logFileChannel.position(position);
-                ByteBuffer headerByteBuffer = ByteBuffer.allocate(DataLogConstants.MessageKeyBytes.LOG_OVERHEAD);
+                ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
                 logFileChannel.read(headerByteBuffer);
                 headerByteBuffer.rewind();
                 long offset = headerByteBuffer.getLong();
@@ -274,7 +276,7 @@ public class LogSegment {
                     logPosition = position;
                     break;
                 } else {
-                    position = position + (DataLogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
+                    position = position + (LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
                 }
             } catch (IOException e) {
                 logger.error("find offset:{} IO operation fail!", searchOffset, e);

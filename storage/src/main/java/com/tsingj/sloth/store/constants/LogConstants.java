@@ -1,9 +1,9 @@
-package com.tsingj.sloth.store;
+package com.tsingj.sloth.store.constants;
 
 /**
  * @author yanghao
  */
-public class DataLogConstants {
+public class LogConstants {
 
     public static class FileSuffix {
 

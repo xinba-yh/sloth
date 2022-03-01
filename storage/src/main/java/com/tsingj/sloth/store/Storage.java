@@ -1,20 +1,13 @@
 package com.tsingj.sloth.store;
 
+import com.tsingj.sloth.store.pojo.GetMessageResult;
+import com.tsingj.sloth.store.pojo.Message;
+import com.tsingj.sloth.store.pojo.PutMessageResult;
+
 /**
  * @author yanghao
  */
 public interface Storage {
-
-    /**
-     * 加载之前存储的数据
-     */
-    boolean load();
-
-
-    /**
-     * 关闭
-     */
-    void close();
 
     /**
      * 写入消息

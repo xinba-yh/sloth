@@ -1,6 +1,6 @@
 package com.tsingj.sloth.store.log;
 
-import com.tsingj.sloth.store.DataLogConstants;
+import com.tsingj.sloth.store.constants.LogConstants;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class TimeIndex {
 
     public TimeIndex(String logPath) throws FileNotFoundException {
         //init offsetIndex file operator
-        this.file = new File(logPath + DataLogConstants.FileSuffix.TIMESTAMP_INDEX);
+        this.file = new File(logPath + LogConstants.FileSuffix.TIMESTAMP_INDEX);
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
 
         this.indexEntries = 0L;
@@ -43,7 +43,7 @@ public class TimeIndex {
         /*
          * add time index
          */
-        ByteBuffer indexByteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
+        ByteBuffer indexByteBuffer = ByteBuffer.allocate(LogConstants.INDEX_BYTES);
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
         indexByteBuffer.flip();
@@ -53,7 +53,7 @@ public class TimeIndex {
     }
 
     private long getWrotePosition() {
-        return this.indexEntries * DataLogConstants.INDEX_BYTES;
+        return this.indexEntries * LogConstants.INDEX_BYTES;
     }
 
     private void incrementIndexEntries() {
@@ -65,9 +65,9 @@ public class TimeIndex {
     }
 
     public void loadLogs() {
-        long indexEntries = file.length() / DataLogConstants.INDEX_BYTES;
+        long indexEntries = file.length() / LogConstants.INDEX_BYTES;
         logger.info("load indexEntries {}", indexEntries);
-        this.indexEntries = file.length() / DataLogConstants.INDEX_BYTES;
+        this.indexEntries = file.length() / LogConstants.INDEX_BYTES;
     }
 
     public void flush() {

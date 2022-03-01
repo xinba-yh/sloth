@@ -1,6 +1,6 @@
 package com.tsingj.sloth.store.utils;
 
-import com.tsingj.sloth.store.DataLogConstants;
+import com.tsingj.sloth.store.constants.LogConstants;
 
 import java.text.NumberFormat;
 
@@ -18,7 +18,7 @@ public class CommonUtil {
     }
 
     public static long fileName2Offset(String fileName) {
-        String segmentFileName = fileName.replace(DataLogConstants.FileSuffix.LOG, "");
+        String segmentFileName = fileName.replace(LogConstants.FileSuffix.LOG, "");
         return Long.parseLong(segmentFileName);
     }
 

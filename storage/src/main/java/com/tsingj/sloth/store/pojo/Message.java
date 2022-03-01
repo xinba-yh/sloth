@@ -1,8 +1,7 @@
-package com.tsingj.sloth.store;
+package com.tsingj.sloth.store.pojo;
 
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Map;
 
 /**

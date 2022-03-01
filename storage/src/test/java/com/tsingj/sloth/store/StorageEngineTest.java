@@ -2,6 +2,7 @@ package com.tsingj.sloth.store;
 
 import com.tsingj.sloth.store.log.IndexEntry;
 import com.tsingj.sloth.store.log.OffsetIndex;
+import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;

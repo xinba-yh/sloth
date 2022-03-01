@@ -1,6 +1,6 @@
 package com.tsingj.sloth.store.log;
 
-import com.tsingj.sloth.store.DataLogConstants;
+import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class LogManager implements SchedulingConfigurer {
                     for (File segmentFile : segmentFiles) {
                         String segmentFileName = segmentFile.getName();
                         logger.info("prepare init topic:{} partition:{} segment:{}", topic, partition, segmentFileName);
-                        if (segmentFileName.endsWith(DataLogConstants.FileSuffix.LOG)) {
+                        if (segmentFileName.endsWith(LogConstants.FileSuffix.LOG)) {
                             LogSegment logSegment = LogSegment.loadLogs(segmentFile, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
                             logSegmentSet.addLogSegment(topic, partition, logSegment);
                         }

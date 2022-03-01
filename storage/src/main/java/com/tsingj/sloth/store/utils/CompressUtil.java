@@ -1,7 +1,7 @@
 package com.tsingj.sloth.store.utils;
 
-import com.tsingj.sloth.store.Result;
-import com.tsingj.sloth.store.Results;
+import com.tsingj.sloth.store.pojo.Result;
+import com.tsingj.sloth.store.pojo.Results;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
