@@ -91,8 +91,8 @@ public class LogSegment {
          */
         logSegment.offsetIndex.loadLogs();
         logSegment.timeIndex.loadLogs();
-        logSegment.loadCurrentOffsetFromFile(logPath);
         logSegment.wrotePosition = segmentFile.length();
+        logSegment.loadCurrentOffsetFromFile(logPath);
         return logSegment;
     }
 

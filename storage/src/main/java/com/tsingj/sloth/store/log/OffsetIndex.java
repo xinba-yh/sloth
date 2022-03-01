@@ -156,7 +156,7 @@ public class OffsetIndex {
         if (entries == 0L) {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
-        return getIndexEntryPositionOffset((entries - 1) * LogConstants.INDEX_BYTES);
+        return getIndexEntryPositionOffset((entries - 1) * LogConstants.INDEX_BYTES, false);
     }
 
     public void loadLogs() {

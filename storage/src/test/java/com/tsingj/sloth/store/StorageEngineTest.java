@@ -35,7 +35,7 @@ public class StorageEngineTest {
 
     private static final String topic = "test-topic";
 
-    private static final int count = 1000000;
+    private static final int count = 1;
 
     private static final int threadNum = 1;
 
