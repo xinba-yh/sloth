@@ -3,7 +3,6 @@ package com.tsingj.sloth.store;
 import com.tsingj.sloth.store.log.IndexEntry;
 import com.tsingj.sloth.store.log.OffsetIndex;
 import com.tsingj.sloth.store.properties.StorageProperties;
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -35,7 +34,7 @@ public class StorageEngineTest {
 
     private static final String topic = "test-topic";
 
-    private static final int count = 1000;
+    private static final int count = 1000000;
 
     private static final int threadNum = 1;
 
@@ -83,7 +82,7 @@ public class StorageEngineTest {
     @Test
     public void getMessageTest() {
         //random get message
-        int loopCount = 10;
+        int loopCount = 10000;
         StopWatch sw = new StopWatch();
         int[] random = this.random(loopCount);
         sw.start();
@@ -96,7 +95,7 @@ public class StorageEngineTest {
                 if (offset != result.getMessage().getOffset()) {
                     log.warn("get msg fail，query:{}，got:{}! ", offset, result.getMessage().getOffset());
                 }
-                log.info("get message offset:{} message:{}",offset,result.getMessage());
+//                log.info("get message offset:{} message:{}",offset,result.getMessage());
             }
         }
         sw.stop();
@@ -151,8 +150,8 @@ public class StorageEngineTest {
     }
 
     @Test
-    public void loadTest() {
-
+    public void loadTest() throws InterruptedException {
+        Thread.sleep(70000);
     }
 
 }

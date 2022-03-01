@@ -16,15 +16,18 @@ public class StorageProperties {
     /**
      * storage path
      */
-//    String dataPath = System.getProperty("user.home") + File.separator + "data";
-
-    private String dataPath = "/Users/yanghao" + File.separator + "data";
+    private String dataPath = System.getProperty("user.home") + File.separator + "data";
 
 
     /**
-     * flush data to disk interval
+     * flush log to disk interval，default 500ms
      */
-    private int dataFlushInterval = 500;
+    private int logFlushInterval = 500;
+
+    /**
+     * cleanup expired logs，default default 10分钟
+     */
+    private int logCleanupInterval = 1000 * 60 * 10;
 
     /**
      * max message size
@@ -34,12 +37,12 @@ public class StorageProperties {
     /**
      * expect segment max fileSize ,  default 1G
      */
-    private int segmentMaxFileSize = 1024 * 1024 * 256;
+    private int segmentMaxFileSize = 1024 * 1024 * 10;
 
     /**
      * sparse index interval bytes
      */
-    private int logIndexIntervalBytes = 1024 * 1;
+    private int logIndexIntervalBytes = 1024 * 4;
 
 
     public String getDataPath() {
@@ -48,14 +51,6 @@ public class StorageProperties {
 
     public void setDataPath(String dataPath) {
         this.dataPath = dataPath;
-    }
-
-    public int getDataFlushInterval() {
-        return dataFlushInterval;
-    }
-
-    public void setDataFlushInterval(int dataFlushInterval) {
-        this.dataFlushInterval = dataFlushInterval;
     }
 
     public int getMessageMaxSize() {
@@ -80,5 +75,21 @@ public class StorageProperties {
 
     public void setLogIndexIntervalBytes(int logIndexIntervalBytes) {
         this.logIndexIntervalBytes = logIndexIntervalBytes;
+    }
+
+    public int getLogFlushInterval() {
+        return logFlushInterval;
+    }
+
+    public void setLogFlushInterval(int logFlushInterval) {
+        this.logFlushInterval = logFlushInterval;
+    }
+
+    public int getLogCleanupInterval() {
+        return logCleanupInterval;
+    }
+
+    public void setLogCleanupInterval(int logCleanupInterval) {
+        this.logCleanupInterval = logCleanupInterval;
     }
 }

@@ -47,7 +47,6 @@ public class LogSegment {
 
     private FileChannel logFileChannel;
 
-//    private BufferedOutputStream logWriter;
 
     /**
      * log offsetIndex

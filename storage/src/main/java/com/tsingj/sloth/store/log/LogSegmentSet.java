@@ -1,6 +1,5 @@
 package com.tsingj.sloth.store.log;
 
-import com.tsingj.sloth.store.DataLogConstants;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import org.slf4j.Logger;
@@ -8,8 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -34,64 +31,6 @@ public class LogSegmentSet {
      */
     protected final ConcurrentHashMap<String, List<LogSegment>> DATA_LOGFILE_MAP = new ConcurrentHashMap<>();
 
-
-    /**
-     * 项目启动时触发
-     * -- 加载dataPath目录下所有segment文件和index文件。
-     */
-    @PostConstruct
-    public void loadSegments() {
-        String dataPath = storageProperties.getDataPath();
-        try {
-            File dataDir = new File(dataPath);
-            File[] topicFiles = dataDir.listFiles();
-            if (topicFiles == null || topicFiles.length == 0) {
-                logger.info("dataPath:{} is empty dir, skip initialization.", dataPath);
-                return;
-            }
-            //initialization segments file memory mapping.
-            for (File topicDir : topicFiles) {
-                String topic = topicDir.getName();
-                File[] partitionDirs = topicDir.listFiles();
-                if (partitionDirs == null || partitionDirs.length == 0) {
-                    continue;
-                }
-                for (File partitionDir : partitionDirs) {
-                    long partition = Integer.parseInt(partitionDir.getName());
-                    File[] segmentFiles = partitionDir.listFiles();
-                    if (segmentFiles == null || segmentFiles.length == 0) {
-                        continue;
-                    }
-                    for (File segmentFile : segmentFiles) {
-                        String segmentFileName = segmentFile.getName();
-                        logger.info("prepare init topic:{} partition:{} segment:{}", topic, partition, segmentFileName);
-                        if (segmentFileName.endsWith(DataLogConstants.FileSuffix.LOG)) {
-                            LogSegment logSegment = LogSegment.loadLogs(segmentFile, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
-                            this.addLogSegment(topic, partition, logSegment);
-                        }
-                    }
-                }
-            }
-            logger.info("load segments success.");
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @PreDestroy
-    public void destroy() {
-        logger.info("storage prepare destroy.");
-        for (Map.Entry<String, List<LogSegment>> entry : DATA_LOGFILE_MAP.entrySet()) {
-            List<LogSegment> logSegments = entry.getValue();
-            for (LogSegment logSegment : logSegments) {
-                logSegment.flush();
-                logSegment.getOffsetIndex().flush();
-                logSegment.getTimeIndex().flush();
-            }
-        }
-        logger.info("storage destroy done.");
-    }
 
     public LogSegment getLatestLogSegmentFile(String topic, int partition) {
         List<LogSegment> logSegments = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
@@ -151,7 +90,7 @@ public class LogSegmentSet {
         return logSegment;
     }
 
-    private void addLogSegment(String topic, long partition, LogSegment logSegment) {
+    protected void addLogSegment(String topic, long partition, LogSegment logSegment) {
         List<LogSegment> logSegments = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
         if (logSegments == null) {
             logSegments = new ArrayList<>();
@@ -160,4 +99,7 @@ public class LogSegmentSet {
         this.DATA_LOGFILE_MAP.put(topic + "_" + partition, logSegments);
     }
 
+    public Map<String, List<LogSegment>> getLogSegmentsMapping() {
+        return this.DATA_LOGFILE_MAP;
+    }
 }

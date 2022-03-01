@@ -28,13 +28,18 @@ public class OffsetIndex {
     private FileChannel fileChannel;
 
     /**
+     * caffeine index cache
+     */
+
+
+    /**
      * offset index 数量
      */
     private long indexEntries;
 
     public OffsetIndex(String logPath) throws FileNotFoundException {
         //init offsetIndex file operator
-        file = new File(logPath + DataLogConstants.FileSuffix.OFFSET_INDEX);
+        this.file = new File(logPath + DataLogConstants.FileSuffix.OFFSET_INDEX);
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
 
         this.indexEntries = 0L;
@@ -47,6 +52,7 @@ public class OffsetIndex {
         ByteBuffer indexByteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
+        indexByteBuffer.flip();
         this.fileChannel.position(this.getWrotePosition());
         this.fileChannel.write(indexByteBuffer);
         this.incrementIndexEntries();

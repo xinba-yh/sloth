@@ -33,7 +33,7 @@ public class TimeIndex {
 
     public TimeIndex(String logPath) throws FileNotFoundException {
         //init offsetIndex file operator
-        file = new File(logPath + DataLogConstants.FileSuffix.TIMESTAMP_INDEX);
+        this.file = new File(logPath + DataLogConstants.FileSuffix.TIMESTAMP_INDEX);
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
 
         this.indexEntries = 0L;
@@ -46,6 +46,7 @@ public class TimeIndex {
         ByteBuffer indexByteBuffer = ByteBuffer.allocate(DataLogConstants.INDEX_BYTES);
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
+        indexByteBuffer.flip();
         this.fileChannel.position(this.getWrotePosition());
         this.fileChannel.write(indexByteBuffer);
         this.incrementIndexEntries();
