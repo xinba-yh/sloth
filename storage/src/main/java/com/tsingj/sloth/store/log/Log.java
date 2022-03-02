@@ -2,13 +2,14 @@ package com.tsingj.sloth.store.log;
 
 import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.log.lock.LogLockFactory;
+import com.tsingj.sloth.store.log.lock.LogSpinLock;
 import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.utils.CompressUtil;
 import com.tsingj.sloth.store.utils.CrcUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StopWatch;
 
 
 import java.nio.ByteBuffer;
@@ -19,6 +20,9 @@ import java.util.Map;
 
 /**
  * @author yanghao
+ * log类为日志存储入口
+ * 1、规则校验
+ * 2、整体流程
  */
 @Component
 public class Log {
@@ -50,33 +54,43 @@ public class Log {
         message.setVersion(CommonConstants.CURRENT_VERSION);
 
         LogSegment latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition);
-        //lock start
+        //get log lock, 每个topic、partition同时仅可以有一个线程进行写入，并发写入的提速在partition层。
+        LogSpinLock lock = LogLockFactory.getSpinLock(topic, partition);
+        lock.lock();
         long offset;
-        if (latestLogSegment == null || latestLogSegment.isFull()) {
-            offset = latestLogSegment == null ? 0 : latestLogSegment.incrementOffsetAndGet();
-            latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition, offset);
-            if (latestLogSegment == null) {
-                logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
-                return new PutMessageResult(PutMessageStatus.CREATE_LOG_FILE_FAILED);
+        try {
+            //lock start
+            if (latestLogSegment == null || latestLogSegment.isFull()) {
+                offset = latestLogSegment == null ? 0 : latestLogSegment.incrementOffsetAndGet();
+                latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition, offset);
+                if (latestLogSegment == null) {
+                    logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
+                    return new PutMessageResult(PutMessageStatus.CREATE_LOG_FILE_FAILED);
+                }
+            } else {
+                offset = latestLogSegment.incrementOffsetAndGet();
             }
-        } else {
-            offset = latestLogSegment.incrementOffsetAndGet();
-        }
-        //set 偏移量
-        //新创建文件 -> 0 | 当前+1
-        //已有未满文件当前+1
-        message.setOffset(offset);
-        //encode message
-        Result<ByteBuffer> encodeResult = StoreEncoder.encode(message);
-        if (!encodeResult.success()) {
-            return new PutMessageResult(PutMessageStatus.DATA_ENCODE_FAIL, encodeResult.getMsg());
-        }
-        ByteBuffer messageBytes = encodeResult.getData();
+            //set 偏移量
+            //新创建文件 -> 0 | 当前+1
+            //已有未满文件当前+1
+            message.setOffset(offset);
+            //encode message
+            Result<ByteBuffer> encodeResult = StoreEncoder.encode(message);
+            if (!encodeResult.success()) {
+                return new PutMessageResult(PutMessageStatus.DATA_ENCODE_FAIL, encodeResult.getMsg());
+            }
+            ByteBuffer messageBytes = encodeResult.getData();
 
-        //追加文件
-        Result appendResult = latestLogSegment.doAppend(messageBytes, offset, message.getStoreTimestamp());
-        if (!appendResult.success()) {
-            return new PutMessageResult(PutMessageStatus.LOG_FILE_APPEND_FAIL, appendResult.getMsg());
+            //追加文件
+            Result appendResult = latestLogSegment.doAppend(messageBytes, offset, message.getStoreTimestamp());
+            if (!appendResult.success()) {
+                return new PutMessageResult(PutMessageStatus.LOG_FILE_APPEND_FAIL, appendResult.getMsg());
+            }
+        } catch (Throwable e) {
+            logger.error("put message error!", e);
+            return new PutMessageResult(PutMessageStatus.UNKNOWN_ERROR, e.getMessage());
+        } finally {
+            lock.unlock();
         }
         return new PutMessageResult(PutMessageStatus.OK, offset);
     }
