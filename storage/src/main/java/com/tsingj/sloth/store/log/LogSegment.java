@@ -11,6 +11,8 @@ import org.springframework.util.Assert;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yanghao
@@ -202,7 +204,7 @@ public class LogSegment {
 
     public long incrementOffsetAndGet() {
         this.currentOffset = this.currentOffset + 1;
-        return currentOffset;
+        return this.currentOffset;
     }
 
     public long getFileFromOffset() {
@@ -297,5 +299,47 @@ public class LogSegment {
         }
     }
 
+
+    public List<ByteBuffer> getMessagesFromFirst(int count) {
+        List<ByteBuffer> messages = new ArrayList<>();
+        int readCount = 0;
+        long position = 0;
+        while (position < this.wrotePosition) {
+            if (readCount == count) {
+                break;
+            }
+            Result<ByteBuffer> messageByPosition = getMessageHeaderByPosition(position);
+            if (messageByPosition.failure()) {
+                logger.info("read message by position:{} fail!", position);
+                continue;
+            }
+            ByteBuffer data = messageByPosition.getData();
+            long offset = data.getLong();
+            int storeSize = data.getInt();
+            data.flip();
+            messages.add(data);
+
+            readCount++;
+            position = position + LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize;
+        }
+        return messages;
+    }
+
+    private Result<ByteBuffer> getMessageHeaderByPosition(Long position) {
+        try {
+            logFileChannel.position(position);
+            ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
+            logFileChannel.read(headerByteBuffer);
+            headerByteBuffer.flip();
+            return Results.success(headerByteBuffer);
+        } catch (IOException e) {
+            logger.error("get message by position {} , IO operation fail!", position, e);
+            return Results.failure("get message by position {} IO operation fail!");
+        }
+    }
+
+    public long getCurrentOffset() {
+        return this.currentOffset;
+    }
 
 }

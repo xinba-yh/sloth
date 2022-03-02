@@ -1,16 +1,18 @@
 package com.tsingj.sloth.store.log;
 
+
 import com.tsingj.sloth.store.properties.StorageProperties;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * @author yanghao
@@ -27,27 +29,21 @@ public class LogSegmentSet {
     }
 
     /**
-     * 文件与内存映射。
+     * topic-partition log文件内存映射。
      */
-    protected final ConcurrentHashMap<String, List<LogSegment>> DATA_LOGFILE_MAP = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> DATA_LOGFILE_MAP = new ConcurrentHashMap<>();
 
 
     public LogSegment getLatestLogSegmentFile(String topic, int partition) {
-        List<LogSegment> logSegments = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
-        if (CollectionUtils.isEmpty(logSegments)) {
+        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
             return null;
         } else {
-            return logSegments.get(logSegments.size() - 1);
+            return logSegmentsSkipListMap.lastEntry().getValue();
         }
     }
 
-    public LogSegment getLatestLogSegmentFile(String topic, int partition, long startOffset) {
-        //加锁后再次检查，防止多线程重复创建。
-        LogSegment latestLogSegment = getLatestLogSegmentFile(topic, partition);
-        if (latestLogSegment != null && !latestLogSegment.isFull()) {
-            return latestLogSegment;
-        }
-
+    public synchronized LogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
         //创建文件
         String topicPartitionDirPath = storageProperties.getDataPath() + File.separator + topic + File.separator + partition;
         File dir = new File(topicPartitionDirPath);
@@ -56,7 +52,7 @@ public class LogSegmentSet {
             if (mkdirs) {
                 logger.info("create datalog dir {} success.", dir);
             } else {
-                throw new RuntimeException("datalog dir make fail!");
+                return null;
             }
         }
         String fileName = CommonUtil.offset2FileName(startOffset);
@@ -71,35 +67,30 @@ public class LogSegmentSet {
         return newLogSegment;
     }
 
-    public List<LogSegment> getLogSegments(String topic, int partition) {
-        List<LogSegment> logSegments = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
-        if (CollectionUtils.isEmpty(logSegments)) {
-            return null;
-        } else {
-            return logSegments;
-        }
-    }
-
-    public LogSegment findLogSegmentByOffset(List<LogSegment> logSegments, long offset) {
-        Optional<LogSegment> firstLtSearchOffsetOptional = logSegments.parallelStream().sorted(Comparator.comparing(LogSegment::getFileFromOffset, Comparator.reverseOrder())).filter(o -> o.getFileFromOffset() <= offset).findFirst();
-        if (!firstLtSearchOffsetOptional.isPresent()) {
+    public LogSegment findLogSegmentByOffset(String topic, int partition, long offset) {
+        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
             return null;
         }
-        LogSegment logSegment = firstLtSearchOffsetOptional.get();
+        Map.Entry<Long, LogSegment> logSegmentEntry = logSegmentsSkipListMap.floorEntry(offset);
+        if (logSegmentEntry == null) {
+            return null;
+        }
+        LogSegment logSegment = logSegmentEntry.getValue();
         logger.debug("offset:{} find logSegment startOffset:{}", offset, logSegment.getFileFromOffset());
         return logSegment;
     }
 
     protected void addLogSegment(String topic, long partition, LogSegment logSegment) {
-        List<LogSegment> logSegments = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
-        if (logSegments == null) {
-            logSegments = new ArrayList<>();
+        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        if (logSegmentsSkipListMap == null) {
+            logSegmentsSkipListMap = new ConcurrentSkipListMap<>();
         }
-        logSegments.add(logSegment);
-        this.DATA_LOGFILE_MAP.put(topic + "_" + partition, logSegments);
+        logSegmentsSkipListMap.put(logSegment.getFileFromOffset(), logSegment);
+        this.DATA_LOGFILE_MAP.put(topic + "_" + partition, logSegmentsSkipListMap);
     }
 
-    public Map<String, List<LogSegment>> getLogSegmentsMapping() {
+    public ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> getLogSegmentsMapping() {
         return this.DATA_LOGFILE_MAP;
     }
 }

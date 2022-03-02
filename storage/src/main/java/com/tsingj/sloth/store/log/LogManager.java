@@ -13,10 +13,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +35,7 @@ public class LogManager implements SchedulingConfigurer {
         this.logSegmentSet = logSegmentSet;
         this.storageProperties = storageProperties;
     }
+
 
     /**
      * 项目启动时触发
@@ -94,12 +94,16 @@ public class LogManager implements SchedulingConfigurer {
      * 输出indexCacheStats
      */
     private void showIndexCacheStats() {
-        Map<String, List<LogSegment>> logSegmentsMapping = logSegmentSet.getLogSegmentsMapping();
-        if (logSegmentsMapping.size() == 0) {
+        ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> logSegmentsMapping = logSegmentSet.getLogSegmentsMapping();
+        if (logSegmentsMapping.isEmpty()) {
             return;
         }
-        for (Map.Entry<String, List<LogSegment>> entry : logSegmentsMapping.entrySet()) {
-            List<LogSegment> logSegments = entry.getValue();
+        for (Map.Entry<String,ConcurrentSkipListMap<Long, LogSegment>> entry : logSegmentsMapping.entrySet()) {
+            ConcurrentSkipListMap<Long, LogSegment> logSegmentSkipListMap = entry.getValue();
+            if(logSegmentSkipListMap.isEmpty()){
+                continue;
+            }
+            Collection<LogSegment> logSegments = logSegmentSkipListMap.values();
             for (LogSegment logSegment : logSegments) {
                 logSegment.getOffsetIndex().showIndexCacheStats();
             }
@@ -112,12 +116,16 @@ public class LogManager implements SchedulingConfigurer {
      */
     public void flushDirtyLogs() {
         logger.debug("prepare flush dirtyLogs.");
-        Map<String, List<LogSegment>> logSegmentsMapping = logSegmentSet.getLogSegmentsMapping();
-        if (logSegmentsMapping.size() == 0) {
+        ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> logSegmentsMapping = logSegmentSet.getLogSegmentsMapping();
+        if (logSegmentsMapping.isEmpty()) {
             return;
         }
-        for (Map.Entry<String, List<LogSegment>> entry : logSegmentsMapping.entrySet()) {
-            List<LogSegment> logSegments = entry.getValue();
+        for (Map.Entry<String,ConcurrentSkipListMap<Long, LogSegment>> entry : logSegmentsMapping.entrySet()) {
+            ConcurrentSkipListMap<Long, LogSegment> logSegmentSkipListMap = entry.getValue();
+            if(logSegmentSkipListMap.isEmpty()){
+                continue;
+            }
+            Collection<LogSegment> logSegments = logSegmentSkipListMap.values();
             for (LogSegment logSegment : logSegments) {
                 logSegment.flush();
                 logSegment.getOffsetIndex().flush();
@@ -143,7 +151,7 @@ public class LogManager implements SchedulingConfigurer {
         IntervalTask flushDirtyLogsTask = new IntervalTask(this::flushDirtyLogs, storageProperties.getLogFlushInterval(), 0);
         taskRegistrar.addFixedDelayTask(flushDirtyLogsTask);
 
-        logger.info("add cleanupLogs interval {}ms.", storageProperties.getLogCleanupInterval());
+        logger.info("add cleanupLogs interval {}s.", storageProperties.getLogCleanupInterval() / 1000);
         IntervalTask cleanupLogsTask = new IntervalTask(this::cleanupLogs, storageProperties.getLogCleanupInterval(), 0);
         taskRegistrar.addFixedDelayTask(cleanupLogsTask);
     }

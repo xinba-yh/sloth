@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,22 +52,30 @@ public class Log {
         //set version  1-127
         message.setVersion(CommonConstants.CURRENT_VERSION);
 
-        LogSegment latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition);
         //get log lock, 每个topic、partition同时仅可以有一个线程进行写入，并发写入的提速在partition层。
         LogSpinLock lock = LogLockFactory.getSpinLock(topic, partition);
-        lock.lock();
         long offset;
         try {
             //lock start
+            lock.lock();
+            //find latest logSegmentFile
+            LogSegment latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition);
+            //1、not found create
+            //2、full rolling logSegmentFile with index
             if (latestLogSegment == null || latestLogSegment.isFull()) {
-                offset = latestLogSegment == null ? 0 : latestLogSegment.incrementOffsetAndGet();
-                latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition, offset);
+                offset = latestLogSegment == null ? 0 : latestLogSegment.getCurrentOffset() + 1;
+                latestLogSegment = logSegmentSet.newLogSegmentFile(topic, partition, offset);
                 if (latestLogSegment == null) {
                     logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
                     return new PutMessageResult(PutMessageStatus.CREATE_LOG_FILE_FAILED);
                 }
             } else {
+                //3、found and not full,increment offset
                 offset = latestLogSegment.incrementOffsetAndGet();
+            }
+            //check offset
+            if (offset < latestLogSegment.getFileFromOffset()) {
+                return new PutMessageResult(PutMessageStatus.UNKNOWN_ERROR, "offset was reset!");
             }
             //set 偏移量
             //新创建文件 -> 0 | 当前+1
@@ -117,11 +124,7 @@ public class Log {
      * @return
      */
     public GetMessageResult getMessage(String topic, int partition, long offset) {
-        List<LogSegment> logSegments = logSegmentSet.getLogSegments(topic, partition);
-        if (logSegments == null) {
-            return new GetMessageResult(GetMessageStatus.PARTITION_NO_MESSAGE);
-        }
-        LogSegment logSegment = logSegmentSet.findLogSegmentByOffset(logSegments, offset);
+        LogSegment logSegment = logSegmentSet.findLogSegmentByOffset(topic, partition, offset);
         if (logSegment == null) {
             return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }

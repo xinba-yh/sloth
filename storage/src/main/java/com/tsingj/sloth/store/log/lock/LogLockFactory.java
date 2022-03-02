@@ -16,14 +16,14 @@ public class LogLockFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(Log.class);
 
-    private static final Map<String, LogSpinLock> KEY_LOCK_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, LogSpinLock> SPIN_LOCK_MAP = new ConcurrentHashMap<>();
 
     private static final String LOG_KEY_SEPARATOR = "-";
 
     public static LogSpinLock getSpinLock(String topic, Integer partition) {
         String key = topic + LOG_KEY_SEPARATOR + partition;
-        return KEY_LOCK_MAP.computeIfAbsent(key, s -> {
-            logger.trace("create lock for key:{}", s);
+        return SPIN_LOCK_MAP.computeIfAbsent(key, s -> {
+            logger.info("create lock for key:{}", s);
             return new LogSpinLock();
         });
     }
