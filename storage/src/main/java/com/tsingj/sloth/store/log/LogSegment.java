@@ -127,8 +127,7 @@ public class LogSegment {
             return lastOffset;
         } catch (IOException e) {
             logger.error("find lastOffset IO operation fail!", e);
-            //todo 新定义loadLogException
-            throw new RuntimeException(e);
+            throw new LogRecoveryException("find last offset from latest segmentFile fail!", e);
         }
     }
 

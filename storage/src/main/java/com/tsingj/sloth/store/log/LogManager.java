@@ -77,7 +77,8 @@ public class LogManager implements SchedulingConfigurer {
             }
             logger.info("-------------------------------------------------load segments over----------------------------------------------------------------");
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("log recovery fail, please check your log!", e);
+            throw new LogRecoveryException(e);
         }
     }
 
@@ -98,9 +99,9 @@ public class LogManager implements SchedulingConfigurer {
         if (logSegmentsMapping.isEmpty()) {
             return;
         }
-        for (Map.Entry<String,ConcurrentSkipListMap<Long, LogSegment>> entry : logSegmentsMapping.entrySet()) {
+        for (Map.Entry<String, ConcurrentSkipListMap<Long, LogSegment>> entry : logSegmentsMapping.entrySet()) {
             ConcurrentSkipListMap<Long, LogSegment> logSegmentSkipListMap = entry.getValue();
-            if(logSegmentSkipListMap.isEmpty()){
+            if (logSegmentSkipListMap.isEmpty()) {
                 continue;
             }
             Collection<LogSegment> logSegments = logSegmentSkipListMap.values();
@@ -120,9 +121,9 @@ public class LogManager implements SchedulingConfigurer {
         if (logSegmentsMapping.isEmpty()) {
             return;
         }
-        for (Map.Entry<String,ConcurrentSkipListMap<Long, LogSegment>> entry : logSegmentsMapping.entrySet()) {
+        for (Map.Entry<String, ConcurrentSkipListMap<Long, LogSegment>> entry : logSegmentsMapping.entrySet()) {
             ConcurrentSkipListMap<Long, LogSegment> logSegmentSkipListMap = entry.getValue();
-            if(logSegmentSkipListMap.isEmpty()){
+            if (logSegmentSkipListMap.isEmpty()) {
                 continue;
             }
             Collection<LogSegment> logSegments = logSegmentSkipListMap.values();

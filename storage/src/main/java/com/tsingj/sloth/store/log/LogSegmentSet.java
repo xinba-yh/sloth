@@ -43,7 +43,7 @@ public class LogSegmentSet {
         }
     }
 
-    public synchronized LogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
+    public LogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
         //创建文件
         String topicPartitionDirPath = storageProperties.getDataPath() + File.separator + topic + File.separator + partition;
         File dir = new File(topicPartitionDirPath);
