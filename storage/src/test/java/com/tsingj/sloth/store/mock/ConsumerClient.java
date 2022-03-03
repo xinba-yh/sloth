@@ -46,7 +46,7 @@ public class ConsumerClient {
                     int finalPartition = finalPartition1;
                     final int offset = j;
 
-                    if (offset != 0 && (offset + 1) % 100 == 0) {
+                    if (offset != 0 && (offset + 1) % 1000 == 0) {
                         LOGGER.info("partition {} 已消费 {}。", finalPartition, offset + 1);
                     }
                     GetMessageResult getMessageResult = storageEngine.getMessage(topic, finalPartition, offset);

@@ -46,7 +46,7 @@ public class OffsetIndex {
     private final int maxWarmIndexEntries = 1024 * 1024;
 
     /**
-     * offset index 数量
+     * offset index 数量  写消息有锁，每个topic、partition同时只能插入一个消息，只保持可见即可。
      */
     private volatile long indexSize;
 
@@ -222,6 +222,7 @@ public class OffsetIndex {
                 this.warmIndexEntries.invalidate(key);
                 i++;
             }
+            logger.info("cleanup no warm index cache.");
         }
     }
 

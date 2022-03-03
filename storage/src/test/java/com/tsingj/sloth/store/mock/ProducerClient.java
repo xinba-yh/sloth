@@ -51,7 +51,7 @@ public class ProducerClient {
                     if (putMessageResult.getStatus() != PutMessageStatus.OK) {
                         LOGGER.warn("putMessage fail! {}", putMessageResult.getErrorMsg());
                     } else {
-                        LOGGER.info("partition:{} respOffset:{}", message.getPartition(), putMessageResult.getOffset());
+//                        LOGGER.info("partition:{} respOffset:{}", message.getPartition(), putMessageResult.getOffset());
                     }
                 }
                 countDownLatch.countDown();

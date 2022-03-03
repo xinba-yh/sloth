@@ -203,10 +203,14 @@ public class StorageEngineTest {
 
 
     //----------------------------------------标准测试---------------------------------------------
+
+    /**
+     * 8S 90W
+     */
     @Test
     public void mockPutClientTest() {
         //定义每个partition发送message数量 -> 总数量为：(9 * count)
-        int partitionMsgCount = 1000;
+        int partitionMsgCount = 100000;
         int partitionCount = 9;
         /*
          *  1、producer put message mock
@@ -217,10 +221,13 @@ public class StorageEngineTest {
     }
 
 
+    /**
+     * 5.5S -> 90W
+     */
     @Test
     public void mockGetClientTest() {
         //定义每个partition发送message数量 -> 总数量为：(9 * count)
-        int partitionMsgCount = 1000;
+        int partitionMsgCount = 100000;
         int partitionCount = 9;
 
         //2、consumer get message mock
