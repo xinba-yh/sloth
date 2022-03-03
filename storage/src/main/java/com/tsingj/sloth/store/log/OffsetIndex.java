@@ -48,7 +48,7 @@ public class OffsetIndex {
     /**
      * offset index 数量
      */
-    private long indexSize;
+    private volatile long indexSize;
 
     public OffsetIndex(String logPath) throws FileNotFoundException {
         //init offsetIndex file operator

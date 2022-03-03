@@ -31,13 +31,12 @@ public class LogSegment {
     /**
      * 当前offset
      */
-
-    private long currentOffset;
+    private volatile long currentOffset;
 
     /**
      * 写入position
      */
-    private long wrotePosition;
+    private volatile long wrotePosition;
 
 
     /**
@@ -72,7 +71,7 @@ public class LogSegment {
     /**
      * 记录上一次索引项添加后, 多少bytes的新消息存进来
      */
-    private int bytesSinceLastIndexAppend;
+    private volatile int bytesSinceLastIndexAppend;
 
     /**
      * 索引项刷追加bytes间隔

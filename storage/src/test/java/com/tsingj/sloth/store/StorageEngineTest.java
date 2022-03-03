@@ -211,10 +211,9 @@ public class StorageEngineTest {
         /*
          *  1、producer put message mock
          */
-        long producerStartTime = System.currentTimeMillis();
         ProducerClient producerClient = new ProducerClient(topic, partitionMsgCount, partitionCount, storageEngine);
         producerClient.start();
-        logger.info("producer cost:{}", System.currentTimeMillis() - producerStartTime);
+
     }
 
 
@@ -225,10 +224,10 @@ public class StorageEngineTest {
         int partitionCount = 9;
 
         //2、consumer get message mock
-        long consumerStartTime = System.currentTimeMillis();
+
         ConsumerClient consumerClient = new ConsumerClient(topic, partitionMsgCount, partitionCount, storageEngine);
         consumerClient.start();
-        logger.info("consumer cost:{}", System.currentTimeMillis() - consumerStartTime);
+
     }
 
 }

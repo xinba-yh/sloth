@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -29,8 +27,8 @@ public class ConsumerClient {
     }
 
     public void start() {
-        final CountDownLatch countDownLatch = new CountDownLatch(partitionMessageCount * partitionCount);
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        final CountDownLatch countDownLatch = new CountDownLatch(partitionCount);
+        long consumerStartTime = System.currentTimeMillis();
         AtomicLong success = new AtomicLong(0);
         for (int partition = 0; partition < partitionCount; partition++) {
 
@@ -42,10 +40,12 @@ public class ConsumerClient {
             message.setBody(helloWorld.getBytes(StandardCharsets.UTF_8));
             message.setPartition(partition);
 
-            for (int j = 0; j < partitionMessageCount; j++) {
-                int finalPartition = partition;
-                final int offset = j;
-                executorService.execute(() -> {
+            int finalPartition1 = partition;
+            new Thread(() -> {
+                for (int j = 0; j < partitionMessageCount; j++) {
+                    int finalPartition = finalPartition1;
+                    final int offset = j;
+
                     if (offset != 0 && (offset + 1) % 100 == 0) {
                         LOGGER.info("partition {} 已消费 {}。", finalPartition, offset + 1);
                     }
@@ -72,15 +72,14 @@ public class ConsumerClient {
                         }
                     } else {
                         success.addAndGet(1);
-//                        LOGGER.info("partition:{} query:{} got:{}", finalPartition, offset, getMessageResult.getMessage().getOffset());
                     }
-                    countDownLatch.countDown();
-                });
-            }
+                }
+                countDownLatch.countDown();
+            }).start();
         }
         try {
             countDownLatch.await(10, TimeUnit.SECONDS);
-            executorService.shutdown();
+            LOGGER.info("consumer cost:{}", System.currentTimeMillis() - consumerStartTime);
             LOGGER.info("success count {}.", success.get());
         } catch (InterruptedException ignored) {
         }

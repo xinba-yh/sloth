@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,6 +22,7 @@ public class ProducerClient {
     private int partitionCount;
     private StorageEngine storageEngine;
 
+
     public ProducerClient(String topic, int partitionMessageCount, int partitionCount, StorageEngine storageEngine) {
         this.topic = topic;
         this.partitionMessageCount = partitionMessageCount;
@@ -32,9 +31,10 @@ public class ProducerClient {
     }
 
     public void start() {
-        final CountDownLatch countDownLatch = new CountDownLatch(partitionMessageCount * 9);
+        CountDownLatch countDownLatch = new CountDownLatch(partitionCount);
         ExecutorService executorService = Executors.newFixedThreadPool(8);
 
+        long producerStartTime = System.currentTimeMillis();
         int[] partitions = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         for (int partition : partitions) {
             String helloWorld = "hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello wor";
@@ -45,24 +45,27 @@ public class ProducerClient {
             message.setBody(helloWorld.getBytes(StandardCharsets.UTF_8));
             message.setPartition(partition);
 
-            for (int j = 0; j < partitionMessageCount; j++) {
-                executorService.execute(() -> {
+            new Thread(() -> {
+                for (int j = 0; j < partitionMessageCount; j++) {
                     PutMessageResult putMessageResult = storageEngine.putMessage(message);
                     if (putMessageResult.getStatus() != PutMessageStatus.OK) {
                         LOGGER.warn("putMessage fail! {}", putMessageResult.getErrorMsg());
                     } else {
                         LOGGER.info("partition:{} respOffset:{}", message.getPartition(), putMessageResult.getOffset());
                     }
-                    countDownLatch.countDown();
-                });
-            }
+                }
+                countDownLatch.countDown();
+            }).start();
+
         }
         try {
             countDownLatch.await(10, TimeUnit.SECONDS);
+            LOGGER.info("producer count:{} cost:{}", partitionMessageCount * 9, System.currentTimeMillis() - producerStartTime);
             executorService.shutdown();
         } catch (InterruptedException ignored) {
         }
 
     }
+
 
 }
