@@ -92,11 +92,12 @@ public class OffsetIndex {
     }
 
     //lookup logPosition slot range
-    public Result<IndexEntry.OffsetPosition> lookUp(long searchKey) {
+    public Result<LogPositionRange> lookUp(long searchKey) {
+        //1、get lower indexEntry
         long entries = this.indexSize;
         //index为空，返回-1
         if (entries == 0L) {
-            return Results.success(new IndexEntry.OffsetPosition(0, 0));
+            return Results.success(new LogPositionRange(0L, null));
         }
         //最小值大与查询值，从头找。  PS:务必将第一条索引插入。
         Result<IndexEntry.OffsetPosition> getFirstOffsetResult = getIndexFileFirstOffset();
@@ -106,22 +107,22 @@ public class OffsetIndex {
 
         long startOffset = getFirstOffsetResult.getData().getIndexKey();
         if (startOffset >= searchKey) {
-            return Results.success(new IndexEntry.OffsetPosition(0, 0));
+            return Results.success(new LogPositionRange(0L, null));
         }
 
         //开始二分查找 <= searchOffset的最大值
         long lower = 0L;
         long upper = entries - 1;
-        IndexEntry.OffsetPosition offsetPosition;
+        IndexEntry.OffsetPosition startOffsetPosition;
         while (lower < upper) {
             //这样的操作是为了让 mid 标志 取高位，否则会出现死循环
             long mid = (lower + upper + 1) / 2;
-            Result<IndexEntry.OffsetPosition> result = getIndexEntryPositionOffset(mid * LogConstants.INDEX_BYTES);
+            Result<IndexEntry.OffsetPosition> result = getIndexEntryByIndexPosition(mid * LogConstants.INDEX_BYTES);
             if (!result.success()) {
                 return Results.failure(result.getMsg());
             }
-            offsetPosition = result.getData();
-            long found = offsetPosition.getIndexKey();
+            startOffsetPosition = result.getData();
+            long found = startOffsetPosition.getIndexKey();
             if (found <= searchKey) {
                 lower = mid;
             } else {
@@ -129,21 +130,32 @@ public class OffsetIndex {
             }
         }
 
-        Result<IndexEntry.OffsetPosition> lowerOffsetPositionResult = getIndexEntryPositionOffset(lower * LogConstants.INDEX_BYTES);
+        Result<IndexEntry.OffsetPosition> lowerOffsetPositionResult = getIndexEntryByIndexPosition(lower * LogConstants.INDEX_BYTES);
         if (lowerOffsetPositionResult.failure()) {
             return Results.failure("offset:{} can't find offsetIndex!");
         }
-        offsetPosition = lowerOffsetPositionResult.getData();
-        logger.debug("offset:{} find offsetIndex:{} {}", searchKey, offsetPosition.getIndexKey(), offsetPosition.getIndexValue());
+        //2、get next indexEntry if exist.
+        IndexEntry.OffsetPosition endOffsetPosition = null;
+        long realUpper = entries - 1;
+        if (lower < realUpper) {
+            Result<IndexEntry.OffsetPosition> nextOffsetPositionResult = getIndexEntryByIndexPosition((lower + 1) * LogConstants.INDEX_BYTES);
+            if (nextOffsetPositionResult.failure()) {
+                return Results.failure("offset:{} can't find offsetIndex!");
+            }
+            endOffsetPosition = nextOffsetPositionResult.getData();
+        }//其他条件仅为：lower = upper 没有下一个offsetIndex了。
+
+        startOffsetPosition = lowerOffsetPositionResult.getData();
+        logger.debug("offset:{} find startOffsetIndex:{} {} endOffsetIndex:{} {}", searchKey, startOffsetPosition.getOffset(), startOffsetPosition.getPosition(), endOffsetPosition != null ? endOffsetPosition.getOffset() : "null", endOffsetPosition != null ? endOffsetPosition.getPosition() : "null");
         //其实这里无论返回lower 还是upper都行，循环的退出时间是lower==upper。
-        return Results.success(offsetPosition);
+        return Results.success(new LogPositionRange(startOffsetPosition.getPosition(), endOffsetPosition != null ? endOffsetPosition.getPosition() : null));
     }
 
-    private Result<IndexEntry.OffsetPosition> getIndexEntryPositionOffset(long indexPosition) {
-        return getIndexEntryPositionOffset(indexPosition, true);
+    public Result<IndexEntry.OffsetPosition> getIndexEntryByIndexPosition(long indexPosition) {
+        return getIndexEntryByIndexPosition(indexPosition, true);
     }
 
-    private Result<IndexEntry.OffsetPosition> getIndexEntryPositionOffset(long indexPosition, boolean useCache) {
+    private Result<IndexEntry.OffsetPosition> getIndexEntryByIndexPosition(long indexPosition, boolean useCache) {
         if (useCache) {
             IndexEntry.OffsetPosition offsetPosition = this.warmIndexEntries.getIfPresent(indexPosition);
             if (offsetPosition != null) {
@@ -166,7 +178,7 @@ public class OffsetIndex {
     }
 
     private Result<IndexEntry.OffsetPosition> getIndexFileFirstOffset() {
-        return getIndexEntryPositionOffset(0);
+        return getIndexEntryByIndexPosition(0);
     }
 
     protected Result<IndexEntry.OffsetPosition> getIndexFileLastOffset() {
@@ -174,7 +186,7 @@ public class OffsetIndex {
         if (entries == 0L) {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
-        return getIndexEntryPositionOffset((entries - 1) * LogConstants.INDEX_BYTES, false);
+        return getIndexEntryByIndexPosition((entries - 1) * LogConstants.INDEX_BYTES, false);
     }
 
     public void loadLogs() {
@@ -185,7 +197,7 @@ public class OffsetIndex {
         long loadWarmPosition = fileLength > this.maxWarmIndexEntries ? fileLength - this.maxWarmIndexEntries : 0L;
         logger.info("prepare load offsetIndex from position:{}", loadWarmPosition);
         while (loadWarmPosition < fileLength) {
-            Result<IndexEntry.OffsetPosition> indexEntryPositionOffset = getIndexEntryPositionOffset(loadWarmPosition, false);
+            Result<IndexEntry.OffsetPosition> indexEntryPositionOffset = getIndexEntryByIndexPosition(loadWarmPosition, false);
             if (indexEntryPositionOffset.failure()) {
                 logger.warn("load index fail! {}", indexEntryPositionOffset.getMsg());
                 break;
@@ -228,6 +240,28 @@ public class OffsetIndex {
 
     public void showIndexCacheStats() {
         logger.info("hitCount:" + this.warmIndexEntries.stats().hitCount() + " missCount:" + this.warmIndexEntries.stats().missCount());
+    }
+
+
+    public static class LogPositionRange {
+
+        public LogPositionRange(Long start, Long end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        private Long start;
+
+        private Long end;
+
+        public Long getStart() {
+            return start;
+        }
+
+        public Long getEnd() {
+            return end;
+        }
+
     }
 
 }

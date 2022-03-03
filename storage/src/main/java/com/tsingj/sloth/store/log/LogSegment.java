@@ -13,8 +13,6 @@ import org.springframework.util.Assert;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author yanghao
@@ -196,7 +194,7 @@ public class LogSegment {
                 this.resetBytesSinceLastIndexAppend();
             }
 
-            incrementWrotePosition(dataLen);
+            this.incrementWrotePosition(dataLen);
 
             return Results.success();
         } catch (IOException e) {
@@ -207,9 +205,8 @@ public class LogSegment {
         }
     }
 
-    private long incrementWrotePosition(int dataLen) {
+    private void incrementWrotePosition(int dataLen) {
         this.wrotePosition = this.wrotePosition + dataLen;
-        return this.wrotePosition;
     }
 
     private long recordBytesSinceLastIndexAppend(int dataLen) {
@@ -232,21 +229,20 @@ public class LogSegment {
     }
 
     public Result<ByteBuffer> getMessage(long offset) {
-        //1、lookup logPosition slot range
-        Result<IndexEntry.OffsetPosition> lookUpResult = this.offsetIndex.lookUp(offset);
+        //1、lookup logPosition slot range.
+        Result<OffsetIndex.LogPositionRange> lookUpResult = this.offsetIndex.lookUp(offset);
         if (lookUpResult.failure()) {
             return Results.failure(lookUpResult.getMsg());
         }
+        OffsetIndex.LogPositionRange logPositionRange = lookUpResult.getData();
         //2、slot logFile position find real position
-        // TODO: 2022/2/25 add endPosition. maxMessageSize+slotSize || lookUp返回下一个索引的下标
-        IndexEntry.OffsetPosition indexEntry = lookUpResult.getData();
-        Long startPosition = indexEntry.getPosition();
-        Long endPosition = this.wrotePosition;
+        Long startPosition = logPositionRange.getStart();
+        Long endPosition = logPositionRange.getEnd() != null ? logPositionRange.getEnd() : this.wrotePosition;
         Result<Long> logPositionResult = this.findLogPositionSlotRange(offset, startPosition, endPosition);
-        //3、get log bytes
         if (logPositionResult.failure()) {
             return Results.failure(logPositionResult.getMsg());
         }
+        //3、get log bytes
         Long position = logPositionResult.getData();
         Result<ByteBuffer> messageByPosition = this.getMessageByPosition(position);
         return messageByPosition;
@@ -322,48 +318,6 @@ public class LogSegment {
         try {
             this.logFileChannel.force(true);
         } catch (IOException ignored) {
-        }
-    }
-
-
-    public List<ByteBuffer> getMessagesFromFirst(int count) {
-        List<ByteBuffer> messages = new ArrayList<>();
-        int readCount = 0;
-        long position = 0;
-        while (position < this.wrotePosition) {
-            if (readCount == count) {
-                break;
-            }
-            Result<ByteBuffer> messageByPosition = getMessageHeaderByPosition(position);
-            if (messageByPosition.failure()) {
-                logger.info("read message by position:{} fail!", position);
-                continue;
-            }
-            ByteBuffer data = messageByPosition.getData();
-            long offset = data.getLong();
-            int storeSize = data.getInt();
-            data.flip();
-            messages.add(data);
-
-            readCount++;
-            position = position + LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize;
-        }
-        return messages;
-    }
-
-    private Result<ByteBuffer> getMessageHeaderByPosition(Long position) {
-        try {
-            this.readWriteLock.lock();
-            logFileChannel.position(position);
-            ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
-            logFileChannel.read(headerByteBuffer);
-            headerByteBuffer.flip();
-            return Results.success(headerByteBuffer);
-        } catch (IOException e) {
-            logger.error("get message by position {} , IO operation fail!", position, e);
-            return Results.failure("get message by position {} IO operation fail!");
-        } finally {
-            this.readWriteLock.unlock();
         }
     }
 

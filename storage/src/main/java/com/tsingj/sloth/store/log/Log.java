@@ -5,6 +5,7 @@ import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.log.lock.LogLock;
 import com.tsingj.sloth.store.log.lock.LogLockFactory;
 import com.tsingj.sloth.store.pojo.*;
+import com.tsingj.sloth.store.utils.CommonUtil;
 import com.tsingj.sloth.store.utils.CompressUtil;
 import com.tsingj.sloth.store.utils.CrcUtil;
 import org.slf4j.Logger;
@@ -14,14 +15,11 @@ import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author yanghao
- * log类为日志存储入口
- * 1、规则校验
- * 2、整体流程
+ * 提供消息存储和获取能力
  */
 @Component
 public class Log {
@@ -103,18 +101,6 @@ public class Log {
         return new PutMessageResult(PutMessageStatus.OK, offset);
     }
 
-    private static int calStoreLength(int bodyLen, int topicLen, int propertiesLen) {
-        return LogConstants.MessageKeyBytes.STORE_TIMESTAMP +
-                LogConstants.MessageKeyBytes.VERSION +
-                LogConstants.MessageKeyBytes.TOPIC +
-                topicLen +
-                LogConstants.MessageKeyBytes.PARTITION +
-                LogConstants.MessageKeyBytes.PROPERTIES +
-                propertiesLen +
-                LogConstants.MessageKeyBytes.CRC +
-                LogConstants.MessageKeyBytes.BODY_SIZE +
-                bodyLen;
-    }
 
     /**
      * 按照offset获取消息
@@ -154,7 +140,7 @@ public class Log {
             byte[] topic = message.getTopic().getBytes(StandardCharsets.UTF_8);
             byte topicLen = (byte) topic.length;
             int partitionId = message.getPartition();
-            byte[] properties = messageProperties2String(message.getProperties()).getBytes(StandardCharsets.UTF_8);
+            byte[] properties = CommonUtil.messageProperties2String(message.getProperties()).getBytes(StandardCharsets.UTF_8);
             int propertiesLen = properties.length;
             //now used GZIP compress
             //todo get compress way in properties
@@ -170,7 +156,7 @@ public class Log {
             int crc = message.getCrc();
             byte version = message.getVersion();
             //this storeLen is after offset
-            int storeLen = calStoreLength(bodyLen, topicLen, propertiesLen);
+            int storeLen = CommonUtil.calStoreLength(bodyLen, topicLen, propertiesLen);
 
             //------ build append buffer ----
             ByteBuffer storeByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeLen);
@@ -201,22 +187,6 @@ public class Log {
             //复位position，append根据position写入。
             storeByteBuffer.flip();
             return Results.success(storeByteBuffer);
-        }
-
-        private static String messageProperties2String(Map<String, String> properties) {
-            StringBuilder sb = new StringBuilder();
-            if (properties != null) {
-                for (final Map.Entry<String, String> entry : properties.entrySet()) {
-                    final String name = entry.getKey();
-                    final String value = entry.getValue();
-
-                    sb.append(name);
-                    sb.append(CommonConstants.NAME_VALUE_SEPARATOR);
-                    sb.append(value);
-                    sb.append(CommonConstants.PROPERTY_SEPARATOR);
-                }
-            }
-            return sb.toString();
         }
 
     }
@@ -252,7 +222,7 @@ public class Log {
                 //9、properties - cal
                 byte[] propertiesBytes = new byte[propertiesLen];
                 storeByteBuffer.get(propertiesBytes);
-                Map<String, String> properties = string2messageProperties(new String(propertiesBytes, StandardCharsets.UTF_8));
+                Map<String, String> properties = CommonUtil.string2messageProperties(new String(propertiesBytes, StandardCharsets.UTF_8));
                 message.setProperties(properties);
                 //10、crc - 4
                 int crc = storeByteBuffer.getInt();
@@ -269,20 +239,6 @@ public class Log {
                 logger.error("store log message decode error.", e);
                 return Results.failure("store log message decode error.");
             }
-        }
-
-        private static Map<String, String> string2messageProperties(final String properties) {
-            Map<String, String> map = new HashMap<>(1);
-            if (properties != null) {
-                String[] items = properties.split(CommonConstants.PROPERTY_SEPARATOR);
-                for (String i : items) {
-                    String[] nv = i.split(CommonConstants.NAME_VALUE_SEPARATOR);
-                    if (2 == nv.length) {
-                        map.put(nv[0], nv[1]);
-                    }
-                }
-            }
-            return map;
         }
 
     }

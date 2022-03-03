@@ -9,9 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * 日志存储与读取入口
- *
  * @author yanghao
+ * 对外提供日志存储和获取入口
  */
 
 @Service
