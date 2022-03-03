@@ -15,6 +15,17 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springboot.version>2.5.7</springboot.version>
+
+        <!-- grpc list-->
+        <grpc.version>1.42.2</grpc.version>
+        <google.protobuf.version>3.19.2</google.protobuf.version>
+        <grpc.stater.version>2.13.1.RELEASE</grpc.stater.version>
+        <protobuf-java-format.version>1.4</protobuf-java-format.version>
+        <os-maven-plugin.version>1.6.1</os-maven-plugin.version>
+        <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
+        <protobuf-java-format.version>1.4</protobuf-java-format.version>
+
+        <lombok.version>1.18.8</lombok.version>
     </properties>
 
     <parent>
@@ -25,6 +36,7 @@
 
     <modules>
         <module>storage</module>
+        <module>broker</module>
     </modules>
 
     <dependencies>

@@ -54,13 +54,11 @@ public class StorageEngine implements Storage {
 
     @Override
     public GetMessageResult getMessage(String topic, int partition, long offset) {
-
         if (topic.length() > Byte.MAX_VALUE) {
             String errorMsg = "message topic length too long, max length " + Byte.MAX_VALUE + "!";
             logger.warn(errorMsg);
             return new GetMessageResult(GetMessageStatus.TOPIC_ILLEGAL, errorMsg);
         }
-
         long beginTime = System.currentTimeMillis();
         GetMessageResult getMessageResult = log.getMessage(topic, partition, offset);
         long costTime = System.currentTimeMillis() - beginTime;
