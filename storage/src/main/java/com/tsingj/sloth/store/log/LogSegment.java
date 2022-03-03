@@ -230,11 +230,11 @@ public class LogSegment {
 
     public Result<ByteBuffer> getMessage(long offset) {
         //1、lookup logPosition slot range.
-        Result<OffsetIndex.LogPositionRange> lookUpResult = this.offsetIndex.lookUp(offset);
+        Result<OffsetIndex.LogPositionSlotRange> lookUpResult = this.offsetIndex.lookUp(offset);
         if (lookUpResult.failure()) {
             return Results.failure(lookUpResult.getMsg());
         }
-        OffsetIndex.LogPositionRange logPositionRange = lookUpResult.getData();
+        OffsetIndex.LogPositionSlotRange logPositionRange = lookUpResult.getData();
         //2、slot logFile position find real position
         Long startPosition = logPositionRange.getStart();
         Long endPosition = logPositionRange.getEnd() != null ? logPositionRange.getEnd() : this.wrotePosition;

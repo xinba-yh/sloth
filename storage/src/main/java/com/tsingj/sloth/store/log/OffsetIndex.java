@@ -92,12 +92,12 @@ public class OffsetIndex {
     }
 
     //lookup logPosition slot range
-    public Result<LogPositionRange> lookUp(long searchKey) {
+    public Result<LogPositionSlotRange> lookUp(long searchKey) {
         //1、get lower indexEntry
         long entries = this.indexSize;
         //index为空，返回-1
         if (entries == 0L) {
-            return Results.success(new LogPositionRange(0L, null));
+            return Results.success(new LogPositionSlotRange(0L, null));
         }
         //最小值大与查询值，从头找。  PS:务必将第一条索引插入。
         Result<IndexEntry.OffsetPosition> getFirstOffsetResult = getIndexFileFirstOffset();
@@ -107,7 +107,7 @@ public class OffsetIndex {
 
         long startOffset = getFirstOffsetResult.getData().getIndexKey();
         if (startOffset >= searchKey) {
-            return Results.success(new LogPositionRange(0L, null));
+            return Results.success(new LogPositionSlotRange(0L, null));
         }
 
         //开始二分查找 <= searchOffset的最大值
@@ -148,7 +148,7 @@ public class OffsetIndex {
         startOffsetPosition = lowerOffsetPositionResult.getData();
         logger.debug("offset:{} find startOffsetIndex:{} {} endOffsetIndex:{} {}", searchKey, startOffsetPosition.getOffset(), startOffsetPosition.getPosition(), endOffsetPosition != null ? endOffsetPosition.getOffset() : "null", endOffsetPosition != null ? endOffsetPosition.getPosition() : "null");
         //其实这里无论返回lower 还是upper都行，循环的退出时间是lower==upper。
-        return Results.success(new LogPositionRange(startOffsetPosition.getPosition(), endOffsetPosition != null ? endOffsetPosition.getPosition() : null));
+        return Results.success(new LogPositionSlotRange(startOffsetPosition.getPosition(), endOffsetPosition != null ? endOffsetPosition.getPosition() : null));
     }
 
     public Result<IndexEntry.OffsetPosition> getIndexEntryByIndexPosition(long indexPosition) {
@@ -243,9 +243,9 @@ public class OffsetIndex {
     }
 
 
-    public static class LogPositionRange {
+    public static class LogPositionSlotRange {
 
-        public LogPositionRange(Long start, Long end) {
+        public LogPositionSlotRange(Long start, Long end) {
             this.start = start;
             this.end = end;
         }

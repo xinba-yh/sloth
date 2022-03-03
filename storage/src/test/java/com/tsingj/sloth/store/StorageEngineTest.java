@@ -158,11 +158,11 @@ public class StorageEngineTest {
         OffsetIndex offsetIndex = new OffsetIndex(filePath);
         long[] queryOffsets = new long[]{9993, 9998};
         for (long offset : queryOffsets) {
-            Result<OffsetIndex.LogPositionRange> logPositionRangeResult = offsetIndex.lookUp(offset);
+            Result<OffsetIndex.LogPositionSlotRange> logPositionRangeResult = offsetIndex.lookUp(offset);
             if (logPositionRangeResult.failure()) {
                 logger.warn("find offset {} fail! ", offset);
             } else {
-                OffsetIndex.LogPositionRange logPositionRangeResultData = logPositionRangeResult.getData();
+                OffsetIndex.LogPositionSlotRange logPositionRangeResultData = logPositionRangeResult.getData();
                 logger.info("offset:{} position range:{} {}",offset, logPositionRangeResultData.getStart(), logPositionRangeResultData.getEnd());
             }
         }
