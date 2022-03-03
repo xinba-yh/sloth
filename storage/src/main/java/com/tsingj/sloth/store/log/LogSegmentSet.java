@@ -46,68 +46,6 @@ public class LogSegmentSet implements SchedulingConfigurer {
     protected final ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> DATA_LOGFILE_MAP = new ConcurrentHashMap<>();
 
 
-    public LogSegment getLatestLogSegmentFile(String topic, int partition) {
-        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
-        if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
-            return null;
-        } else {
-            return logSegmentsSkipListMap.lastEntry().getValue();
-        }
-    }
-
-    public LogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
-        //创建文件
-        String topicPartitionDirPath = storageProperties.getDataPath() + File.separator + topic + File.separator + partition;
-        File dir = new File(topicPartitionDirPath);
-        if (!dir.exists()) {
-            boolean mkdirs = dir.mkdirs();
-            if (mkdirs) {
-                logger.info("create datalog dir {} success.", dir);
-            } else {
-                return null;
-            }
-        }
-        String fileName = CommonUtil.offset2FileName(startOffset);
-        String logPath = dir + File.separator + fileName;
-        LogSegment newLogSegment;
-        try {
-            newLogSegment = new LogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
-        } catch (FileNotFoundException e) {
-            return null;
-        }
-        this.addLogSegment(topic, partition, newLogSegment);
-        return newLogSegment;
-    }
-
-    public LogSegment findLogSegmentByOffset(String topic, int partition, long offset) {
-        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
-        if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
-            return null;
-        }
-        Map.Entry<Long, LogSegment> logSegmentEntry = logSegmentsSkipListMap.floorEntry(offset);
-        if (logSegmentEntry == null) {
-            return null;
-        }
-        LogSegment logSegment = logSegmentEntry.getValue();
-        logger.debug("offset:{} find logSegment startOffset:{}", offset, logSegment.getFileFromOffset());
-        return logSegment;
-    }
-
-    protected void addLogSegment(String topic, long partition, LogSegment logSegment) {
-        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
-        if (logSegmentsSkipListMap == null) {
-            logSegmentsSkipListMap = new ConcurrentSkipListMap<>();
-        }
-        logSegmentsSkipListMap.put(logSegment.getFileFromOffset(), logSegment);
-        this.DATA_LOGFILE_MAP.put(topic + "_" + partition, logSegmentsSkipListMap);
-    }
-
-    public ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> getLogSegmentsMapping() {
-        return this.DATA_LOGFILE_MAP;
-    }
-
-
-
     /**
      * 项目启动时触发
      * -- 加载dataPath目录下所有segment文件和index文件。
@@ -162,6 +100,84 @@ public class LogSegmentSet implements SchedulingConfigurer {
         logger.trace("storage destroy done.");
     }
 
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        logger.info("add flushDirtyLogsTask interval {}ms.", storageProperties.getLogFlushInterval());
+        IntervalTask flushDirtyLogsTask = new IntervalTask(this::flushDirtyLogs, storageProperties.getLogFlushInterval(), 0);
+        taskRegistrar.addFixedDelayTask(flushDirtyLogsTask);
+
+        logger.info("add cleanupLogs interval {}s.", storageProperties.getLogCleanupInterval() / 1000);
+        IntervalTask cleanupLogsTask = new IntervalTask(this::cleanupLogs, storageProperties.getLogCleanupInterval(), 0);
+        taskRegistrar.addFixedDelayTask(cleanupLogsTask);
+    }
+
+    //----------------------------------------------------------public方法--------------------------------------------------------------------
+
+    public LogSegment getLatestLogSegmentFile(String topic, int partition) {
+        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
+            return null;
+        } else {
+            return logSegmentsSkipListMap.lastEntry().getValue();
+        }
+    }
+
+    public LogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
+        //创建文件
+        String topicPartitionDirPath = storageProperties.getDataPath() + File.separator + topic + File.separator + partition;
+        File dir = new File(topicPartitionDirPath);
+        if (!dir.exists()) {
+            boolean mkdirs = dir.mkdirs();
+            if (mkdirs) {
+                logger.info("create datalog dir {} success.", dir);
+            } else {
+                return null;
+            }
+        }
+        String fileName = CommonUtil.offset2FileName(startOffset);
+        String logPath = dir + File.separator + fileName;
+        LogSegment newLogSegment;
+        try {
+            newLogSegment = new LogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
+        } catch (FileNotFoundException e) {
+            return null;
+        }
+        this.addLogSegment(topic, partition, newLogSegment);
+        return newLogSegment;
+    }
+
+    public LogSegment findLogSegmentByOffset(String topic, int partition, long offset) {
+        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
+            return null;
+        }
+        Map.Entry<Long, LogSegment> logSegmentEntry = logSegmentsSkipListMap.floorEntry(offset);
+        if (logSegmentEntry == null) {
+            return null;
+        }
+        LogSegment logSegment = logSegmentEntry.getValue();
+        logger.debug("offset:{} find logSegment startOffset:{}", offset, logSegment.getFileFromOffset());
+        return logSegment;
+    }
+
+    public ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> getLogSegmentsMapping() {
+        return this.DATA_LOGFILE_MAP;
+    }
+
+
+
+    //----------------------------------------------------------private方法--------------------------------------------------------------------
+
+    private void addLogSegment(String topic, long partition, LogSegment logSegment) {
+        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        if (logSegmentsSkipListMap == null) {
+            logSegmentsSkipListMap = new ConcurrentSkipListMap<>();
+        }
+        logSegmentsSkipListMap.put(logSegment.getFileFromOffset(), logSegment);
+        this.DATA_LOGFILE_MAP.put(topic + "_" + partition, logSegmentsSkipListMap);
+    }
+
     /**
      * 输出indexCacheStats
      */
@@ -182,11 +198,10 @@ public class LogSegmentSet implements SchedulingConfigurer {
         }
     }
 
-
     /**
      * 定时刷新日志至磁盘
      */
-    public void flushDirtyLogs() {
+    private void flushDirtyLogs() {
         logger.debug("prepare flush dirtyLogs.");
         ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> logSegmentsMapping = this.getLogSegmentsMapping();
         if (logSegmentsMapping.isEmpty()) {
@@ -212,19 +227,8 @@ public class LogSegmentSet implements SchedulingConfigurer {
     /**
      * 历史segment清理
      */
-    public void cleanupLogs() {
+    private void cleanupLogs() {
         logger.info("cleanupLogs");
     }
 
-
-    @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        logger.info("add flushDirtyLogsTask interval {}ms.", storageProperties.getLogFlushInterval());
-        IntervalTask flushDirtyLogsTask = new IntervalTask(this::flushDirtyLogs, storageProperties.getLogFlushInterval(), 0);
-        taskRegistrar.addFixedDelayTask(flushDirtyLogsTask);
-
-        logger.info("add cleanupLogs interval {}s.", storageProperties.getLogCleanupInterval() / 1000);
-        IntervalTask cleanupLogsTask = new IntervalTask(this::cleanupLogs, storageProperties.getLogCleanupInterval(), 0);
-        taskRegistrar.addFixedDelayTask(cleanupLogsTask);
-    }
 }

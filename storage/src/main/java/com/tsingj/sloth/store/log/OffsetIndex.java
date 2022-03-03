@@ -83,14 +83,6 @@ public class OffsetIndex {
 
     }
 
-    private long getWrotePosition() {
-        return this.indexSize * LogConstants.INDEX_BYTES;
-    }
-
-    private void incrementIndexEntries() {
-        this.indexSize = this.indexSize + 1;
-    }
-
     //lookup logPosition slot range
     public Result<LogPositionSlotRange> lookUp(long searchKey) {
         //1、get lower indexEntry
@@ -151,7 +143,7 @@ public class OffsetIndex {
         return Results.success(new LogPositionSlotRange(startOffsetPosition.getPosition(), endOffsetPosition != null ? endOffsetPosition.getPosition() : null));
     }
 
-    public Result<IndexEntry.OffsetPosition> getIndexEntryByIndexPosition(long indexPosition) {
+    private Result<IndexEntry.OffsetPosition> getIndexEntryByIndexPosition(long indexPosition) {
         return getIndexEntryByIndexPosition(indexPosition, true);
     }
 
@@ -219,7 +211,6 @@ public class OffsetIndex {
         }
     }
 
-
     public void freeNoWarmIndexCache() {
         //计算超出maxWarmIndex长度
         long cleanupCount = this.warmIndexEntries.estimatedSize() - this.maxWarmIndexEntries / LogConstants.INDEX_BYTES;
@@ -240,6 +231,15 @@ public class OffsetIndex {
 
     public void showIndexCacheStats() {
         logger.info("hitCount:" + this.warmIndexEntries.stats().hitCount() + " missCount:" + this.warmIndexEntries.stats().missCount());
+    }
+
+
+    private long getWrotePosition() {
+        return this.indexSize * LogConstants.INDEX_BYTES;
+    }
+
+    private void incrementIndexEntries() {
+        this.indexSize = this.indexSize + 1;
     }
 
 

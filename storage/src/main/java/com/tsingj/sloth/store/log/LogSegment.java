@@ -81,6 +81,26 @@ public class LogSegment {
         this.initialization(logPath, startOffset, maxFileSize, logIndexIntervalBytes);
     }
 
+    private void initialization(String logPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
+        //init log file operator
+        logFile = new File(logPath + LogConstants.FileSuffix.LOG);
+        this.logFileChannel = new RandomAccessFile(logFile, "rw").getChannel();
+        this.readWriteLock = new LogReentrantLock();
+        //init offsetIndex
+        this.offsetIndex = new OffsetIndex(logPath);
+        //init timeIndex
+        this.timeIndex = new TimeIndex(logPath);
+        logger.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath + LogConstants.FileSuffix.LOG, logPath + LogConstants.FileSuffix.OFFSET_INDEX, logPath + LogConstants.FileSuffix.TIMESTAMP_INDEX);
+
+        this.maxFileSize = maxFileSize;
+        this.currentOffset = startOffset;
+        this.fileFromOffset = startOffset;
+        this.wrotePosition = 0;
+        this.logIndexIntervalBytes = logIndexIntervalBytes;
+    }
+
+    //----------------------------------------------------------loadLogs--------------------------------------------------------------------
+
     public static LogSegment loadLogs(File segmentFile, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
         String logPath = segmentFile.getAbsolutePath().replace(LogConstants.FileSuffix.LOG, "");
         long startOffset = CommonUtil.fileName2Offset(segmentFile.getName());
@@ -136,31 +156,18 @@ public class LogSegment {
             }
         }
         return lastOffset;
-
     }
 
-    private void initialization(String logPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
-        //init log file operator
-        logFile = new File(logPath + LogConstants.FileSuffix.LOG);
-        this.logFileChannel = new RandomAccessFile(logFile, "rw").getChannel();
-        this.readWriteLock = new LogReentrantLock();
-        //init offsetIndex
-        this.offsetIndex = new OffsetIndex(logPath);
-        //init timeIndex
-        this.timeIndex = new TimeIndex(logPath);
-        logger.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath + LogConstants.FileSuffix.LOG, logPath + LogConstants.FileSuffix.OFFSET_INDEX, logPath + LogConstants.FileSuffix.TIMESTAMP_INDEX);
-
-        this.maxFileSize = maxFileSize;
-        this.currentOffset = startOffset;
-        this.fileFromOffset = startOffset;
-        this.wrotePosition = 0;
-        this.logIndexIntervalBytes = logIndexIntervalBytes;
-    }
-
+    /**
+     * 文件是否已经超过配置最大文件大小
+     */
     public boolean isFull() {
         return wrotePosition >= maxFileSize;
     }
 
+    /**
+     * 追加日志
+     */
     public Result doAppend(ByteBuffer log, long offset, long storeTimestamp) {
 
         try {
@@ -205,29 +212,6 @@ public class LogSegment {
         }
     }
 
-    private void incrementWrotePosition(int dataLen) {
-        this.wrotePosition = this.wrotePosition + dataLen;
-    }
-
-    private long recordBytesSinceLastIndexAppend(int dataLen) {
-        this.bytesSinceLastIndexAppend = this.bytesSinceLastIndexAppend + dataLen;
-        return this.bytesSinceLastIndexAppend;
-    }
-
-    private void resetBytesSinceLastIndexAppend() {
-        this.bytesSinceLastIndexAppend = 0;
-    }
-
-
-    public long incrementOffsetAndGet() {
-        this.currentOffset = this.currentOffset + 1;
-        return this.currentOffset;
-    }
-
-    public long getFileFromOffset() {
-        return this.fileFromOffset;
-    }
-
     public Result<ByteBuffer> getMessage(long offset) {
         //1、lookup logPosition slot range.
         Result<OffsetIndex.LogPositionSlotRange> lookUpResult = this.offsetIndex.lookUp(offset);
@@ -246,6 +230,49 @@ public class LogSegment {
         Long position = logPositionResult.getData();
         Result<ByteBuffer> messageByPosition = this.getMessageByPosition(position);
         return messageByPosition;
+    }
+
+    public long incrementOffsetAndGet() {
+        this.currentOffset = this.currentOffset + 1;
+        return this.currentOffset;
+    }
+
+    public long getFileFromOffset() {
+        return this.fileFromOffset;
+    }
+
+    public OffsetIndex getOffsetIndex() {
+        return this.offsetIndex;
+    }
+
+    public TimeIndex getTimeIndex() {
+        return this.timeIndex;
+    }
+
+    public void flush() {
+        try {
+            this.logFileChannel.force(true);
+        } catch (IOException ignored) {
+        }
+    }
+
+    public long getCurrentOffset() {
+        return this.currentOffset;
+    }
+
+    //----------------------------------------------------------private方法--------------------------------------------------------------------
+
+    private void incrementWrotePosition(int dataLen) {
+        this.wrotePosition = this.wrotePosition + dataLen;
+    }
+
+    private long recordBytesSinceLastIndexAppend(int dataLen) {
+        this.bytesSinceLastIndexAppend = this.bytesSinceLastIndexAppend + dataLen;
+        return this.bytesSinceLastIndexAppend;
+    }
+
+    private void resetBytesSinceLastIndexAppend() {
+        this.bytesSinceLastIndexAppend = 0;
     }
 
     private Result<ByteBuffer> getMessageByPosition(Long position) {
@@ -303,26 +330,6 @@ public class LogSegment {
             return Results.failure("offset " + searchOffset + " find fail!");
         }
         return Results.success(logPosition);
-    }
-
-
-    public OffsetIndex getOffsetIndex() {
-        return this.offsetIndex;
-    }
-
-    public TimeIndex getTimeIndex() {
-        return this.timeIndex;
-    }
-
-    public void flush() {
-        try {
-            this.logFileChannel.force(true);
-        } catch (IOException ignored) {
-        }
-    }
-
-    public long getCurrentOffset() {
-        return this.currentOffset;
     }
 
 }
