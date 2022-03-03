@@ -1,6 +1,8 @@
 package com.tsingj.sloth.store.log;
 
 import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.log.lock.LogLock;
+import com.tsingj.sloth.store.log.lock.LogReentrantLock;
 import com.tsingj.sloth.store.pojo.Result;
 import com.tsingj.sloth.store.pojo.Results;
 import com.tsingj.sloth.store.utils.CommonUtil;
@@ -49,6 +51,11 @@ public class LogSegment {
     private File logFile;
 
     private FileChannel logFileChannel;
+
+    /**
+     * fileLock
+     */
+    private LogLock readWriteLock;
 
 
     /**
@@ -113,8 +120,9 @@ public class LogSegment {
         long position = startPosition;
         long endPosition = this.wrotePosition;
         long lastOffset = 0;
-        try {
-            while (position < endPosition) {
+        while (position < endPosition) {
+            try {
+                this.readWriteLock.lock();
                 //查询消息体
                 logFileChannel.position(position);
                 ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
@@ -123,18 +131,22 @@ public class LogSegment {
                 lastOffset = headerByteBuffer.getLong();
                 int storeSize = headerByteBuffer.getInt();
                 position = position + (LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
+            } catch (IOException e) {
+                logger.error("find lastOffset IO operation fail!", e);
+                throw new LogRecoveryException("find last offset from latest segmentFile fail!", e);
+            } finally {
+                this.readWriteLock.unlock();
             }
-            return lastOffset;
-        } catch (IOException e) {
-            logger.error("find lastOffset IO operation fail!", e);
-            throw new LogRecoveryException("find last offset from latest segmentFile fail!", e);
         }
+        return lastOffset;
+
     }
 
     private void initialization(String logPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
         //init log file operator
         logFile = new File(logPath + LogConstants.FileSuffix.LOG);
         this.logFileChannel = new RandomAccessFile(logFile, "rw").getChannel();
+        this.readWriteLock = new LogReentrantLock();
         //init offsetIndex
         this.offsetIndex = new OffsetIndex(logPath);
         //init timeIndex
@@ -153,17 +165,25 @@ public class LogSegment {
     }
 
     public Result doAppend(ByteBuffer log, long offset, long storeTimestamp) {
+
         try {
+
             /*
              * 1、append log
              */
-            this.logFileChannel.position(this.wrotePosition);
-            this.logFileChannel.write(log);
+            try {
+                this.readWriteLock.lock();
+                this.logFileChannel.position(this.wrotePosition);
+                this.logFileChannel.write(log);
+            } finally {
+                this.readWriteLock.lock();
+            }
 
             //记录上一次index插入后，新存入的消息
             int dataLen = log.capacity();
             long recordBytes = this.recordBytesSinceLastIndexAppend(dataLen);
-            if (offset == this.fileFromOffset || recordBytes >= this.logIndexIntervalBytes) {
+            //bytesSinceLastIndexAppend为空（首次) 或者 记录字节数大于配置logIndexIntervalBytes.
+            if (bytesSinceLastIndexAppend == 0 || recordBytes >= this.logIndexIntervalBytes) {
                 /*
                  * 2、append offset index
                  */
@@ -183,6 +203,8 @@ public class LogSegment {
         } catch (IOException e) {
             logger.error("log append fail!", e);
             return Results.failure("log append fail!" + e.getMessage());
+        } finally {
+            this.readWriteLock.unlock();
         }
     }
 
@@ -233,6 +255,7 @@ public class LogSegment {
 
     private Result<ByteBuffer> getMessageByPosition(Long position) {
         try {
+            this.readWriteLock.lock();
             logFileChannel.position(position);
             ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
             logFileChannel.read(headerByteBuffer);
@@ -248,6 +271,8 @@ public class LogSegment {
         } catch (IOException e) {
             logger.error("get message by position {} , IO operation fail!", position, e);
             return Results.failure("get message by position {} IO operation fail!");
+        } finally {
+            this.readWriteLock.unlock();
         }
     }
 
@@ -257,6 +282,7 @@ public class LogSegment {
         while (position < endPosition) {
             //查询消息体
             try {
+                this.readWriteLock.lock();
                 logFileChannel.position(position);
                 ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
                 logFileChannel.read(headerByteBuffer);
@@ -272,6 +298,8 @@ public class LogSegment {
             } catch (IOException e) {
                 logger.error("find offset:{} IO operation fail!", searchOffset, e);
                 return Results.failure("find offset:" + searchOffset + " IO operation fail!");
+            } finally {
+                this.readWriteLock.unlock();
             }
         }
 
@@ -326,6 +354,7 @@ public class LogSegment {
 
     private Result<ByteBuffer> getMessageHeaderByPosition(Long position) {
         try {
+            this.readWriteLock.lock();
             logFileChannel.position(position);
             ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
             logFileChannel.read(headerByteBuffer);
@@ -334,6 +363,8 @@ public class LogSegment {
         } catch (IOException e) {
             logger.error("get message by position {} , IO operation fail!", position, e);
             return Results.failure("get message by position {} IO operation fail!");
+        } finally {
+            this.readWriteLock.unlock();
         }
     }
 

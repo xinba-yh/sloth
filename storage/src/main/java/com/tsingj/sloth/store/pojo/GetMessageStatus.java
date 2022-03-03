@@ -18,4 +18,7 @@ public enum GetMessageStatus {
 
     PARTITION_NO_MESSAGE,
 
+    //未知异常
+    UNKNOWN_ERROR,
+
 }

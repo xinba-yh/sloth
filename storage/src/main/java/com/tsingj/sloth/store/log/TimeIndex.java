@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author yanghao
@@ -27,6 +28,11 @@ public class TimeIndex {
     private FileChannel fileChannel;
 
     /**
+     * fileLock
+     */
+    private final ReentrantLock readWriteLock;
+
+    /**
      * offset index 数量
      */
     private long indexEntries;
@@ -37,6 +43,7 @@ public class TimeIndex {
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
 
         this.indexEntries = 0L;
+        this.readWriteLock = new ReentrantLock();
     }
 
     public void addIndex(long key, long value) throws IOException {
@@ -47,9 +54,16 @@ public class TimeIndex {
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
         indexByteBuffer.flip();
-        this.fileChannel.position(this.getWrotePosition());
-        this.fileChannel.write(indexByteBuffer);
-        this.incrementIndexEntries();
+
+        try {
+            this.readWriteLock.lock();
+            this.fileChannel.position(this.getWrotePosition());
+            this.fileChannel.write(indexByteBuffer);
+            this.incrementIndexEntries();
+        } finally {
+            this.readWriteLock.unlock();
+        }
+
     }
 
     private long getWrotePosition() {

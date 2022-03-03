@@ -1,6 +1,8 @@
 package com.tsingj.sloth.store;
 
 import com.tsingj.sloth.store.log.*;
+import com.tsingj.sloth.store.mock.ConsumerClient;
+import com.tsingj.sloth.store.mock.ProducerClient;
 import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import org.junit.Test;
@@ -17,12 +19,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -42,12 +40,6 @@ public class StorageEngineTest {
 
     private static final int threadNum = 8;
 
-
-    @Autowired
-    private LogSegmentSet logSegmentSet;
-
-    @Autowired
-    private Log log;
 
     /**
      * 8 thread 10W -> 3S
@@ -78,8 +70,8 @@ public class StorageEngineTest {
                         if (putMessageResult.getStatus() != PutMessageStatus.OK) {
                             logger.error("set error.{}", putMessageResult.getErrorMsg());
                         }
-                        if(finalI1 == count -1){
-                            logger.info("end offset:{}",putMessageResult.getOffset());
+                        if (finalI1 == count - 1) {
+                            logger.info("end offset:{}", putMessageResult.getOffset());
                         }
                         partitionAppendCountDownLatch.countDown();
                     }));
@@ -176,19 +168,19 @@ public class StorageEngineTest {
         }
     }
 
-    @Test
-    public void loadTest() throws InterruptedException {
-
-        LogSegment logSegment = logSegmentSet.getLatestLogSegmentFile(topic, 0);
-        List<ByteBuffer> messagesFromFirst = logSegment.getMessagesFromFirst(100);
-        if (messagesFromFirst == null || messagesFromFirst.size() == 0) {
-            logger.warn("load empty messages.");
-            return;
-        }
-        for (ByteBuffer msgByteBuffer : messagesFromFirst) {
-            logger.info("offset:{} storeSize:{}", msgByteBuffer.getLong(), msgByteBuffer.getInt());
-        }
-    }
+//    @Test
+//    public void loadTest() throws InterruptedException {
+//
+//        LogSegment logSegment = logSegmentSet.getLatestLogSegmentFile(topic, 0);
+//        List<ByteBuffer> messagesFromFirst = logSegment.getMessagesFromFirst(100);
+//        if (messagesFromFirst == null || messagesFromFirst.size() == 0) {
+//            logger.warn("load empty messages.");
+//            return;
+//        }
+//        for (ByteBuffer msgByteBuffer : messagesFromFirst) {
+//            logger.info("offset:{} storeSize:{}", msgByteBuffer.getLong(), msgByteBuffer.getInt());
+//        }
+//    }
 
 
     @Test
@@ -207,7 +199,36 @@ public class StorageEngineTest {
         System.out.println(skipListMap.floorKey(100));
         System.out.println(skipListMap.floorKey(539));
 
+    }
 
+
+    //----------------------------------------标准测试---------------------------------------------
+    @Test
+    public void mockPutClientTest() {
+        //定义每个partition发送message数量 -> 总数量为：(9 * count)
+        int partitionMsgCount = 1000;
+        int partitionCount = 9;
+        /*
+         *  1、producer put message mock
+         */
+        long producerStartTime = System.currentTimeMillis();
+        ProducerClient producerClient = new ProducerClient(topic, partitionMsgCount, partitionCount, storageEngine);
+        producerClient.start();
+        logger.info("producer cost:{}", System.currentTimeMillis() - producerStartTime);
+    }
+
+
+    @Test
+    public void mockGetClientTest() {
+        //定义每个partition发送message数量 -> 总数量为：(9 * count)
+        int partitionMsgCount = 1000;
+        int partitionCount = 9;
+
+        //2、consumer get message mock
+        long consumerStartTime = System.currentTimeMillis();
+        ConsumerClient consumerClient = new ConsumerClient(topic, partitionMsgCount, partitionCount, storageEngine);
+        consumerClient.start();
+        logger.info("consumer cost:{}", System.currentTimeMillis() - consumerStartTime);
     }
 
 }

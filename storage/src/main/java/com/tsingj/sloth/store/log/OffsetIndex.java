@@ -2,6 +2,7 @@ package com.tsingj.sloth.store.log;
 
 import com.github.benmanes.caffeine.cache.*;
 import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.log.lock.LogReentrantLock;
 import com.tsingj.sloth.store.pojo.Result;
 import com.tsingj.sloth.store.pojo.Results;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -30,6 +31,11 @@ public class OffsetIndex {
     private final FileChannel fileChannel;
 
     /**
+     * fileLock
+     */
+    private final LogReentrantLock readWriteLock;
+
+    /**
      * caffeine index cache
      */
     private final Cache<Long, IndexEntry.OffsetPosition> warmIndexEntries;
@@ -48,10 +54,12 @@ public class OffsetIndex {
         //init offsetIndex file operator
         this.file = new File(logPath + LogConstants.FileSuffix.OFFSET_INDEX);
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
+        this.readWriteLock = new LogReentrantLock();
         //init other properties
         this.indexSize = 0L;
         //1m内存 index
         this.warmIndexEntries = Caffeine.newBuilder().initialCapacity(maxWarmIndexEntries / LogConstants.INDEX_BYTES).recordStats().build();
+
     }
 
     public void addIndex(long key, long value) throws IOException {
@@ -62,10 +70,17 @@ public class OffsetIndex {
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
         indexByteBuffer.flip();
-        this.fileChannel.position(this.getWrotePosition());
-        this.fileChannel.write(indexByteBuffer);
-        this.warmIndexEntries.put(this.getWrotePosition(), new IndexEntry.OffsetPosition(key, value));
-        this.incrementIndexEntries();
+
+        try {
+            this.readWriteLock.lock();
+            this.fileChannel.position(this.getWrotePosition());
+            this.fileChannel.write(indexByteBuffer);
+            this.warmIndexEntries.put(this.getWrotePosition(), new IndexEntry.OffsetPosition(key, value));
+            this.incrementIndexEntries();
+        } finally {
+            this.readWriteLock.unlock();
+        }
+
     }
 
     private long getWrotePosition() {
@@ -136,6 +151,7 @@ public class OffsetIndex {
             }
         }
         try {
+            this.readWriteLock.lock();
             this.fileChannel.position(indexPosition);
             ByteBuffer byteBuffer = ByteBuffer.allocate(LogConstants.INDEX_BYTES);
             this.fileChannel.read(byteBuffer);
@@ -144,6 +160,8 @@ public class OffsetIndex {
         } catch (IOException e) {
             logger.error("offset indexFileReader position operation fail!", e);
             return Results.failure("offset indexFileReader position operation fail!");
+        } finally {
+            this.readWriteLock.unlock();
         }
     }
 
@@ -181,8 +199,11 @@ public class OffsetIndex {
 
     public void flush() {
         try {
+            this.readWriteLock.lock();
             this.fileChannel.force(true);
         } catch (IOException ignored) {
+        } finally {
+            this.readWriteLock.unlock();
         }
     }
 
@@ -208,12 +229,4 @@ public class OffsetIndex {
         logger.info("hitCount:" + this.warmIndexEntries.stats().hitCount() + " missCount:" + this.warmIndexEntries.stats().missCount());
     }
 
-    public static void main(String[] args) {
-        Cache<Integer, Integer> cache = Caffeine.newBuilder().initialCapacity(100).recordStats().build();
-        for (int i = 0; i < 100; i++) {
-            cache.put(i, i);
-        }
-
-        System.out.println(cache.asMap().keySet());
-    }
 }

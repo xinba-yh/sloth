@@ -2,8 +2,8 @@ package com.tsingj.sloth.store.log;
 
 import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.log.lock.LogLock;
 import com.tsingj.sloth.store.log.lock.LogLockFactory;
-import com.tsingj.sloth.store.log.lock.LogSpinLock;
 import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.utils.CompressUtil;
 import com.tsingj.sloth.store.utils.CrcUtil;
@@ -53,7 +53,8 @@ public class Log {
         message.setVersion(CommonConstants.CURRENT_VERSION);
 
         //get log lock, 每个topic、partition同时仅可以有一个线程进行写入，并发写入的提速在partition层。
-        LogSpinLock lock = LogLockFactory.getSpinLock(topic, partition);
+        //kafka used synchronized , rocketmq used spinLock(AtomicBoolean) , 实现该部分流程不同，需要采用topic-partition分段锁，使用ReentrantLock.
+        LogLock lock = LogLockFactory.getReentrantLock(topic, partition);
         long offset;
         try {
             //lock start
@@ -63,7 +64,7 @@ public class Log {
             //1、not found create
             //2、full rolling logSegmentFile with index
             if (latestLogSegment == null || latestLogSegment.isFull()) {
-                offset = latestLogSegment == null ? 0 : latestLogSegment.getCurrentOffset() + 1;
+                offset = latestLogSegment == null ? 0 : latestLogSegment.incrementOffsetAndGet();
                 latestLogSegment = logSegmentSet.newLogSegmentFile(topic, partition, offset);
                 if (latestLogSegment == null) {
                     logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
@@ -128,16 +129,21 @@ public class Log {
         if (logSegment == null) {
             return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }
-        Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
-        if (getMessageResult.failure()) {
-            return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, getMessageResult.getMsg());
+        try {
+            Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
+            if (getMessageResult.failure()) {
+                return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, getMessageResult.getMsg());
+            }
+            ByteBuffer storeByteBuffer = getMessageResult.getData();
+            Result<Message> decodeResult = StoreDecoder.decode(offset, storeByteBuffer);
+            if (decodeResult.failure()) {
+                return new GetMessageResult(GetMessageStatus.MESSAGE_DECODE_FAIL, decodeResult.getMsg());
+            }
+            return new GetMessageResult(GetMessageStatus.FOUND, decodeResult.getData());
+        } catch (Throwable e) {
+            return new GetMessageResult(GetMessageStatus.UNKNOWN_ERROR, e.getMessage());
         }
-        ByteBuffer storeByteBuffer = getMessageResult.getData();
-        Result<Message> decodeResult = StoreDecoder.decode(offset, storeByteBuffer);
-        if (decodeResult.failure()) {
-            return new GetMessageResult(GetMessageStatus.MESSAGE_DECODE_FAIL, decodeResult.getMsg());
-        }
-        return new GetMessageResult(GetMessageStatus.FOUND, decodeResult.getData());
+
     }
 
 
