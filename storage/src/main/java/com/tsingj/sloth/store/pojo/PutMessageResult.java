@@ -6,8 +6,11 @@ package com.tsingj.sloth.store.pojo;
  */
 public class PutMessageResult {
 
-    public PutMessageResult(PutMessageStatus status) {
+    public PutMessageResult(PutMessageStatus status, String topic, int partition, long offset) {
         this.status = status;
+        this.topic = topic;
+        this.partition = partition;
+        this.offset = offset;
     }
 
     public PutMessageResult(PutMessageStatus status, String errorMsg) {
@@ -15,10 +18,10 @@ public class PutMessageResult {
         this.errorMsg = errorMsg;
     }
 
-    public PutMessageResult(PutMessageStatus status, Long offset) {
+    public PutMessageResult(PutMessageStatus status) {
         this.status = status;
-        this.offset = offset;
     }
+
 
     /**
      * 状态
@@ -30,10 +33,22 @@ public class PutMessageResult {
      */
     private String errorMsg;
 
+
+    /**
+     * topic
+     */
+    private String topic;
+
+    /**
+     * partition
+     */
+    private Integer partition;
+
     /**
      * offset
      */
     private Long offset;
+
 
     public PutMessageStatus getStatus() {
         return status;
@@ -59,4 +74,19 @@ public class PutMessageResult {
         this.offset = offset;
     }
 
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public Integer getPartition() {
+        return partition;
+    }
+
+    public void setPartition(Integer partition) {
+        this.partition = partition;
+    }
 }

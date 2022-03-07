@@ -38,6 +38,7 @@
     <modules>
         <module>storage</module>
         <module>broker</module>
+        <module>example</module>
     </modules>
 
     <dependencies>

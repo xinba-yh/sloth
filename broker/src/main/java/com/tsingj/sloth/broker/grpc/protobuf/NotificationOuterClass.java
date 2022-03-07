@@ -2160,22 +2160,22 @@ public final class NotificationOuterClass {
           getTopicBytes();
 
       /**
-       * <code>int32 partition = 2;</code>
+       * <code>uint32 partition = 2;</code>
        * @return The partition.
        */
       int getPartition();
 
       /**
-       * <code>string message_id = 3;</code>
-       * @return The messageId.
+       * <code>string request_id = 3;</code>
+       * @return The requestId.
        */
-      java.lang.String getMessageId();
+      java.lang.String getRequestId();
       /**
-       * <code>string message_id = 3;</code>
-       * @return The bytes for messageId.
+       * <code>string request_id = 3;</code>
+       * @return The bytes for requestId.
        */
       com.google.protobuf.ByteString
-          getMessageIdBytes();
+          getRequestIdBytes();
 
       /**
        * <code>map&lt;string, string&gt; properties = 4;</code>
@@ -2245,7 +2245,7 @@ public final class NotificationOuterClass {
       }
       private Message() {
         topic_ = "";
-        messageId_ = "";
+        requestId_ = "";
         body_ = com.google.protobuf.ByteString.EMPTY;
       }
 
@@ -2288,13 +2288,13 @@ public final class NotificationOuterClass {
               }
               case 16: {
 
-                partition_ = input.readInt32();
+                partition_ = input.readUInt32();
                 break;
               }
               case 26: {
                 java.lang.String s = input.readStringRequireUtf8();
 
-                messageId_ = s;
+                requestId_ = s;
                 break;
               }
               case 34: {
@@ -2364,114 +2364,6 @@ public final class NotificationOuterClass {
                 com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.class, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Builder.class);
       }
 
-      /**
-       * Protobuf enum {@code SendRequest.Message.Mode}
-       */
-      public enum Mode
-          implements com.google.protobuf.ProtocolMessageEnum {
-        /**
-         * <code>CLUSTERING = 0;</code>
-         */
-        CLUSTERING(0),
-        /**
-         * <code>BROADCAST = 1;</code>
-         */
-        BROADCAST(1),
-        UNRECOGNIZED(-1),
-        ;
-
-        /**
-         * <code>CLUSTERING = 0;</code>
-         */
-        public static final int CLUSTERING_VALUE = 0;
-        /**
-         * <code>BROADCAST = 1;</code>
-         */
-        public static final int BROADCAST_VALUE = 1;
-
-
-        public final int getNumber() {
-          if (this == UNRECOGNIZED) {
-            throw new java.lang.IllegalArgumentException(
-                "Can't get the number of an unknown enum value.");
-          }
-          return value;
-        }
-
-        /**
-         * @param value The numeric wire value of the corresponding enum entry.
-         * @return The enum associated with the given numeric wire value.
-         * @deprecated Use {@link #forNumber(int)} instead.
-         */
-        @java.lang.Deprecated
-        public static Mode valueOf(int value) {
-          return forNumber(value);
-        }
-
-        /**
-         * @param value The numeric wire value of the corresponding enum entry.
-         * @return The enum associated with the given numeric wire value.
-         */
-        public static Mode forNumber(int value) {
-          switch (value) {
-            case 0: return CLUSTERING;
-            case 1: return BROADCAST;
-            default: return null;
-          }
-        }
-
-        public static com.google.protobuf.Internal.EnumLiteMap<Mode>
-            internalGetValueMap() {
-          return internalValueMap;
-        }
-        private static final com.google.protobuf.Internal.EnumLiteMap<
-            Mode> internalValueMap =
-              new com.google.protobuf.Internal.EnumLiteMap<Mode>() {
-                public Mode findValueByNumber(int number) {
-                  return Mode.forNumber(number);
-                }
-              };
-
-        public final com.google.protobuf.Descriptors.EnumValueDescriptor
-            getValueDescriptor() {
-          if (this == UNRECOGNIZED) {
-            throw new java.lang.IllegalStateException(
-                "Can't get the descriptor of an unrecognized enum value.");
-          }
-          return getDescriptor().getValues().get(ordinal());
-        }
-        public final com.google.protobuf.Descriptors.EnumDescriptor
-            getDescriptorForType() {
-          return getDescriptor();
-        }
-        public static final com.google.protobuf.Descriptors.EnumDescriptor
-            getDescriptor() {
-          return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.getDescriptor().getEnumTypes().get(0);
-        }
-
-        private static final Mode[] VALUES = values();
-
-        public static Mode valueOf(
-            com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-          if (desc.getType() != getDescriptor()) {
-            throw new java.lang.IllegalArgumentException(
-              "EnumValueDescriptor is not for this type.");
-          }
-          if (desc.getIndex() == -1) {
-            return UNRECOGNIZED;
-          }
-          return VALUES[desc.getIndex()];
-        }
-
-        private final int value;
-
-        private Mode(int value) {
-          this.value = value;
-        }
-
-        // @@protoc_insertion_point(enum_scope:SendRequest.Message.Mode)
-      }
-
       public static final int TOPIC_FIELD_NUMBER = 1;
       private volatile java.lang.Object topic_;
       /**
@@ -2513,7 +2405,7 @@ public final class NotificationOuterClass {
       public static final int PARTITION_FIELD_NUMBER = 2;
       private int partition_;
       /**
-       * <code>int32 partition = 2;</code>
+       * <code>uint32 partition = 2;</code>
        * @return The partition.
        */
       @java.lang.Override
@@ -2521,38 +2413,38 @@ public final class NotificationOuterClass {
         return partition_;
       }
 
-      public static final int MESSAGE_ID_FIELD_NUMBER = 3;
-      private volatile java.lang.Object messageId_;
+      public static final int REQUEST_ID_FIELD_NUMBER = 3;
+      private volatile java.lang.Object requestId_;
       /**
-       * <code>string message_id = 3;</code>
-       * @return The messageId.
+       * <code>string request_id = 3;</code>
+       * @return The requestId.
        */
       @java.lang.Override
-      public java.lang.String getMessageId() {
-        java.lang.Object ref = messageId_;
+      public java.lang.String getRequestId() {
+        java.lang.Object ref = requestId_;
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
         } else {
           com.google.protobuf.ByteString bs = 
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          messageId_ = s;
+          requestId_ = s;
           return s;
         }
       }
       /**
-       * <code>string message_id = 3;</code>
-       * @return The bytes for messageId.
+       * <code>string request_id = 3;</code>
+       * @return The bytes for requestId.
        */
       @java.lang.Override
       public com.google.protobuf.ByteString
-          getMessageIdBytes() {
-        java.lang.Object ref = messageId_;
+          getRequestIdBytes() {
+        java.lang.Object ref = requestId_;
         if (ref instanceof java.lang.String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          messageId_ = b;
+          requestId_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
@@ -2688,10 +2580,10 @@ public final class NotificationOuterClass {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
         }
         if (partition_ != 0) {
-          output.writeInt32(2, partition_);
+          output.writeUInt32(2, partition_);
         }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(messageId_)) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 3, messageId_);
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(requestId_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 3, requestId_);
         }
         com.google.protobuf.GeneratedMessageV3
           .serializeStringMapTo(
@@ -2719,10 +2611,10 @@ public final class NotificationOuterClass {
         }
         if (partition_ != 0) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(2, partition_);
+            .computeUInt32Size(2, partition_);
         }
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(messageId_)) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, messageId_);
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(requestId_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, requestId_);
         }
         for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
              : internalGetProperties().getMap().entrySet()) {
@@ -2761,8 +2653,8 @@ public final class NotificationOuterClass {
             .equals(other.getTopic())) return false;
         if (getPartition()
             != other.getPartition()) return false;
-        if (!getMessageId()
-            .equals(other.getMessageId())) return false;
+        if (!getRequestId()
+            .equals(other.getRequestId())) return false;
         if (!internalGetProperties().equals(
             other.internalGetProperties())) return false;
         if (!getBody()
@@ -2784,8 +2676,8 @@ public final class NotificationOuterClass {
         hash = (53 * hash) + getTopic().hashCode();
         hash = (37 * hash) + PARTITION_FIELD_NUMBER;
         hash = (53 * hash) + getPartition();
-        hash = (37 * hash) + MESSAGE_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getMessageId().hashCode();
+        hash = (37 * hash) + REQUEST_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getRequestId().hashCode();
         if (!internalGetProperties().getMap().isEmpty()) {
           hash = (37 * hash) + PROPERTIES_FIELD_NUMBER;
           hash = (53 * hash) + internalGetProperties().hashCode();
@@ -2954,7 +2846,7 @@ public final class NotificationOuterClass {
 
           partition_ = 0;
 
-          messageId_ = "";
+          requestId_ = "";
 
           internalGetMutableProperties().clear();
           body_ = com.google.protobuf.ByteString.EMPTY;
@@ -2990,7 +2882,7 @@ public final class NotificationOuterClass {
           int from_bitField0_ = bitField0_;
           result.topic_ = topic_;
           result.partition_ = partition_;
-          result.messageId_ = messageId_;
+          result.requestId_ = requestId_;
           result.properties_ = internalGetProperties();
           result.properties_.makeImmutable();
           result.body_ = body_;
@@ -3050,8 +2942,8 @@ public final class NotificationOuterClass {
           if (other.getPartition() != 0) {
             setPartition(other.getPartition());
           }
-          if (!other.getMessageId().isEmpty()) {
-            messageId_ = other.messageId_;
+          if (!other.getRequestId().isEmpty()) {
+            requestId_ = other.requestId_;
             onChanged();
           }
           internalGetMutableProperties().mergeFrom(
@@ -3170,7 +3062,7 @@ public final class NotificationOuterClass {
 
         private int partition_ ;
         /**
-         * <code>int32 partition = 2;</code>
+         * <code>uint32 partition = 2;</code>
          * @return The partition.
          */
         @java.lang.Override
@@ -3178,7 +3070,7 @@ public final class NotificationOuterClass {
           return partition_;
         }
         /**
-         * <code>int32 partition = 2;</code>
+         * <code>uint32 partition = 2;</code>
          * @param value The partition to set.
          * @return This builder for chaining.
          */
@@ -3189,7 +3081,7 @@ public final class NotificationOuterClass {
           return this;
         }
         /**
-         * <code>int32 partition = 2;</code>
+         * <code>uint32 partition = 2;</code>
          * @return This builder for chaining.
          */
         public Builder clearPartition() {
@@ -3199,78 +3091,78 @@ public final class NotificationOuterClass {
           return this;
         }
 
-        private java.lang.Object messageId_ = "";
+        private java.lang.Object requestId_ = "";
         /**
-         * <code>string message_id = 3;</code>
-         * @return The messageId.
+         * <code>string request_id = 3;</code>
+         * @return The requestId.
          */
-        public java.lang.String getMessageId() {
-          java.lang.Object ref = messageId_;
+        public java.lang.String getRequestId() {
+          java.lang.Object ref = requestId_;
           if (!(ref instanceof java.lang.String)) {
             com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
             java.lang.String s = bs.toStringUtf8();
-            messageId_ = s;
+            requestId_ = s;
             return s;
           } else {
             return (java.lang.String) ref;
           }
         }
         /**
-         * <code>string message_id = 3;</code>
-         * @return The bytes for messageId.
+         * <code>string request_id = 3;</code>
+         * @return The bytes for requestId.
          */
         public com.google.protobuf.ByteString
-            getMessageIdBytes() {
-          java.lang.Object ref = messageId_;
+            getRequestIdBytes() {
+          java.lang.Object ref = requestId_;
           if (ref instanceof String) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
-            messageId_ = b;
+            requestId_ = b;
             return b;
           } else {
             return (com.google.protobuf.ByteString) ref;
           }
         }
         /**
-         * <code>string message_id = 3;</code>
-         * @param value The messageId to set.
+         * <code>string request_id = 3;</code>
+         * @param value The requestId to set.
          * @return This builder for chaining.
          */
-        public Builder setMessageId(
+        public Builder setRequestId(
             java.lang.String value) {
           if (value == null) {
     throw new NullPointerException();
   }
   
-          messageId_ = value;
+          requestId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>string message_id = 3;</code>
+         * <code>string request_id = 3;</code>
          * @return This builder for chaining.
          */
-        public Builder clearMessageId() {
+        public Builder clearRequestId() {
           
-          messageId_ = getDefaultInstance().getMessageId();
+          requestId_ = getDefaultInstance().getRequestId();
           onChanged();
           return this;
         }
         /**
-         * <code>string message_id = 3;</code>
-         * @param value The bytes for messageId to set.
+         * <code>string request_id = 3;</code>
+         * @param value The bytes for requestId to set.
          * @return This builder for chaining.
          */
-        public Builder setMessageIdBytes(
+        public Builder setRequestIdBytes(
             com.google.protobuf.ByteString value) {
           if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
           
-          messageId_ = value;
+          requestId_ = value;
           onChanged();
           return this;
         }
@@ -4742,16 +4634,16 @@ public final class NotificationOuterClass {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>string message_id = 1;</code>
-       * @return The messageId.
+       * <code>string request_id = 1;</code>
+       * @return The requestId.
        */
-      java.lang.String getMessageId();
+      java.lang.String getRequestId();
       /**
-       * <code>string message_id = 1;</code>
-       * @return The bytes for messageId.
+       * <code>string request_id = 1;</code>
+       * @return The bytes for requestId.
        */
       com.google.protobuf.ByteString
-          getMessageIdBytes();
+          getRequestIdBytes();
 
       /**
        * <code>.SendResult.Ack.RetCode retCode = 2;</code>
@@ -4775,6 +4667,21 @@ public final class NotificationOuterClass {
        */
       com.google.protobuf.ByteString
           getInfoBytes();
+
+      /**
+       * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+       * @return Whether the resultInfo field is set.
+       */
+      boolean hasResultInfo();
+      /**
+       * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+       * @return The resultInfo.
+       */
+      com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo getResultInfo();
+      /**
+       * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+       */
+      com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfoOrBuilder getResultInfoOrBuilder();
     }
     /**
      * Protobuf type {@code SendResult.Ack}
@@ -4789,7 +4696,7 @@ public final class NotificationOuterClass {
         super(builder);
       }
       private Ack() {
-        messageId_ = "";
+        requestId_ = "";
         retCode_ = 0;
         info_ = "";
       }
@@ -4827,7 +4734,7 @@ public final class NotificationOuterClass {
               case 10: {
                 java.lang.String s = input.readStringRequireUtf8();
 
-                messageId_ = s;
+                requestId_ = s;
                 break;
               }
               case 16: {
@@ -4840,6 +4747,19 @@ public final class NotificationOuterClass {
                 java.lang.String s = input.readStringRequireUtf8();
 
                 info_ = s;
+                break;
+              }
+              case 34: {
+                com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.Builder subBuilder = null;
+                if (resultInfo_ != null) {
+                  subBuilder = resultInfo_.toBuilder();
+                }
+                resultInfo_ = input.readMessage(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(resultInfo_);
+                  resultInfo_ = subBuilder.buildPartial();
+                }
+
                 break;
               }
               default: {
@@ -4982,38 +4902,747 @@ public final class NotificationOuterClass {
         // @@protoc_insertion_point(enum_scope:SendResult.Ack.RetCode)
       }
 
-      public static final int MESSAGE_ID_FIELD_NUMBER = 1;
-      private volatile java.lang.Object messageId_;
+      public interface ResultInfoOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:SendResult.Ack.ResultInfo)
+          com.google.protobuf.MessageOrBuilder {
+
+        /**
+         * <code>string topic = 1;</code>
+         * @return The topic.
+         */
+        java.lang.String getTopic();
+        /**
+         * <code>string topic = 1;</code>
+         * @return The bytes for topic.
+         */
+        com.google.protobuf.ByteString
+            getTopicBytes();
+
+        /**
+         * <code>uint32 partition = 2;</code>
+         * @return The partition.
+         */
+        int getPartition();
+
+        /**
+         * <code>int64 offset = 3;</code>
+         * @return The offset.
+         */
+        long getOffset();
+      }
       /**
-       * <code>string message_id = 1;</code>
-       * @return The messageId.
+       * Protobuf type {@code SendResult.Ack.ResultInfo}
+       */
+      public static final class ResultInfo extends
+          com.google.protobuf.GeneratedMessageV3 implements
+          // @@protoc_insertion_point(message_implements:SendResult.Ack.ResultInfo)
+          ResultInfoOrBuilder {
+      private static final long serialVersionUID = 0L;
+        // Use ResultInfo.newBuilder() to construct.
+        private ResultInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+          super(builder);
+        }
+        private ResultInfo() {
+          topic_ = "";
+        }
+
+        @java.lang.Override
+        @SuppressWarnings({"unused"})
+        protected java.lang.Object newInstance(
+            UnusedPrivateParameter unused) {
+          return new ResultInfo();
+        }
+
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+          return this.unknownFields;
+        }
+        private ResultInfo(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          this();
+          if (extensionRegistry == null) {
+            throw new java.lang.NullPointerException();
+          }
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+              com.google.protobuf.UnknownFieldSet.newBuilder();
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                case 10: {
+                  java.lang.String s = input.readStringRequireUtf8();
+
+                  topic_ = s;
+                  break;
+                }
+                case 16: {
+
+                  partition_ = input.readUInt32();
+                  break;
+                }
+                case 24: {
+
+                  offset_ = input.readInt64();
+                  break;
+                }
+                default: {
+                  if (!parseUnknownField(
+                      input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
+              }
+            }
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(this);
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(
+                e).setUnfinishedMessage(this);
+          } finally {
+            this.unknownFields = unknownFields.build();
+            makeExtensionsImmutable();
+          }
+        }
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendResult_Ack_ResultInfo_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendResult_Ack_ResultInfo_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.class, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.Builder.class);
+        }
+
+        public static final int TOPIC_FIELD_NUMBER = 1;
+        private volatile java.lang.Object topic_;
+        /**
+         * <code>string topic = 1;</code>
+         * @return The topic.
+         */
+        @java.lang.Override
+        public java.lang.String getTopic() {
+          java.lang.Object ref = topic_;
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+          }
+        }
+        /**
+         * <code>string topic = 1;</code>
+         * @return The bytes for topic.
+         */
+        @java.lang.Override
+        public com.google.protobuf.ByteString
+            getTopicBytes() {
+          java.lang.Object ref = topic_;
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            topic_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        public static final int PARTITION_FIELD_NUMBER = 2;
+        private int partition_;
+        /**
+         * <code>uint32 partition = 2;</code>
+         * @return The partition.
+         */
+        @java.lang.Override
+        public int getPartition() {
+          return partition_;
+        }
+
+        public static final int OFFSET_FIELD_NUMBER = 3;
+        private long offset_;
+        /**
+         * <code>int64 offset = 3;</code>
+         * @return The offset.
+         */
+        @java.lang.Override
+        public long getOffset() {
+          return offset_;
+        }
+
+        private byte memoizedIsInitialized = -1;
+        @java.lang.Override
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
+
+          memoizedIsInitialized = 1;
+          return true;
+        }
+
+        @java.lang.Override
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+          }
+          if (partition_ != 0) {
+            output.writeUInt32(2, partition_);
+          }
+          if (offset_ != 0L) {
+            output.writeInt64(3, offset_);
+          }
+          unknownFields.writeTo(output);
+        }
+
+        @java.lang.Override
+        public int getSerializedSize() {
+          int size = memoizedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+            size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+          }
+          if (partition_ != 0) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeUInt32Size(2, partition_);
+          }
+          if (offset_ != 0L) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeInt64Size(3, offset_);
+          }
+          size += unknownFields.getSerializedSize();
+          memoizedSize = size;
+          return size;
+        }
+
+        @java.lang.Override
+        public boolean equals(final java.lang.Object obj) {
+          if (obj == this) {
+           return true;
+          }
+          if (!(obj instanceof com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo)) {
+            return super.equals(obj);
+          }
+          com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo other = (com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo) obj;
+
+          if (!getTopic()
+              .equals(other.getTopic())) return false;
+          if (getPartition()
+              != other.getPartition()) return false;
+          if (getOffset()
+              != other.getOffset()) return false;
+          if (!unknownFields.equals(other.unknownFields)) return false;
+          return true;
+        }
+
+        @java.lang.Override
+        public int hashCode() {
+          if (memoizedHashCode != 0) {
+            return memoizedHashCode;
+          }
+          int hash = 41;
+          hash = (19 * hash) + getDescriptor().hashCode();
+          hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+          hash = (53 * hash) + getTopic().hashCode();
+          hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+          hash = (53 * hash) + getPartition();
+          hash = (37 * hash) + OFFSET_FIELD_NUMBER;
+          hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+              getOffset());
+          hash = (29 * hash) + unknownFields.hashCode();
+          memoizedHashCode = hash;
+          return hash;
+        }
+
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(
+            java.nio.ByteBuffer data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(
+            java.nio.ByteBuffer data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input);
+        }
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return com.google.protobuf.GeneratedMessageV3
+              .parseWithIOException(PARSER, input, extensionRegistry);
+        }
+
+        @java.lang.Override
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder() {
+          return DEFAULT_INSTANCE.toBuilder();
+        }
+        public static Builder newBuilder(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo prototype) {
+          return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+        }
+        @java.lang.Override
+        public Builder toBuilder() {
+          return this == DEFAULT_INSTANCE
+              ? new Builder() : new Builder().mergeFrom(this);
+        }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code SendResult.Ack.ResultInfo}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:SendResult.Ack.ResultInfo)
+            com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfoOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendResult_Ack_ResultInfo_descriptor;
+          }
+
+          @java.lang.Override
+          protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendResult_Ack_ResultInfo_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.class, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.Builder.class);
+          }
+
+          // Construct using com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.newBuilder()
+          private Builder() {
+            maybeForceBuilderInitialization();
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+            super(parent);
+            maybeForceBuilderInitialization();
+          }
+          private void maybeForceBuilderInitialization() {
+            if (com.google.protobuf.GeneratedMessageV3
+                    .alwaysUseFieldBuilders) {
+            }
+          }
+          @java.lang.Override
+          public Builder clear() {
+            super.clear();
+            topic_ = "";
+
+            partition_ = 0;
+
+            offset_ = 0L;
+
+            return this;
+          }
+
+          @java.lang.Override
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendResult_Ack_ResultInfo_descriptor;
+          }
+
+          @java.lang.Override
+          public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo getDefaultInstanceForType() {
+            return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.getDefaultInstance();
+          }
+
+          @java.lang.Override
+          public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo build() {
+            com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          @java.lang.Override
+          public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo buildPartial() {
+            com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo result = new com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo(this);
+            result.topic_ = topic_;
+            result.partition_ = partition_;
+            result.offset_ = offset_;
+            onBuilt();
+            return result;
+          }
+
+          @java.lang.Override
+          public Builder clone() {
+            return super.clone();
+          }
+          @java.lang.Override
+          public Builder setField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.setField(field, value);
+          }
+          @java.lang.Override
+          public Builder clearField(
+              com.google.protobuf.Descriptors.FieldDescriptor field) {
+            return super.clearField(field);
+          }
+          @java.lang.Override
+          public Builder clearOneof(
+              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+            return super.clearOneof(oneof);
+          }
+          @java.lang.Override
+          public Builder setRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              int index, java.lang.Object value) {
+            return super.setRepeatedField(field, index, value);
+          }
+          @java.lang.Override
+          public Builder addRepeatedField(
+              com.google.protobuf.Descriptors.FieldDescriptor field,
+              java.lang.Object value) {
+            return super.addRepeatedField(field, value);
+          }
+          @java.lang.Override
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo) {
+              return mergeFrom((com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo other) {
+            if (other == com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.getDefaultInstance()) return this;
+            if (!other.getTopic().isEmpty()) {
+              topic_ = other.topic_;
+              onChanged();
+            }
+            if (other.getPartition() != 0) {
+              setPartition(other.getPartition());
+            }
+            if (other.getOffset() != 0L) {
+              setOffset(other.getOffset());
+            }
+            this.mergeUnknownFields(other.unknownFields);
+            onChanged();
+            return this;
+          }
+
+          @java.lang.Override
+          public final boolean isInitialized() {
+            return true;
+          }
+
+          @java.lang.Override
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo parsedMessage = null;
+            try {
+              parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              parsedMessage = (com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo) e.getUnfinishedMessage();
+              throw e.unwrapIOException();
+            } finally {
+              if (parsedMessage != null) {
+                mergeFrom(parsedMessage);
+              }
+            }
+            return this;
+          }
+
+          private java.lang.Object topic_ = "";
+          /**
+           * <code>string topic = 1;</code>
+           * @return The topic.
+           */
+          public java.lang.String getTopic() {
+            java.lang.Object ref = topic_;
+            if (!(ref instanceof java.lang.String)) {
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              topic_ = s;
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>string topic = 1;</code>
+           * @return The bytes for topic.
+           */
+          public com.google.protobuf.ByteString
+              getTopicBytes() {
+            java.lang.Object ref = topic_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              topic_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>string topic = 1;</code>
+           * @param value The topic to set.
+           * @return This builder for chaining.
+           */
+          public Builder setTopic(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  
+            topic_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>string topic = 1;</code>
+           * @return This builder for chaining.
+           */
+          public Builder clearTopic() {
+            
+            topic_ = getDefaultInstance().getTopic();
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>string topic = 1;</code>
+           * @param value The bytes for topic to set.
+           * @return This builder for chaining.
+           */
+          public Builder setTopicBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+            
+            topic_ = value;
+            onChanged();
+            return this;
+          }
+
+          private int partition_ ;
+          /**
+           * <code>uint32 partition = 2;</code>
+           * @return The partition.
+           */
+          @java.lang.Override
+          public int getPartition() {
+            return partition_;
+          }
+          /**
+           * <code>uint32 partition = 2;</code>
+           * @param value The partition to set.
+           * @return This builder for chaining.
+           */
+          public Builder setPartition(int value) {
+            
+            partition_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>uint32 partition = 2;</code>
+           * @return This builder for chaining.
+           */
+          public Builder clearPartition() {
+            
+            partition_ = 0;
+            onChanged();
+            return this;
+          }
+
+          private long offset_ ;
+          /**
+           * <code>int64 offset = 3;</code>
+           * @return The offset.
+           */
+          @java.lang.Override
+          public long getOffset() {
+            return offset_;
+          }
+          /**
+           * <code>int64 offset = 3;</code>
+           * @param value The offset to set.
+           * @return This builder for chaining.
+           */
+          public Builder setOffset(long value) {
+            
+            offset_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>int64 offset = 3;</code>
+           * @return This builder for chaining.
+           */
+          public Builder clearOffset() {
+            
+            offset_ = 0L;
+            onChanged();
+            return this;
+          }
+          @java.lang.Override
+          public final Builder setUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.setUnknownFields(unknownFields);
+          }
+
+          @java.lang.Override
+          public final Builder mergeUnknownFields(
+              final com.google.protobuf.UnknownFieldSet unknownFields) {
+            return super.mergeUnknownFields(unknownFields);
+          }
+
+
+          // @@protoc_insertion_point(builder_scope:SendResult.Ack.ResultInfo)
+        }
+
+        // @@protoc_insertion_point(class_scope:SendResult.Ack.ResultInfo)
+        private static final com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo DEFAULT_INSTANCE;
+        static {
+          DEFAULT_INSTANCE = new com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo();
+        }
+
+        public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo getDefaultInstance() {
+          return DEFAULT_INSTANCE;
+        }
+
+        private static final com.google.protobuf.Parser<ResultInfo>
+            PARSER = new com.google.protobuf.AbstractParser<ResultInfo>() {
+          @java.lang.Override
+          public ResultInfo parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new ResultInfo(input, extensionRegistry);
+          }
+        };
+
+        public static com.google.protobuf.Parser<ResultInfo> parser() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<ResultInfo> getParserForType() {
+          return PARSER;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo getDefaultInstanceForType() {
+          return DEFAULT_INSTANCE;
+        }
+
+      }
+
+      public static final int REQUEST_ID_FIELD_NUMBER = 1;
+      private volatile java.lang.Object requestId_;
+      /**
+       * <code>string request_id = 1;</code>
+       * @return The requestId.
        */
       @java.lang.Override
-      public java.lang.String getMessageId() {
-        java.lang.Object ref = messageId_;
+      public java.lang.String getRequestId() {
+        java.lang.Object ref = requestId_;
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
         } else {
           com.google.protobuf.ByteString bs = 
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          messageId_ = s;
+          requestId_ = s;
           return s;
         }
       }
       /**
-       * <code>string message_id = 1;</code>
-       * @return The bytes for messageId.
+       * <code>string request_id = 1;</code>
+       * @return The bytes for requestId.
        */
       @java.lang.Override
       public com.google.protobuf.ByteString
-          getMessageIdBytes() {
-        java.lang.Object ref = messageId_;
+          getRequestIdBytes() {
+        java.lang.Object ref = requestId_;
         if (ref instanceof java.lang.String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          messageId_ = b;
+          requestId_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
@@ -5077,6 +5706,32 @@ public final class NotificationOuterClass {
         }
       }
 
+      public static final int RESULTINFO_FIELD_NUMBER = 4;
+      private com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo resultInfo_;
+      /**
+       * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+       * @return Whether the resultInfo field is set.
+       */
+      @java.lang.Override
+      public boolean hasResultInfo() {
+        return resultInfo_ != null;
+      }
+      /**
+       * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+       * @return The resultInfo.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo getResultInfo() {
+        return resultInfo_ == null ? com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.getDefaultInstance() : resultInfo_;
+      }
+      /**
+       * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfoOrBuilder getResultInfoOrBuilder() {
+        return getResultInfo();
+      }
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -5091,14 +5746,17 @@ public final class NotificationOuterClass {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(messageId_)) {
-          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, messageId_);
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(requestId_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, requestId_);
         }
         if (retCode_ != com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.RetCode.SUCCESS.getNumber()) {
           output.writeEnum(2, retCode_);
         }
         if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(info_)) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 3, info_);
+        }
+        if (resultInfo_ != null) {
+          output.writeMessage(4, getResultInfo());
         }
         unknownFields.writeTo(output);
       }
@@ -5109,8 +5767,8 @@ public final class NotificationOuterClass {
         if (size != -1) return size;
 
         size = 0;
-        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(messageId_)) {
-          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, messageId_);
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(requestId_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, requestId_);
         }
         if (retCode_ != com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.RetCode.SUCCESS.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
@@ -5118,6 +5776,10 @@ public final class NotificationOuterClass {
         }
         if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(info_)) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, info_);
+        }
+        if (resultInfo_ != null) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(4, getResultInfo());
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -5134,11 +5796,16 @@ public final class NotificationOuterClass {
         }
         com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack other = (com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack) obj;
 
-        if (!getMessageId()
-            .equals(other.getMessageId())) return false;
+        if (!getRequestId()
+            .equals(other.getRequestId())) return false;
         if (retCode_ != other.retCode_) return false;
         if (!getInfo()
             .equals(other.getInfo())) return false;
+        if (hasResultInfo() != other.hasResultInfo()) return false;
+        if (hasResultInfo()) {
+          if (!getResultInfo()
+              .equals(other.getResultInfo())) return false;
+        }
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -5150,12 +5817,16 @@ public final class NotificationOuterClass {
         }
         int hash = 41;
         hash = (19 * hash) + getDescriptor().hashCode();
-        hash = (37 * hash) + MESSAGE_ID_FIELD_NUMBER;
-        hash = (53 * hash) + getMessageId().hashCode();
+        hash = (37 * hash) + REQUEST_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getRequestId().hashCode();
         hash = (37 * hash) + RETCODE_FIELD_NUMBER;
         hash = (53 * hash) + retCode_;
         hash = (37 * hash) + INFO_FIELD_NUMBER;
         hash = (53 * hash) + getInfo().hashCode();
+        if (hasResultInfo()) {
+          hash = (37 * hash) + RESULTINFO_FIELD_NUMBER;
+          hash = (53 * hash) + getResultInfo().hashCode();
+        }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -5289,12 +5960,18 @@ public final class NotificationOuterClass {
         @java.lang.Override
         public Builder clear() {
           super.clear();
-          messageId_ = "";
+          requestId_ = "";
 
           retCode_ = 0;
 
           info_ = "";
 
+          if (resultInfoBuilder_ == null) {
+            resultInfo_ = null;
+          } else {
+            resultInfo_ = null;
+            resultInfoBuilder_ = null;
+          }
           return this;
         }
 
@@ -5321,9 +5998,14 @@ public final class NotificationOuterClass {
         @java.lang.Override
         public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack buildPartial() {
           com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack result = new com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack(this);
-          result.messageId_ = messageId_;
+          result.requestId_ = requestId_;
           result.retCode_ = retCode_;
           result.info_ = info_;
+          if (resultInfoBuilder_ == null) {
+            result.resultInfo_ = resultInfo_;
+          } else {
+            result.resultInfo_ = resultInfoBuilder_.build();
+          }
           onBuilt();
           return result;
         }
@@ -5372,8 +6054,8 @@ public final class NotificationOuterClass {
 
         public Builder mergeFrom(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack other) {
           if (other == com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.getDefaultInstance()) return this;
-          if (!other.getMessageId().isEmpty()) {
-            messageId_ = other.messageId_;
+          if (!other.getRequestId().isEmpty()) {
+            requestId_ = other.requestId_;
             onChanged();
           }
           if (other.retCode_ != 0) {
@@ -5382,6 +6064,9 @@ public final class NotificationOuterClass {
           if (!other.getInfo().isEmpty()) {
             info_ = other.info_;
             onChanged();
+          }
+          if (other.hasResultInfo()) {
+            mergeResultInfo(other.getResultInfo());
           }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
@@ -5412,78 +6097,78 @@ public final class NotificationOuterClass {
           return this;
         }
 
-        private java.lang.Object messageId_ = "";
+        private java.lang.Object requestId_ = "";
         /**
-         * <code>string message_id = 1;</code>
-         * @return The messageId.
+         * <code>string request_id = 1;</code>
+         * @return The requestId.
          */
-        public java.lang.String getMessageId() {
-          java.lang.Object ref = messageId_;
+        public java.lang.String getRequestId() {
+          java.lang.Object ref = requestId_;
           if (!(ref instanceof java.lang.String)) {
             com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
             java.lang.String s = bs.toStringUtf8();
-            messageId_ = s;
+            requestId_ = s;
             return s;
           } else {
             return (java.lang.String) ref;
           }
         }
         /**
-         * <code>string message_id = 1;</code>
-         * @return The bytes for messageId.
+         * <code>string request_id = 1;</code>
+         * @return The bytes for requestId.
          */
         public com.google.protobuf.ByteString
-            getMessageIdBytes() {
-          java.lang.Object ref = messageId_;
+            getRequestIdBytes() {
+          java.lang.Object ref = requestId_;
           if (ref instanceof String) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
-            messageId_ = b;
+            requestId_ = b;
             return b;
           } else {
             return (com.google.protobuf.ByteString) ref;
           }
         }
         /**
-         * <code>string message_id = 1;</code>
-         * @param value The messageId to set.
+         * <code>string request_id = 1;</code>
+         * @param value The requestId to set.
          * @return This builder for chaining.
          */
-        public Builder setMessageId(
+        public Builder setRequestId(
             java.lang.String value) {
           if (value == null) {
     throw new NullPointerException();
   }
   
-          messageId_ = value;
+          requestId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>string message_id = 1;</code>
+         * <code>string request_id = 1;</code>
          * @return This builder for chaining.
          */
-        public Builder clearMessageId() {
+        public Builder clearRequestId() {
           
-          messageId_ = getDefaultInstance().getMessageId();
+          requestId_ = getDefaultInstance().getRequestId();
           onChanged();
           return this;
         }
         /**
-         * <code>string message_id = 1;</code>
-         * @param value The bytes for messageId to set.
+         * <code>string request_id = 1;</code>
+         * @param value The bytes for requestId to set.
          * @return This builder for chaining.
          */
-        public Builder setMessageIdBytes(
+        public Builder setRequestIdBytes(
             com.google.protobuf.ByteString value) {
           if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
           
-          messageId_ = value;
+          requestId_ = value;
           onChanged();
           return this;
         }
@@ -5616,6 +6301,125 @@ public final class NotificationOuterClass {
           info_ = value;
           onChanged();
           return this;
+        }
+
+        private com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo resultInfo_;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.Builder, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfoOrBuilder> resultInfoBuilder_;
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         * @return Whether the resultInfo field is set.
+         */
+        public boolean hasResultInfo() {
+          return resultInfoBuilder_ != null || resultInfo_ != null;
+        }
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         * @return The resultInfo.
+         */
+        public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo getResultInfo() {
+          if (resultInfoBuilder_ == null) {
+            return resultInfo_ == null ? com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.getDefaultInstance() : resultInfo_;
+          } else {
+            return resultInfoBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         */
+        public Builder setResultInfo(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo value) {
+          if (resultInfoBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            resultInfo_ = value;
+            onChanged();
+          } else {
+            resultInfoBuilder_.setMessage(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         */
+        public Builder setResultInfo(
+            com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.Builder builderForValue) {
+          if (resultInfoBuilder_ == null) {
+            resultInfo_ = builderForValue.build();
+            onChanged();
+          } else {
+            resultInfoBuilder_.setMessage(builderForValue.build());
+          }
+
+          return this;
+        }
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         */
+        public Builder mergeResultInfo(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo value) {
+          if (resultInfoBuilder_ == null) {
+            if (resultInfo_ != null) {
+              resultInfo_ =
+                com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.newBuilder(resultInfo_).mergeFrom(value).buildPartial();
+            } else {
+              resultInfo_ = value;
+            }
+            onChanged();
+          } else {
+            resultInfoBuilder_.mergeFrom(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         */
+        public Builder clearResultInfo() {
+          if (resultInfoBuilder_ == null) {
+            resultInfo_ = null;
+            onChanged();
+          } else {
+            resultInfo_ = null;
+            resultInfoBuilder_ = null;
+          }
+
+          return this;
+        }
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         */
+        public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.Builder getResultInfoBuilder() {
+          
+          onChanged();
+          return getResultInfoFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         */
+        public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfoOrBuilder getResultInfoOrBuilder() {
+          if (resultInfoBuilder_ != null) {
+            return resultInfoBuilder_.getMessageOrBuilder();
+          } else {
+            return resultInfo_ == null ?
+                com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.getDefaultInstance() : resultInfo_;
+          }
+        }
+        /**
+         * <code>.SendResult.Ack.ResultInfo resultInfo = 4;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.Builder, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfoOrBuilder> 
+            getResultInfoFieldBuilder() {
+          if (resultInfoBuilder_ == null) {
+            resultInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfo.Builder, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.Ack.ResultInfoOrBuilder>(
+                    getResultInfo(),
+                    getParentForChildren(),
+                    isClean());
+            resultInfo_ = null;
+          }
+          return resultInfoBuilder_;
         }
         @java.lang.Override
         public final Builder setUnknownFields(
@@ -6605,6 +7409,11 @@ public final class NotificationOuterClass {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_SendResult_Ack_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SendResult_Ack_ResultInfo_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SendResult_Ack_ResultInfo_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6615,29 +7424,30 @@ public final class NotificationOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n\022notification.proto\"\024\n\004Ping\022\014\n\004ping\030\001 \001" +
-      "(\t\"\024\n\004Pong\022\014\n\004pong\030\001 \001(\t\"\313\003\n\013SendRequest" +
+      "(\t\"\024\n\004Pong\022\014\n\004pong\030\001 \001(\t\"\244\003\n\013SendRequest" +
       "\0222\n\014request_type\030\001 \001(\0162\034.SendRequest.Sen" +
       "dRequestType\022#\n\003msg\030\002 \001(\0132\024.SendRequest." +
       "MessageH\000\022\025\n\004ping\030\003 \001(\0132\005.PingH\000\032&\n\010Prop" +
-      "erty\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032\356\001\n\007Mes" +
-      "sage\022\r\n\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\005\022\022" +
-      "\n\nmessage_id\030\003 \001(\t\0228\n\nproperties\030\004 \003(\0132$" +
+      "erty\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032\307\001\n\007Mes" +
+      "sage\022\r\n\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r\022\022" +
+      "\n\nrequest_id\030\003 \001(\t\0228\n\nproperties\030\004 \003(\0132$" +
       ".SendRequest.Message.PropertiesEntry\022\014\n\004" +
       "body\030\005 \001(\014\022\013\n\003ack\030\006 \001(\010\0321\n\017PropertiesEnt" +
-      "ry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"%\n\004Mo" +
-      "de\022\016\n\nCLUSTERING\020\000\022\r\n\tBROADCAST\020\001\"(\n\017Sen" +
-      "dRequestType\022\013\n\007MESSAGE\020\000\022\010\n\004PING\020\001B\t\n\007m" +
-      "essage\"\237\002\n\nSendResult\0223\n\rresponse_type\030\001" +
-      " \001(\0162\034.SendResult.SendResponseType\022\025\n\004po" +
-      "ng\030\002 \001(\0132\005.PongH\000\022\036\n\003ack\030\003 \001(\0132\017.SendRes" +
-      "ult.AckH\000\032t\n\003Ack\022\022\n\nmessage_id\030\001 \001(\t\022(\n\007" +
-      "retCode\030\002 \001(\0162\027.SendResult.Ack.RetCode\022\014" +
-      "\n\004info\030\003 \001(\t\"!\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n\005" +
-      "ERROR\020\001\"%\n\020SendResponseType\022\010\n\004PONG\020\000\022\007\n" +
-      "\003ACK\020\001B\010\n\006result27\n\014Notification\022\'\n\004Send" +
-      "\022\014.SendRequest\032\013.SendResult\"\000(\0010\001B\'\n%com" +
-      ".tsingj.sloth.broker.grpc.protobufb\006prot" +
-      "o3"
+      "ry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"(\n\017Se" +
+      "ndRequestType\022\013\n\007MESSAGE\020\000\022\010\n\004PING\020\001B\t\n\007" +
+      "message\"\220\003\n\nSendResult\0223\n\rresponse_type\030" +
+      "\001 \001(\0162\034.SendResult.SendResponseType\022\025\n\004p" +
+      "ong\030\002 \001(\0132\005.PongH\000\022\036\n\003ack\030\003 \001(\0132\017.SendRe" +
+      "sult.AckH\000\032\344\001\n\003Ack\022\022\n\nrequest_id\030\001 \001(\t\022(" +
+      "\n\007retCode\030\002 \001(\0162\027.SendResult.Ack.RetCode" +
+      "\022\014\n\004info\030\003 \001(\t\022.\n\nresultInfo\030\004 \001(\0132\032.Sen" +
+      "dResult.Ack.ResultInfo\032>\n\nResultInfo\022\r\n\005" +
+      "topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r\022\016\n\006offset" +
+      "\030\003 \001(\003\"!\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n\005ERROR\020" +
+      "\001\"%\n\020SendResponseType\022\010\n\004PONG\020\000\022\007\n\003ACK\020\001" +
+      "B\010\n\006result27\n\014Notification\022\'\n\004Send\022\014.Sen" +
+      "dRequest\032\013.SendResult\"\000(\0010\001B\'\n%com.tsing" +
+      "j.sloth.broker.grpc.protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6672,7 +7482,7 @@ public final class NotificationOuterClass {
     internal_static_SendRequest_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SendRequest_Message_descriptor,
-        new java.lang.String[] { "Topic", "Partition", "MessageId", "Properties", "Body", "Ack", });
+        new java.lang.String[] { "Topic", "Partition", "RequestId", "Properties", "Body", "Ack", });
     internal_static_SendRequest_Message_PropertiesEntry_descriptor =
       internal_static_SendRequest_Message_descriptor.getNestedTypes().get(0);
     internal_static_SendRequest_Message_PropertiesEntry_fieldAccessorTable = new
@@ -6690,7 +7500,13 @@ public final class NotificationOuterClass {
     internal_static_SendResult_Ack_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SendResult_Ack_descriptor,
-        new java.lang.String[] { "MessageId", "RetCode", "Info", });
+        new java.lang.String[] { "RequestId", "RetCode", "Info", "ResultInfo", });
+    internal_static_SendResult_Ack_ResultInfo_descriptor =
+      internal_static_SendResult_Ack_descriptor.getNestedTypes().get(0);
+    internal_static_SendResult_Ack_ResultInfo_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SendResult_Ack_ResultInfo_descriptor,
+        new java.lang.String[] { "Topic", "Partition", "Offset", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -21,6 +21,9 @@ import java.util.Set;
 public class OffsetIndex implements DataRecovery {
 
     private static final Logger logger = LoggerFactory.getLogger(OffsetIndex.class);
+
+    public static final int INDEX_BYTES = 16;
+    
     /**
      * offsetIndex物理文件
      */
@@ -59,15 +62,14 @@ public class OffsetIndex implements DataRecovery {
         //init other properties
         this.indexSize = 0L;
         //1m内存 index
-        this.warmIndexEntries = Caffeine.newBuilder().initialCapacity(maxWarmIndexEntries / LogConstants.INDEX_BYTES).recordStats().build();
-
+        this.warmIndexEntries = Caffeine.newBuilder().initialCapacity(maxWarmIndexEntries / OffsetIndex.INDEX_BYTES).recordStats().build();
     }
 
     @Override
     public void load() {
         long fileLength = this.file.length();
         //1、load indexEntries
-        this.indexSize = fileLength / LogConstants.INDEX_BYTES;
+        this.indexSize = fileLength / OffsetIndex.INDEX_BYTES;
         //2、load warmEntries
         long loadWarmPosition = fileLength > this.maxWarmIndexEntries ? fileLength - this.maxWarmIndexEntries : 0L;
         logger.info("prepare load offsetIndex from position:{}", loadWarmPosition);
@@ -79,7 +81,7 @@ public class OffsetIndex implements DataRecovery {
             }
             IndexEntry.OffsetPosition data = indexEntryPositionOffset.getData();
             this.warmIndexEntries.put(loadWarmPosition, data);
-            loadWarmPosition = loadWarmPosition + LogConstants.INDEX_BYTES;
+            loadWarmPosition = loadWarmPosition + OffsetIndex.INDEX_BYTES;
         }
         logger.info("load offsetIndex success, current indexSize:{} warm indexEntrySize:{}", indexSize, this.warmIndexEntries.estimatedSize());
     }
@@ -88,7 +90,7 @@ public class OffsetIndex implements DataRecovery {
         /*
          * add offset index
          */
-        ByteBuffer indexByteBuffer = ByteBuffer.allocate(LogConstants.INDEX_BYTES);
+        ByteBuffer indexByteBuffer = ByteBuffer.allocate(OffsetIndex.INDEX_BYTES);
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
         indexByteBuffer.flip();
@@ -131,7 +133,7 @@ public class OffsetIndex implements DataRecovery {
         while (lower < upper) {
             //这样的操作是为了让 mid 标志 取高位，否则会出现死循环
             long mid = (lower + upper + 1) / 2;
-            Result<IndexEntry.OffsetPosition> result = getIndexEntryByIndexPosition(mid * LogConstants.INDEX_BYTES);
+            Result<IndexEntry.OffsetPosition> result = getIndexEntryByIndexPosition(mid * OffsetIndex.INDEX_BYTES);
             if (!result.success()) {
                 return Results.failure(result.getMsg());
             }
@@ -144,7 +146,7 @@ public class OffsetIndex implements DataRecovery {
             }
         }
 
-        Result<IndexEntry.OffsetPosition> lowerOffsetPositionResult = getIndexEntryByIndexPosition(lower * LogConstants.INDEX_BYTES);
+        Result<IndexEntry.OffsetPosition> lowerOffsetPositionResult = getIndexEntryByIndexPosition(lower * OffsetIndex.INDEX_BYTES);
         if (lowerOffsetPositionResult.failure()) {
             return Results.failure("offset:{} can't find offsetIndex!");
         }
@@ -152,7 +154,7 @@ public class OffsetIndex implements DataRecovery {
         IndexEntry.OffsetPosition endOffsetPosition = null;
         long realUpper = entries - 1;
         if (lower < realUpper) {
-            Result<IndexEntry.OffsetPosition> nextOffsetPositionResult = getIndexEntryByIndexPosition((lower + 1) * LogConstants.INDEX_BYTES);
+            Result<IndexEntry.OffsetPosition> nextOffsetPositionResult = getIndexEntryByIndexPosition((lower + 1) * OffsetIndex.INDEX_BYTES);
             if (nextOffsetPositionResult.failure()) {
                 return Results.failure("offset:{} can't find offsetIndex!");
             }
@@ -179,7 +181,7 @@ public class OffsetIndex implements DataRecovery {
         try {
             this.readWriteLock.lock();
             this.fileChannel.position(indexPosition);
-            ByteBuffer byteBuffer = ByteBuffer.allocate(LogConstants.INDEX_BYTES);
+            ByteBuffer byteBuffer = ByteBuffer.allocate(OffsetIndex.INDEX_BYTES);
             this.fileChannel.read(byteBuffer);
             byteBuffer.rewind();
             return Results.success(new IndexEntry.OffsetPosition(byteBuffer.getLong(), byteBuffer.getLong()));
@@ -200,7 +202,7 @@ public class OffsetIndex implements DataRecovery {
         if (entries == 0L) {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
-        return getIndexEntryByIndexPosition((entries - 1) * LogConstants.INDEX_BYTES, false);
+        return getIndexEntryByIndexPosition((entries - 1) * OffsetIndex.INDEX_BYTES, false);
     }
 
     public void flush() {
@@ -215,7 +217,7 @@ public class OffsetIndex implements DataRecovery {
 
     public void freeNoWarmIndexCache() {
         //计算超出maxWarmIndex长度
-        long cleanupCount = this.warmIndexEntries.estimatedSize() - this.maxWarmIndexEntries / LogConstants.INDEX_BYTES;
+        long cleanupCount = this.warmIndexEntries.estimatedSize() - this.maxWarmIndexEntries / OffsetIndex.INDEX_BYTES;
         if (cleanupCount > 0) {
             //this set is sorted
             Set<@NonNull Long> positions = warmIndexEntries.asMap().keySet();
@@ -237,7 +239,7 @@ public class OffsetIndex implements DataRecovery {
 
 
     private long getWrotePosition() {
-        return this.indexSize * LogConstants.INDEX_BYTES;
+        return this.indexSize * OffsetIndex.INDEX_BYTES;
     }
 
     private void incrementIndexEntries() {

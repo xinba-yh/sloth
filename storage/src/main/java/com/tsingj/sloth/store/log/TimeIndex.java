@@ -18,6 +18,8 @@ public class TimeIndex implements DataRecovery {
 
     private static final Logger logger = LoggerFactory.getLogger(TimeIndex.class);
 
+    public static final int INDEX_BYTES = 16;
+
     /**
      * 物理文件
      */
@@ -51,16 +53,16 @@ public class TimeIndex implements DataRecovery {
 
     @Override
     public void load() {
-        long indexEntries = this.file.length() / LogConstants.INDEX_BYTES;
+        long indexEntries = this.file.length() / TimeIndex.INDEX_BYTES;
         logger.info("load indexEntries {}", indexEntries);
-        this.indexEntries = this.file.length() / LogConstants.INDEX_BYTES;
+        this.indexEntries = this.file.length() / TimeIndex.INDEX_BYTES;
     }
 
     public void addIndex(long key, long value) throws IOException {
         /*
          * add time index
          */
-        ByteBuffer indexByteBuffer = ByteBuffer.allocate(LogConstants.INDEX_BYTES);
+        ByteBuffer indexByteBuffer = ByteBuffer.allocate(TimeIndex.INDEX_BYTES);
         indexByteBuffer.putLong(key);
         indexByteBuffer.putLong(value);
         indexByteBuffer.flip();
@@ -77,7 +79,7 @@ public class TimeIndex implements DataRecovery {
     }
 
     private long getWrotePosition() {
-        return this.indexEntries * LogConstants.INDEX_BYTES;
+        return this.indexEntries * TimeIndex.INDEX_BYTES;
     }
 
     private void incrementIndexEntries() {

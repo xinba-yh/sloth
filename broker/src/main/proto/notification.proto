@@ -83,13 +83,9 @@ message SendRequest {
     }
 
     message Message {
-        enum Mode {
-            CLUSTERING = 0;
-            BROADCAST = 1;
-        }
         string topic = 1;
         uint32 partition = 2;
-        string message_id = 3;
+        string request_id = 3;
         map<string, string> properties = 4;
         bytes body = 5; //业务侧消息体
         bool ack = 6; //是否需要ack 默认：true
@@ -116,9 +112,15 @@ message SendResult {
             SUCCESS = 0;
             ERROR = 1;
         }
-        string message_id = 1;
+        message ResultInfo {
+            string topic = 1;
+            uint32 partition = 2;
+            int64 offset = 3;
+        }
+        string request_id = 1;
         RetCode retCode = 2;
         string info = 3;
+        ResultInfo resultInfo = 4;
     }
 
     SendResponseType response_type = 1;

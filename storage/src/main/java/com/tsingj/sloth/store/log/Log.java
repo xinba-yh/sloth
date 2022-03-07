@@ -98,7 +98,7 @@ public class Log {
         } finally {
             lock.unlock();
         }
-        return new PutMessageResult(PutMessageStatus.OK, offset);
+        return new PutMessageResult(PutMessageStatus.OK,topic,partition, offset);
     }
 
 

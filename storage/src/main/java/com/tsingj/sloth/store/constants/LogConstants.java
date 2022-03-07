@@ -71,7 +71,4 @@ public class LogConstants {
 
     }
 
-
-    public static final int INDEX_BYTES = 16;
-
 }

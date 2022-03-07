@@ -3,7 +3,6 @@ package com.tsingj.sloth.broker.grpc;
 import com.tsingj.sloth.broker.grpc.handler.MessageHandler;
 import com.tsingj.sloth.broker.grpc.protobuf.NotificationGrpc;
 import com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass;
-import com.tsingj.sloth.store.pojo.Result;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -37,26 +36,8 @@ public class BrokerController extends NotificationGrpc.NotificationImplBase {
                                 .build());
                         break;
                     case MESSAGE:
-                        NotificationOuterClass.SendRequest.Message msg = request.getMsg();
-                        Result result = messageHandler.storeMessage(msg);
-                        String messageId = msg.getMessageId();
-                        NotificationOuterClass.SendResult.Ack ack;
-                        if (result.success()) {
-                            ack = NotificationOuterClass.SendResult.Ack.newBuilder()
-                                    .setRetCode(NotificationOuterClass.SendResult.Ack.RetCode.SUCCESS)
-                                    .setMessageId(messageId)
-                                    .build();
-                            resp.onNext(NotificationOuterClass.SendResult.newBuilder().setAck(ack).build());
-                        } else {
-                            ack = NotificationOuterClass.SendResult.Ack.newBuilder()
-                                    .setRetCode(NotificationOuterClass.SendResult.Ack.RetCode.ERROR)
-                                    .setMessageId(messageId)
-                                    .build();
-                        }
-                        resp.onNext(NotificationOuterClass.SendResult.newBuilder()
-                                .setResponseType(NotificationOuterClass.SendResult.SendResponseType.ACK)
-                                .setAck(ack)
-                                .build());
+                        NotificationOuterClass.SendResult result = messageHandler.storeMessage(request.getMsg());
+                        resp.onNext(result);
                         break;
                     default:
                         throw new UnsupportedOperationException("invalid requestType!");

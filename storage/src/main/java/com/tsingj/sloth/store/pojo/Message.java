@@ -16,7 +16,7 @@ public class Message implements Serializable {
 
     private int partition;
 
-    private String messageId;
+//    private String messageId;
 
     private Map<String, String> properties;
 
@@ -125,20 +125,20 @@ public class Message implements Serializable {
         this.crc = crc;
     }
 
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
+//    public String getMessageId() {
+//        return messageId;
+//    }
+//
+//    public void setMessageId(String messageId) {
+//        this.messageId = messageId;
+//    }
 
     @Override
     public String toString() {
         return "Message{" +
                 "topic='" + topic + '\'' +
                 ", partition=" + partition +
-                ", messageId='" + messageId + '\'' +
+//                ", messageId='" + messageId + '\'' +
                 ", properties=" + properties +
                 ", body=" + body.length +
                 ", offset=" + offset +
@@ -149,4 +149,5 @@ public class Message implements Serializable {
                 ", crc=" + crc +
                 '}';
     }
+
 }

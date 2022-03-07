@@ -26,31 +26,28 @@ public class MessageHandler {
         this.topicManager = topicManager;
     }
 
-    public Result storeMessage(NotificationOuterClass.SendRequest.Message msg) {
+    public NotificationOuterClass.SendResult storeMessage(NotificationOuterClass.SendRequest.Message msg) {
+        String requestId = msg.getRequestId();
         /*
          * check and set default param
          */
         String topic = msg.getTopic();
         if (ObjectUtils.isEmpty(topic)) {
-            return Results.failure("IllegalArgument topic is empty!");
-        }
-        String messageId = msg.getMessageId();
-        if (ObjectUtils.isEmpty(messageId)) {
-            return Results.failure("IllegalArgument messageId is empty!");
+            return this.respError(requestId, "IllegalArgument topic is empty!");
         }
         ByteString body = msg.getBody();
         if (body.isEmpty()) {
-            return Results.failure("IllegalArgument messageBody is empty!");
+            return this.respError(requestId, "IllegalArgument messageBody is empty!");
         }
         //get topicConfig, not exist create
         Result<TopicConfig> topicResult = topicManager.getTopic(topic, true);
         if (topicResult.failure()) {
-            return topicResult;
+            return this.respError(requestId, topicResult.getMsg());
         }
         TopicConfig topicConfig = topicResult.getData();
         int partition = msg.getPartition();
         if (partition > topicConfig.getPartition()) {
-            return Results.failure("IllegalArgument partition is too large! topic:" + topic + " maximum:" + topicConfig.getPartition());
+            return this.respError(requestId, "IllegalArgument partition is too large! topic:" + topic + " maximum:" + topicConfig.getPartition());
         }
         //use assign partition or auto assign , partition start 1 -> partition size
         if (partition == 0) {
@@ -60,11 +57,9 @@ public class MessageHandler {
         /*
          * convert message
          */
-        //todo 思考： 这层转换是否可以省略？
         Message message = new Message();
         message.setTopic(topic);
         message.setPartition(partition);
-        message.setMessageId(messageId);
         message.setBody(body.toByteArray());
         message.setProperties(properties);
         /*
@@ -72,10 +67,30 @@ public class MessageHandler {
          */
         PutMessageResult putMessageResult = storageEngine.putMessage(message);
         if (putMessageResult.getStatus() == PutMessageStatus.OK) {
-            return Results.success(putMessageResult.getOffset());
+            return NotificationOuterClass.SendResult.newBuilder()
+                    .setResponseType(NotificationOuterClass.SendResult.SendResponseType.ACK)
+                    .setAck(NotificationOuterClass.SendResult.Ack.newBuilder()
+                            .setRetCode(NotificationOuterClass.SendResult.Ack.RetCode.SUCCESS)
+                            .setRequestId(requestId)
+                            .setResultInfo(NotificationOuterClass.SendResult.Ack.ResultInfo.newBuilder()
+                                    .setTopic(topic)
+                                    .setPartition(partition)
+                                    .setOffset(putMessageResult.getOffset())
+                                    .build())
+                            .build()).build();
         } else {
-            return Results.failure(putMessageResult.getStatus() + ":" + putMessageResult.getErrorMsg());
+            return this.respError(requestId, putMessageResult.getStatus() + ":" + putMessageResult.getErrorMsg());
         }
+    }
+
+    private NotificationOuterClass.SendResult respError(String requestId, String errMsg) {
+        return NotificationOuterClass.SendResult.newBuilder()
+                .setResponseType(NotificationOuterClass.SendResult.SendResponseType.ACK)
+                .setAck(NotificationOuterClass.SendResult.Ack.newBuilder()
+                        .setRetCode(NotificationOuterClass.SendResult.Ack.RetCode.ERROR)
+                        .setInfo(errMsg)
+                        .setRequestId(requestId)
+                        .build()).build();
     }
 
 }
