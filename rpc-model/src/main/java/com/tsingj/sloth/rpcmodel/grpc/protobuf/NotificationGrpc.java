@@ -1,11 +1,11 @@
-package com.tsingj.sloth.broker.grpc.protobuf;
+package com.tsingj.sloth.rpcmodel.grpc.protobuf;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
 
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.42.2)",
+    value = "by gRPC proto compiler (version 1.44.1)",
     comments = "Source: notification.proto")
 @io.grpc.stub.annotations.GrpcGenerated
 public final class NotificationGrpc {
@@ -15,29 +15,29 @@ public final class NotificationGrpc {
   public static final String SERVICE_NAME = "Notification";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest,
-      com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult> getSendMethod;
+  private static volatile io.grpc.MethodDescriptor<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest,
+      com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult> getSendMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Send",
-      requestType = com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.class,
-      responseType = com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.class,
+      requestType = com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest.class,
+      responseType = com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult.class,
       methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
-  public static io.grpc.MethodDescriptor<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest,
-      com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult> getSendMethod() {
-    io.grpc.MethodDescriptor<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult> getSendMethod;
+  public static io.grpc.MethodDescriptor<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest,
+      com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult> getSendMethod() {
+    io.grpc.MethodDescriptor<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest, com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult> getSendMethod;
     if ((getSendMethod = NotificationGrpc.getSendMethod) == null) {
       synchronized (NotificationGrpc.class) {
         if ((getSendMethod = NotificationGrpc.getSendMethod) == null) {
           NotificationGrpc.getSendMethod = getSendMethod =
-              io.grpc.MethodDescriptor.<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult>newBuilder()
+              io.grpc.MethodDescriptor.<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest, com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "Send"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.getDefaultInstance()))
+                  com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult.getDefaultInstance()))
+                  com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult.getDefaultInstance()))
               .setSchemaDescriptor(new NotificationMethodDescriptorSupplier("Send"))
               .build();
         }
@@ -96,8 +96,8 @@ public final class NotificationGrpc {
 
     /**
      */
-    public io.grpc.stub.StreamObserver<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest> send(
-        io.grpc.stub.StreamObserver<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult> responseObserver) {
+    public io.grpc.stub.StreamObserver<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest> send(
+        io.grpc.stub.StreamObserver<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult> responseObserver) {
       return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getSendMethod(), responseObserver);
     }
 
@@ -107,8 +107,8 @@ public final class NotificationGrpc {
             getSendMethod(),
             io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
               new MethodHandlers<
-                com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest,
-                com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult>(
+                com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest,
+                com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult>(
                   this, METHODID_SEND)))
           .build();
     }
@@ -130,8 +130,8 @@ public final class NotificationGrpc {
 
     /**
      */
-    public io.grpc.stub.StreamObserver<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest> send(
-        io.grpc.stub.StreamObserver<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult> responseObserver) {
+    public io.grpc.stub.StreamObserver<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendRequest> send(
+        io.grpc.stub.StreamObserver<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult> responseObserver) {
       return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
           getChannel().newCall(getSendMethod(), getCallOptions()), responseObserver);
     }
@@ -198,7 +198,7 @@ public final class NotificationGrpc {
       switch (methodId) {
         case METHODID_SEND:
           return (io.grpc.stub.StreamObserver<Req>) serviceImpl.send(
-              (io.grpc.stub.StreamObserver<com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendResult>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.SendResult>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -211,7 +211,7 @@ public final class NotificationGrpc {
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.FileDescriptor getFileDescriptor() {
-      return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.getDescriptor();
+      return com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass.getDescriptor();
     }
 
     @java.lang.Override

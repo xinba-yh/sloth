@@ -39,6 +39,7 @@
         <module>storage</module>
         <module>broker</module>
         <module>example</module>
+        <module>rpc-model</module>
     </modules>
 
     <dependencies>

@@ -1,23 +1,21 @@
 package com.tsingj.sloth.broker.grpc;
 
 import com.tsingj.sloth.broker.grpc.handler.MessageHandler;
-import com.tsingj.sloth.broker.grpc.protobuf.NotificationGrpc;
-import com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass;
+import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationGrpc;
+import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
-import net.devh.boot.grpc.server.service.GrpcService;
 
 /**
  * @author yanghao
  */
 
 @Slf4j
-@GrpcService
-public class BrokerController extends NotificationGrpc.NotificationImplBase {
+public class BrokerGrpcImpl extends NotificationGrpc.NotificationImplBase {
 
     private final MessageHandler messageHandler;
 
-    public BrokerController(MessageHandler messageHandler) {
+    public BrokerGrpcImpl(MessageHandler messageHandler) {
         this.messageHandler = messageHandler;
     }
 

@@ -1,7 +1,7 @@
 //  Owner: yanghao
 syntax = "proto3";
 
-option java_package = "com.tsingj.sloth.broker.grpc.protobuf";
+option java_package = "com.tsingj.sloth.rpcmodel.grpc.protobuf";
 
 service Notification {
 

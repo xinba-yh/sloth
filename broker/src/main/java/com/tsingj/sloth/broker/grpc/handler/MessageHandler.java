@@ -1,11 +1,13 @@
 package com.tsingj.sloth.broker.grpc.handler;
 
 import com.google.protobuf.ByteString;
-import com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass;
+import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass;
 import com.tsingj.sloth.store.topic.TopicConfig;
 import com.tsingj.sloth.store.topic.TopicManager;
 import com.tsingj.sloth.store.StorageEngine;
 import com.tsingj.sloth.store.pojo.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
@@ -16,6 +18,8 @@ import java.util.Map;
  */
 @Component
 public class MessageHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
     private final TopicManager topicManager;
 
@@ -28,6 +32,7 @@ public class MessageHandler {
 
     public NotificationOuterClass.SendResult storeMessage(NotificationOuterClass.SendRequest.Message msg) {
         String requestId = msg.getRequestId();
+        logger.info("receive request {}.", requestId);
         /*
          * check and set default param
          */

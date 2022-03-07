@@ -1,9 +1,10 @@
-package com.tsingj.sloth.broker;
+package com.tsingj.sloth.example;
 
 import com.google.protobuf.ByteString;
-import com.tsingj.sloth.broker.grpc.protobuf.NotificationGrpc;
-import com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass;
+import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationGrpc;
+import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass;
 import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.netty.shaded.io.netty.channel.ChannelOption;
 import io.grpc.stub.StreamObserver;
@@ -20,22 +21,26 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
 public class ProducerClientTest {
 
 
     @Test
     public void producerPingTest() {
-        ManagedChannel channel = NettyChannelBuilder.forTarget("static://localhost:9091")
-                .keepAliveTime(6, TimeUnit.MINUTES)
-                .keepAliveTimeout(2, TimeUnit.SECONDS)
-                .keepAliveWithoutCalls(true)
-                .idleTimeout(24, TimeUnit.HOURS)
-                //3秒超时
-                .withOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
-                .withOption(ChannelOption.SO_KEEPALIVE, true)
+        ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:9091")
+                // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
+                // needing certificates.
                 .usePlaintext()
                 .build();
+//        ManagedChannel channel = NettyChannelBuilder.forTarget("static://localhost:9091")
+//                .keepAliveTime(6, TimeUnit.MINUTES)
+//                .keepAliveTimeout(2, TimeUnit.SECONDS)
+//                .keepAliveWithoutCalls(true)
+//                .idleTimeout(24, TimeUnit.HOURS)
+//                //3秒超时
+//                .withOption(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
+//                .withOption(ChannelOption.SO_KEEPALIVE, true)
+//                .usePlaintext()
+//                .build();
 
         NotificationGrpc.NotificationStub notificationStub = NotificationGrpc.newStub(channel);
 
@@ -81,7 +86,7 @@ public class ProducerClientTest {
 
     @Test
     public void producerMessageTest() {
-        ManagedChannel channel = NettyChannelBuilder.forTarget("static://localhost:9091")
+        ManagedChannel channel = NettyChannelBuilder.forTarget("localhost:9091")
                 .keepAliveTime(6, TimeUnit.MINUTES)
                 .keepAliveTimeout(2, TimeUnit.SECONDS)
                 .keepAliveWithoutCalls(true)
@@ -91,7 +96,6 @@ public class ProducerClientTest {
                 .withOption(ChannelOption.SO_KEEPALIVE, true)
                 .usePlaintext()
                 .build();
-
         NotificationGrpc.NotificationStub notificationStub = NotificationGrpc.newStub(channel);
 
         //默认8个partition，所以这里循环100000 * 8次。
@@ -104,8 +108,8 @@ public class ProducerClientTest {
             @Override
             public void onNext(NotificationOuterClass.SendResult sendResult) {
                 long currentAckCount = ackCount.addAndGet(1);
+                log.info("receive count:{} new ack:{}", currentAckCount, sendResult.toString());
                 if (currentAckCount % 100 == 0) {
-                    log.info("receive count:{} new ack:{}", currentAckCount, sendResult.toString());
                     if (currentAckCount == partitionCount * defaultPartition) {
                         finishLatch.countDown();
                     }
@@ -145,7 +149,7 @@ public class ProducerClientTest {
                         .build();
                 requestObserver.onNext(request);
                 //why faster blocking!
-                Thread.sleep(100);
+                Thread.sleep(50);
             }
             System.out.println("------------------------------------------------");
         } catch (Throwable e) {
