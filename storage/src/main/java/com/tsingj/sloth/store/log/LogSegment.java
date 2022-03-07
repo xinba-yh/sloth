@@ -1,11 +1,11 @@
 package com.tsingj.sloth.store.log;
 
+import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.log.lock.LogLock;
 import com.tsingj.sloth.store.log.lock.LogReentrantLock;
 import com.tsingj.sloth.store.pojo.Result;
 import com.tsingj.sloth.store.pojo.Results;
-import com.tsingj.sloth.store.utils.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -17,7 +17,7 @@ import java.nio.channels.FileChannel;
 /**
  * @author yanghao
  */
-public class LogSegment {
+public class LogSegment implements DataRecovery {
 
     private static final Logger logger = LoggerFactory.getLogger(LogSegment.class);
 
@@ -101,28 +101,23 @@ public class LogSegment {
 
     //----------------------------------------------------------loadLogs--------------------------------------------------------------------
 
-    public static LogSegment loadLogs(File segmentFile, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
-        String logPath = segmentFile.getAbsolutePath().replace(LogConstants.FileSuffix.LOG, "");
-        long startOffset = CommonUtil.fileName2Offset(segmentFile.getName());
+    @Override
+    public void load() {
         /*
-         * 1、初始化LogSegment、OffsetIndex、TimeIndex
-         */
-        LogSegment logSegment = new LogSegment(logPath, startOffset, maxFileSize, logIndexIntervalBytes);
-        /*
-         * 2、根据文件信息，补齐属性
+         * 根据文件信息，补齐属性
          * -- logSegment -> currentOffset  通过offsetIndex取出最后一个索引并按照索引查找至文件结尾
          * -- logSegment -> wrotePosition  当前文件大小
          * -- offsetIndex -> indexEntries  index数量
          * -- timeIndex -> indexEntries    index数量
          */
-        logSegment.offsetIndex.loadLogs();
-        logSegment.timeIndex.loadLogs();
-        logSegment.wrotePosition = segmentFile.length();
-        logSegment.loadCurrentOffsetFromFile(logPath);
-        return logSegment;
+        this.offsetIndex.load();
+        this.timeIndex.load();
+        this.wrotePosition = this.logFile.length();
+        this.loadCurrentOffsetFromFile();
     }
 
-    private void loadCurrentOffsetFromFile(String logPath) {
+    private void loadCurrentOffsetFromFile() {
+        String logPath = this.logFile.getAbsolutePath();
         Result<IndexEntry.OffsetPosition> indexFileLastOffsetResult = this.offsetIndex.getIndexFileLastOffset();
         Assert.isTrue(indexFileLastOffsetResult.success(), "load logs from offsetIndexFile " + logPath + " fail!" + indexFileLastOffsetResult.getMsg());
         IndexEntry.OffsetPosition offsetPosition = indexFileLastOffsetResult.getData();
@@ -256,9 +251,9 @@ public class LogSegment {
         }
     }
 
-    public long getCurrentOffset() {
-        return this.currentOffset;
-    }
+//    public long getCurrentOffset() {
+//        return this.currentOffset;
+//    }
 
     //----------------------------------------------------------private方法--------------------------------------------------------------------
 

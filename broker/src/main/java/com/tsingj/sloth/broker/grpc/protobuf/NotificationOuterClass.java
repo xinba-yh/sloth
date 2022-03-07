@@ -1425,6 +1425,724 @@ public final class NotificationOuterClass {
       // @@protoc_insertion_point(enum_scope:SendRequest.SendRequestType)
     }
 
+    public interface PropertyOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:SendRequest.Property)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>string key = 1;</code>
+       * @return The key.
+       */
+      java.lang.String getKey();
+      /**
+       * <code>string key = 1;</code>
+       * @return The bytes for key.
+       */
+      com.google.protobuf.ByteString
+          getKeyBytes();
+
+      /**
+       * <code>string value = 2;</code>
+       * @return The value.
+       */
+      java.lang.String getValue();
+      /**
+       * <code>string value = 2;</code>
+       * @return The bytes for value.
+       */
+      com.google.protobuf.ByteString
+          getValueBytes();
+    }
+    /**
+     * Protobuf type {@code SendRequest.Property}
+     */
+    public static final class Property extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:SendRequest.Property)
+        PropertyOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Property.newBuilder() to construct.
+      private Property(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Property() {
+        key_ = "";
+        value_ = "";
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Property();
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private Property(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                key_ = s;
+                break;
+              }
+              case 18: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                value_ = s;
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendRequest_Property_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendRequest_Property_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property.class, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property.Builder.class);
+      }
+
+      public static final int KEY_FIELD_NUMBER = 1;
+      private volatile java.lang.Object key_;
+      /**
+       * <code>string key = 1;</code>
+       * @return The key.
+       */
+      @java.lang.Override
+      public java.lang.String getKey() {
+        java.lang.Object ref = key_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          key_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string key = 1;</code>
+       * @return The bytes for key.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getKeyBytes() {
+        java.lang.Object ref = key_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          key_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int VALUE_FIELD_NUMBER = 2;
+      private volatile java.lang.Object value_;
+      /**
+       * <code>string value = 2;</code>
+       * @return The value.
+       */
+      @java.lang.Override
+      public java.lang.String getValue() {
+        java.lang.Object ref = value_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          value_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string value = 2;</code>
+       * @return The bytes for value.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getValueBytes() {
+        java.lang.Object ref = value_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          value_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(key_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(value_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, value_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(key_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, key_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(value_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, value_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property)) {
+          return super.equals(obj);
+        }
+        com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property other = (com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property) obj;
+
+        if (!getKey()
+            .equals(other.getKey())) return false;
+        if (!getValue()
+            .equals(other.getValue())) return false;
+        if (!unknownFields.equals(other.unknownFields)) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + KEY_FIELD_NUMBER;
+        hash = (53 * hash) + getKey().hashCode();
+        hash = (37 * hash) + VALUE_FIELD_NUMBER;
+        hash = (53 * hash) + getValue().hashCode();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code SendRequest.Property}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:SendRequest.Property)
+          com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.PropertyOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendRequest_Property_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendRequest_Property_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property.class, com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property.Builder.class);
+        }
+
+        // Construct using com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          key_ = "";
+
+          value_ = "";
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendRequest_Property_descriptor;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property getDefaultInstanceForType() {
+          return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property build() {
+          com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property buildPartial() {
+          com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property result = new com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property(this);
+          result.key_ = key_;
+          result.value_ = value_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property) {
+            return mergeFrom((com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property other) {
+          if (other == com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property.getDefaultInstance()) return this;
+          if (!other.getKey().isEmpty()) {
+            key_ = other.key_;
+            onChanged();
+          }
+          if (!other.getValue().isEmpty()) {
+            value_ = other.value_;
+            onChanged();
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private java.lang.Object key_ = "";
+        /**
+         * <code>string key = 1;</code>
+         * @return The key.
+         */
+        public java.lang.String getKey() {
+          java.lang.Object ref = key_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            key_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string key = 1;</code>
+         * @return The bytes for key.
+         */
+        public com.google.protobuf.ByteString
+            getKeyBytes() {
+          java.lang.Object ref = key_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            key_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string key = 1;</code>
+         * @param value The key to set.
+         * @return This builder for chaining.
+         */
+        public Builder setKey(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          key_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string key = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearKey() {
+          
+          key_ = getDefaultInstance().getKey();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string key = 1;</code>
+         * @param value The bytes for key to set.
+         * @return This builder for chaining.
+         */
+        public Builder setKeyBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          key_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object value_ = "";
+        /**
+         * <code>string value = 2;</code>
+         * @return The value.
+         */
+        public java.lang.String getValue() {
+          java.lang.Object ref = value_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            value_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string value = 2;</code>
+         * @return The bytes for value.
+         */
+        public com.google.protobuf.ByteString
+            getValueBytes() {
+          java.lang.Object ref = value_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            value_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string value = 2;</code>
+         * @param value The value to set.
+         * @return This builder for chaining.
+         */
+        public Builder setValue(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          value_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string value = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearValue() {
+          
+          value_ = getDefaultInstance().getValue();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string value = 2;</code>
+         * @param value The bytes for value to set.
+         * @return This builder for chaining.
+         */
+        public Builder setValueBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          value_ = value;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:SendRequest.Property)
+      }
+
+      // @@protoc_insertion_point(class_scope:SendRequest.Property)
+      private static final com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property();
+      }
+
+      public static com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Property>
+          PARSER = new com.google.protobuf.AbstractParser<Property>() {
+        @java.lang.Override
+        public Property parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Property(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<Property> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Property> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Property getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
     public interface MessageOrBuilder extends
         // @@protoc_insertion_point(interface_extends:SendRequest.Message)
         com.google.protobuf.MessageOrBuilder {
@@ -1460,33 +2178,48 @@ public final class NotificationOuterClass {
           getMessageIdBytes();
 
       /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+      int getPropertiesCount();
+      /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+      boolean containsProperties(
+          java.lang.String key);
+      /**
+       * Use {@link #getPropertiesMap()} instead.
+       */
+      @java.lang.Deprecated
+      java.util.Map<java.lang.String, java.lang.String>
+      getProperties();
+      /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+      java.util.Map<java.lang.String, java.lang.String>
+      getPropertiesMap();
+      /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+
+      java.lang.String getPropertiesOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue);
+      /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+
+      java.lang.String getPropertiesOrThrow(
+          java.lang.String key);
+
+      /**
        * <pre>
        *业务侧消息体
        * </pre>
        *
-       * <code>bytes body = 4;</code>
+       * <code>bytes body = 5;</code>
        * @return The body.
        */
       com.google.protobuf.ByteString getBody();
-
-      /**
-       * <pre>
-       *消息模式，默认CLUSTERING
-       * </pre>
-       *
-       * <code>.SendRequest.Message.Mode mode = 5;</code>
-       * @return The enum numeric value on the wire for mode.
-       */
-      int getModeValue();
-      /**
-       * <pre>
-       *消息模式，默认CLUSTERING
-       * </pre>
-       *
-       * <code>.SendRequest.Message.Mode mode = 5;</code>
-       * @return The mode.
-       */
-      com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode getMode();
 
       /**
        * <pre>
@@ -1514,7 +2247,6 @@ public final class NotificationOuterClass {
         topic_ = "";
         messageId_ = "";
         body_ = com.google.protobuf.ByteString.EMPTY;
-        mode_ = 0;
       }
 
       @java.lang.Override
@@ -1537,6 +2269,7 @@ public final class NotificationOuterClass {
         if (extensionRegistry == null) {
           throw new java.lang.NullPointerException();
         }
+        int mutable_bitField0_ = 0;
         com.google.protobuf.UnknownFieldSet.Builder unknownFields =
             com.google.protobuf.UnknownFieldSet.newBuilder();
         try {
@@ -1565,14 +2298,21 @@ public final class NotificationOuterClass {
                 break;
               }
               case 34: {
-
-                body_ = input.readBytes();
+                if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                  properties_ = com.google.protobuf.MapField.newMapField(
+                      PropertiesDefaultEntryHolder.defaultEntry);
+                  mutable_bitField0_ |= 0x00000001;
+                }
+                com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+                properties__ = input.readMessage(
+                    PropertiesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                properties_.getMutableMap().put(
+                    properties__.getKey(), properties__.getValue());
                 break;
               }
-              case 40: {
-                int rawValue = input.readEnum();
+              case 42: {
 
-                mode_ = rawValue;
+                body_ = input.readBytes();
                 break;
               }
               case 48: {
@@ -1604,6 +2344,18 @@ public final class NotificationOuterClass {
         return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendRequest_Message_descriptor;
       }
 
+      @SuppressWarnings({"rawtypes"})
+      @java.lang.Override
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 4:
+            return internalGetProperties();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
@@ -1807,46 +2559,100 @@ public final class NotificationOuterClass {
         }
       }
 
-      public static final int BODY_FIELD_NUMBER = 4;
+      public static final int PROPERTIES_FIELD_NUMBER = 4;
+      private static final class PropertiesDefaultEntryHolder {
+        static final com.google.protobuf.MapEntry<
+            java.lang.String, java.lang.String> defaultEntry =
+                com.google.protobuf.MapEntry
+                .<java.lang.String, java.lang.String>newDefaultInstance(
+                    com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendRequest_Message_PropertiesEntry_descriptor, 
+                    com.google.protobuf.WireFormat.FieldType.STRING,
+                    "",
+                    com.google.protobuf.WireFormat.FieldType.STRING,
+                    "");
+      }
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> properties_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetProperties() {
+        if (properties_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              PropertiesDefaultEntryHolder.defaultEntry);
+        }
+        return properties_;
+      }
+
+      public int getPropertiesCount() {
+        return internalGetProperties().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsProperties(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetProperties().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getPropertiesMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getProperties() {
+        return getPropertiesMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getPropertiesMap() {
+        return internalGetProperties().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getPropertiesOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetProperties().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; properties = 4;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getPropertiesOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetProperties().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public static final int BODY_FIELD_NUMBER = 5;
       private com.google.protobuf.ByteString body_;
       /**
        * <pre>
        *业务侧消息体
        * </pre>
        *
-       * <code>bytes body = 4;</code>
+       * <code>bytes body = 5;</code>
        * @return The body.
        */
       @java.lang.Override
       public com.google.protobuf.ByteString getBody() {
         return body_;
-      }
-
-      public static final int MODE_FIELD_NUMBER = 5;
-      private int mode_;
-      /**
-       * <pre>
-       *消息模式，默认CLUSTERING
-       * </pre>
-       *
-       * <code>.SendRequest.Message.Mode mode = 5;</code>
-       * @return The enum numeric value on the wire for mode.
-       */
-      @java.lang.Override public int getModeValue() {
-        return mode_;
-      }
-      /**
-       * <pre>
-       *消息模式，默认CLUSTERING
-       * </pre>
-       *
-       * <code>.SendRequest.Message.Mode mode = 5;</code>
-       * @return The mode.
-       */
-      @java.lang.Override public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode getMode() {
-        @SuppressWarnings("deprecation")
-        com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode result = com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode.valueOf(mode_);
-        return result == null ? com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode.UNRECOGNIZED : result;
       }
 
       public static final int ACK_FIELD_NUMBER = 6;
@@ -1887,11 +2693,14 @@ public final class NotificationOuterClass {
         if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(messageId_)) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 3, messageId_);
         }
+        com.google.protobuf.GeneratedMessageV3
+          .serializeStringMapTo(
+            output,
+            internalGetProperties(),
+            PropertiesDefaultEntryHolder.defaultEntry,
+            4);
         if (!body_.isEmpty()) {
-          output.writeBytes(4, body_);
-        }
-        if (mode_ != com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode.CLUSTERING.getNumber()) {
-          output.writeEnum(5, mode_);
+          output.writeBytes(5, body_);
         }
         if (ack_ != false) {
           output.writeBool(6, ack_);
@@ -1915,13 +2724,19 @@ public final class NotificationOuterClass {
         if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(messageId_)) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, messageId_);
         }
+        for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+             : internalGetProperties().getMap().entrySet()) {
+          com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+          properties__ = PropertiesDefaultEntryHolder.defaultEntry.newBuilderForType()
+              .setKey(entry.getKey())
+              .setValue(entry.getValue())
+              .build();
+          size += com.google.protobuf.CodedOutputStream
+              .computeMessageSize(4, properties__);
+        }
         if (!body_.isEmpty()) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBytesSize(4, body_);
-        }
-        if (mode_ != com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode.CLUSTERING.getNumber()) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeEnumSize(5, mode_);
+            .computeBytesSize(5, body_);
         }
         if (ack_ != false) {
           size += com.google.protobuf.CodedOutputStream
@@ -1948,9 +2763,10 @@ public final class NotificationOuterClass {
             != other.getPartition()) return false;
         if (!getMessageId()
             .equals(other.getMessageId())) return false;
+        if (!internalGetProperties().equals(
+            other.internalGetProperties())) return false;
         if (!getBody()
             .equals(other.getBody())) return false;
-        if (mode_ != other.mode_) return false;
         if (getAck()
             != other.getAck()) return false;
         if (!unknownFields.equals(other.unknownFields)) return false;
@@ -1970,10 +2786,12 @@ public final class NotificationOuterClass {
         hash = (53 * hash) + getPartition();
         hash = (37 * hash) + MESSAGE_ID_FIELD_NUMBER;
         hash = (53 * hash) + getMessageId().hashCode();
+        if (!internalGetProperties().getMap().isEmpty()) {
+          hash = (37 * hash) + PROPERTIES_FIELD_NUMBER;
+          hash = (53 * hash) + internalGetProperties().hashCode();
+        }
         hash = (37 * hash) + BODY_FIELD_NUMBER;
         hash = (53 * hash) + getBody().hashCode();
-        hash = (37 * hash) + MODE_FIELD_NUMBER;
-        hash = (53 * hash) + mode_;
         hash = (37 * hash) + ACK_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getAck());
@@ -2084,6 +2902,28 @@ public final class NotificationOuterClass {
           return com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.internal_static_SendRequest_Message_descriptor;
         }
 
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMapField(
+            int number) {
+          switch (number) {
+            case 4:
+              return internalGetProperties();
+            default:
+              throw new RuntimeException(
+                  "Invalid map field number: " + number);
+          }
+        }
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMutableMapField(
+            int number) {
+          switch (number) {
+            case 4:
+              return internalGetMutableProperties();
+            default:
+              throw new RuntimeException(
+                  "Invalid map field number: " + number);
+          }
+        }
         @java.lang.Override
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
@@ -2116,9 +2956,8 @@ public final class NotificationOuterClass {
 
           messageId_ = "";
 
+          internalGetMutableProperties().clear();
           body_ = com.google.protobuf.ByteString.EMPTY;
-
-          mode_ = 0;
 
           ack_ = false;
 
@@ -2148,11 +2987,13 @@ public final class NotificationOuterClass {
         @java.lang.Override
         public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message buildPartial() {
           com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message result = new com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message(this);
+          int from_bitField0_ = bitField0_;
           result.topic_ = topic_;
           result.partition_ = partition_;
           result.messageId_ = messageId_;
+          result.properties_ = internalGetProperties();
+          result.properties_.makeImmutable();
           result.body_ = body_;
-          result.mode_ = mode_;
           result.ack_ = ack_;
           onBuilt();
           return result;
@@ -2213,11 +3054,10 @@ public final class NotificationOuterClass {
             messageId_ = other.messageId_;
             onChanged();
           }
+          internalGetMutableProperties().mergeFrom(
+              other.internalGetProperties());
           if (other.getBody() != com.google.protobuf.ByteString.EMPTY) {
             setBody(other.getBody());
-          }
-          if (other.mode_ != 0) {
-            setModeValue(other.getModeValue());
           }
           if (other.getAck() != false) {
             setAck(other.getAck());
@@ -2250,6 +3090,7 @@ public final class NotificationOuterClass {
           }
           return this;
         }
+        private int bitField0_;
 
         private java.lang.Object topic_ = "";
         /**
@@ -2434,13 +3275,144 @@ public final class NotificationOuterClass {
           return this;
         }
 
+        private com.google.protobuf.MapField<
+            java.lang.String, java.lang.String> properties_;
+        private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+        internalGetProperties() {
+          if (properties_ == null) {
+            return com.google.protobuf.MapField.emptyMapField(
+                PropertiesDefaultEntryHolder.defaultEntry);
+          }
+          return properties_;
+        }
+        private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+        internalGetMutableProperties() {
+          onChanged();;
+          if (properties_ == null) {
+            properties_ = com.google.protobuf.MapField.newMapField(
+                PropertiesDefaultEntryHolder.defaultEntry);
+          }
+          if (!properties_.isMutable()) {
+            properties_ = properties_.copy();
+          }
+          return properties_;
+        }
+
+        public int getPropertiesCount() {
+          return internalGetProperties().getMap().size();
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 4;</code>
+         */
+
+        @java.lang.Override
+        public boolean containsProperties(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          return internalGetProperties().getMap().containsKey(key);
+        }
+        /**
+         * Use {@link #getPropertiesMap()} instead.
+         */
+        @java.lang.Override
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, java.lang.String> getProperties() {
+          return getPropertiesMap();
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 4;</code>
+         */
+        @java.lang.Override
+
+        public java.util.Map<java.lang.String, java.lang.String> getPropertiesMap() {
+          return internalGetProperties().getMap();
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 4;</code>
+         */
+        @java.lang.Override
+
+        public java.lang.String getPropertiesOrDefault(
+            java.lang.String key,
+            java.lang.String defaultValue) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          java.util.Map<java.lang.String, java.lang.String> map =
+              internalGetProperties().getMap();
+          return map.containsKey(key) ? map.get(key) : defaultValue;
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 4;</code>
+         */
+        @java.lang.Override
+
+        public java.lang.String getPropertiesOrThrow(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          java.util.Map<java.lang.String, java.lang.String> map =
+              internalGetProperties().getMap();
+          if (!map.containsKey(key)) {
+            throw new java.lang.IllegalArgumentException();
+          }
+          return map.get(key);
+        }
+
+        public Builder clearProperties() {
+          internalGetMutableProperties().getMutableMap()
+              .clear();
+          return this;
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 4;</code>
+         */
+
+        public Builder removeProperties(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          internalGetMutableProperties().getMutableMap()
+              .remove(key);
+          return this;
+        }
+        /**
+         * Use alternate mutation accessors instead.
+         */
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, java.lang.String>
+        getMutableProperties() {
+          return internalGetMutableProperties().getMutableMap();
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 4;</code>
+         */
+        public Builder putProperties(
+            java.lang.String key,
+            java.lang.String value) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+          internalGetMutableProperties().getMutableMap()
+              .put(key, value);
+          return this;
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 4;</code>
+         */
+
+        public Builder putAllProperties(
+            java.util.Map<java.lang.String, java.lang.String> values) {
+          internalGetMutableProperties().getMutableMap()
+              .putAll(values);
+          return this;
+        }
+
         private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
         /**
          * <pre>
          *业务侧消息体
          * </pre>
          *
-         * <code>bytes body = 4;</code>
+         * <code>bytes body = 5;</code>
          * @return The body.
          */
         @java.lang.Override
@@ -2452,7 +3424,7 @@ public final class NotificationOuterClass {
          *业务侧消息体
          * </pre>
          *
-         * <code>bytes body = 4;</code>
+         * <code>bytes body = 5;</code>
          * @param value The body to set.
          * @return This builder for chaining.
          */
@@ -2470,86 +3442,12 @@ public final class NotificationOuterClass {
          *业务侧消息体
          * </pre>
          *
-         * <code>bytes body = 4;</code>
+         * <code>bytes body = 5;</code>
          * @return This builder for chaining.
          */
         public Builder clearBody() {
           
           body_ = getDefaultInstance().getBody();
-          onChanged();
-          return this;
-        }
-
-        private int mode_ = 0;
-        /**
-         * <pre>
-         *消息模式，默认CLUSTERING
-         * </pre>
-         *
-         * <code>.SendRequest.Message.Mode mode = 5;</code>
-         * @return The enum numeric value on the wire for mode.
-         */
-        @java.lang.Override public int getModeValue() {
-          return mode_;
-        }
-        /**
-         * <pre>
-         *消息模式，默认CLUSTERING
-         * </pre>
-         *
-         * <code>.SendRequest.Message.Mode mode = 5;</code>
-         * @param value The enum numeric value on the wire for mode to set.
-         * @return This builder for chaining.
-         */
-        public Builder setModeValue(int value) {
-          
-          mode_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <pre>
-         *消息模式，默认CLUSTERING
-         * </pre>
-         *
-         * <code>.SendRequest.Message.Mode mode = 5;</code>
-         * @return The mode.
-         */
-        @java.lang.Override
-        public com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode getMode() {
-          @SuppressWarnings("deprecation")
-          com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode result = com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode.valueOf(mode_);
-          return result == null ? com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode.UNRECOGNIZED : result;
-        }
-        /**
-         * <pre>
-         *消息模式，默认CLUSTERING
-         * </pre>
-         *
-         * <code>.SendRequest.Message.Mode mode = 5;</code>
-         * @param value The mode to set.
-         * @return This builder for chaining.
-         */
-        public Builder setMode(com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass.SendRequest.Message.Mode value) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          
-          mode_ = value.getNumber();
-          onChanged();
-          return this;
-        }
-        /**
-         * <pre>
-         *消息模式，默认CLUSTERING
-         * </pre>
-         *
-         * <code>.SendRequest.Message.Mode mode = 5;</code>
-         * @return This builder for chaining.
-         */
-        public Builder clearMode() {
-          
-          mode_ = 0;
           onChanged();
           return this;
         }
@@ -5683,10 +6581,20 @@ public final class NotificationOuterClass {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_SendRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SendRequest_Property_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SendRequest_Property_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_SendRequest_Message_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_SendRequest_Message_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SendRequest_Message_PropertiesEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SendRequest_Message_PropertiesEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_SendResult_descriptor;
   private static final 
@@ -5707,26 +6615,29 @@ public final class NotificationOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n\022notification.proto\"\024\n\004Ping\022\014\n\004ping\030\001 \001" +
-      "(\t\"\024\n\004Pong\022\014\n\004pong\030\001 \001(\t\"\337\002\n\013SendRequest" +
+      "(\t\"\024\n\004Pong\022\014\n\004pong\030\001 \001(\t\"\313\003\n\013SendRequest" +
       "\0222\n\014request_type\030\001 \001(\0162\034.SendRequest.Sen" +
       "dRequestType\022#\n\003msg\030\002 \001(\0132\024.SendRequest." +
-      "MessageH\000\022\025\n\004ping\030\003 \001(\0132\005.PingH\000\032\252\001\n\007Mes" +
+      "MessageH\000\022\025\n\004ping\030\003 \001(\0132\005.PingH\000\032&\n\010Prop" +
+      "erty\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\032\356\001\n\007Mes" +
       "sage\022\r\n\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\005\022\022" +
-      "\n\nmessage_id\030\003 \001(\t\022\014\n\004body\030\004 \001(\014\022\'\n\004mode" +
-      "\030\005 \001(\0162\031.SendRequest.Message.Mode\022\013\n\003ack" +
-      "\030\006 \001(\010\"%\n\004Mode\022\016\n\nCLUSTERING\020\000\022\r\n\tBROADC" +
-      "AST\020\001\"(\n\017SendRequestType\022\013\n\007MESSAGE\020\000\022\010\n" +
-      "\004PING\020\001B\t\n\007message\"\237\002\n\nSendResult\0223\n\rres" +
-      "ponse_type\030\001 \001(\0162\034.SendResult.SendRespon" +
-      "seType\022\025\n\004pong\030\002 \001(\0132\005.PongH\000\022\036\n\003ack\030\003 \001" +
-      "(\0132\017.SendResult.AckH\000\032t\n\003Ack\022\022\n\nmessage_" +
-      "id\030\001 \001(\t\022(\n\007retCode\030\002 \001(\0162\027.SendResult.A" +
-      "ck.RetCode\022\014\n\004info\030\003 \001(\t\"!\n\007RetCode\022\013\n\007S" +
-      "UCCESS\020\000\022\t\n\005ERROR\020\001\"%\n\020SendResponseType\022" +
-      "\010\n\004PONG\020\000\022\007\n\003ACK\020\001B\010\n\006result27\n\014Notifica" +
-      "tion\022\'\n\004Send\022\014.SendRequest\032\013.SendResult\"" +
-      "\000(\0010\001B\'\n%com.tsingj.sloth.broker.grpc.pr" +
-      "otobufb\006proto3"
+      "\n\nmessage_id\030\003 \001(\t\0228\n\nproperties\030\004 \003(\0132$" +
+      ".SendRequest.Message.PropertiesEntry\022\014\n\004" +
+      "body\030\005 \001(\014\022\013\n\003ack\030\006 \001(\010\0321\n\017PropertiesEnt" +
+      "ry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"%\n\004Mo" +
+      "de\022\016\n\nCLUSTERING\020\000\022\r\n\tBROADCAST\020\001\"(\n\017Sen" +
+      "dRequestType\022\013\n\007MESSAGE\020\000\022\010\n\004PING\020\001B\t\n\007m" +
+      "essage\"\237\002\n\nSendResult\0223\n\rresponse_type\030\001" +
+      " \001(\0162\034.SendResult.SendResponseType\022\025\n\004po" +
+      "ng\030\002 \001(\0132\005.PongH\000\022\036\n\003ack\030\003 \001(\0132\017.SendRes" +
+      "ult.AckH\000\032t\n\003Ack\022\022\n\nmessage_id\030\001 \001(\t\022(\n\007" +
+      "retCode\030\002 \001(\0162\027.SendResult.Ack.RetCode\022\014" +
+      "\n\004info\030\003 \001(\t\"!\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n\005" +
+      "ERROR\020\001\"%\n\020SendResponseType\022\010\n\004PONG\020\000\022\007\n" +
+      "\003ACK\020\001B\010\n\006result27\n\014Notification\022\'\n\004Send" +
+      "\022\014.SendRequest\032\013.SendResult\"\000(\0010\001B\'\n%com" +
+      ".tsingj.sloth.broker.grpc.protobufb\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5750,12 +6661,24 @@ public final class NotificationOuterClass {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SendRequest_descriptor,
         new java.lang.String[] { "RequestType", "Msg", "Ping", "Message", });
-    internal_static_SendRequest_Message_descriptor =
+    internal_static_SendRequest_Property_descriptor =
       internal_static_SendRequest_descriptor.getNestedTypes().get(0);
+    internal_static_SendRequest_Property_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SendRequest_Property_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_SendRequest_Message_descriptor =
+      internal_static_SendRequest_descriptor.getNestedTypes().get(1);
     internal_static_SendRequest_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SendRequest_Message_descriptor,
-        new java.lang.String[] { "Topic", "Partition", "MessageId", "Body", "Mode", "Ack", });
+        new java.lang.String[] { "Topic", "Partition", "MessageId", "Properties", "Body", "Ack", });
+    internal_static_SendRequest_Message_PropertiesEntry_descriptor =
+      internal_static_SendRequest_Message_descriptor.getNestedTypes().get(0);
+    internal_static_SendRequest_Message_PropertiesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SendRequest_Message_PropertiesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_SendResult_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_SendResult_fieldAccessorTable = new

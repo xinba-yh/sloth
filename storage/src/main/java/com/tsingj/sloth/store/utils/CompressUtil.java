@@ -38,10 +38,10 @@ public class CompressUtil {
         public static Result<byte[]> uncompress(byte[] compressed) {
             try (ByteArrayOutputStream out = new ByteArrayOutputStream();
                  ByteArrayInputStream in = new ByteArrayInputStream(compressed);
-                 GZIPInputStream ginzip = new GZIPInputStream(in)) {
+                 GZIPInputStream gzip = new GZIPInputStream(in)) {
                 byte[] buffer = new byte[1024];
                 int offset;
-                while ((offset = ginzip.read(buffer)) != -1) {
+                while ((offset = gzip.read(buffer)) != -1) {
                     out.write(buffer, 0, offset);
                 }
                 return Results.success(out.toByteArray());
@@ -49,7 +49,6 @@ public class CompressUtil {
                 logger.error("compress fail!", e);
                 return Results.failure("compress fail!" + e.getMessage());
             }
-
         }
 
     }

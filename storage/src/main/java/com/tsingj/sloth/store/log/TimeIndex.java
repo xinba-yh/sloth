@@ -1,5 +1,6 @@
 package com.tsingj.sloth.store.log;
 
+import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author yanghao
  */
-public class TimeIndex {
+public class TimeIndex implements DataRecovery {
 
     private static final Logger logger = LoggerFactory.getLogger(TimeIndex.class);
 
@@ -46,6 +47,15 @@ public class TimeIndex {
         this.readWriteLock = new ReentrantLock();
     }
 
+    //----------------------------------------------------------loadLogs--------------------------------------------------------------------
+
+    @Override
+    public void load() {
+        long indexEntries = this.file.length() / LogConstants.INDEX_BYTES;
+        logger.info("load indexEntries {}", indexEntries);
+        this.indexEntries = this.file.length() / LogConstants.INDEX_BYTES;
+    }
+
     public void addIndex(long key, long value) throws IOException {
         /*
          * add time index
@@ -74,15 +84,6 @@ public class TimeIndex {
         this.indexEntries = this.indexEntries + 1;
     }
 
-    public long getFileSize() {
-        return FileUtils.sizeOf(file);
-    }
-
-    public void loadLogs() {
-        long indexEntries = file.length() / LogConstants.INDEX_BYTES;
-        logger.info("load indexEntries {}", indexEntries);
-        this.indexEntries = file.length() / LogConstants.INDEX_BYTES;
-    }
 
     public void flush() {
         try {

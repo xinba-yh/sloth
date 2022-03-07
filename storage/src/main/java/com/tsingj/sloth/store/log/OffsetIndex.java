@@ -1,6 +1,7 @@
 package com.tsingj.sloth.store.log;
 
 import com.github.benmanes.caffeine.cache.*;
+import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.log.lock.LogReentrantLock;
 import com.tsingj.sloth.store.pojo.Result;
@@ -17,7 +18,7 @@ import java.util.Set;
 /**
  * @author yanghao
  */
-public class OffsetIndex {
+public class OffsetIndex implements DataRecovery {
 
     private static final Logger logger = LoggerFactory.getLogger(OffsetIndex.class);
     /**
@@ -60,6 +61,27 @@ public class OffsetIndex {
         //1m内存 index
         this.warmIndexEntries = Caffeine.newBuilder().initialCapacity(maxWarmIndexEntries / LogConstants.INDEX_BYTES).recordStats().build();
 
+    }
+
+    @Override
+    public void load() {
+        long fileLength = this.file.length();
+        //1、load indexEntries
+        this.indexSize = fileLength / LogConstants.INDEX_BYTES;
+        //2、load warmEntries
+        long loadWarmPosition = fileLength > this.maxWarmIndexEntries ? fileLength - this.maxWarmIndexEntries : 0L;
+        logger.info("prepare load offsetIndex from position:{}", loadWarmPosition);
+        while (loadWarmPosition < fileLength) {
+            Result<IndexEntry.OffsetPosition> indexEntryPositionOffset = getIndexEntryByIndexPosition(loadWarmPosition, false);
+            if (indexEntryPositionOffset.failure()) {
+                logger.warn("load index fail! {}", indexEntryPositionOffset.getMsg());
+                break;
+            }
+            IndexEntry.OffsetPosition data = indexEntryPositionOffset.getData();
+            this.warmIndexEntries.put(loadWarmPosition, data);
+            loadWarmPosition = loadWarmPosition + LogConstants.INDEX_BYTES;
+        }
+        logger.info("load offsetIndex success, current indexSize:{} warm indexEntrySize:{}", indexSize, this.warmIndexEntries.estimatedSize());
     }
 
     public void addIndex(long key, long value) throws IOException {
@@ -179,26 +201,6 @@ public class OffsetIndex {
             return Results.success(new IndexEntry.OffsetPosition(0, 0));
         }
         return getIndexEntryByIndexPosition((entries - 1) * LogConstants.INDEX_BYTES, false);
-    }
-
-    public void loadLogs() {
-        long fileLength = this.file.length();
-        //1、load indexEntries
-        this.indexSize = fileLength / LogConstants.INDEX_BYTES;
-        //2、load warmEntries
-        long loadWarmPosition = fileLength > this.maxWarmIndexEntries ? fileLength - this.maxWarmIndexEntries : 0L;
-        logger.info("prepare load offsetIndex from position:{}", loadWarmPosition);
-        while (loadWarmPosition < fileLength) {
-            Result<IndexEntry.OffsetPosition> indexEntryPositionOffset = getIndexEntryByIndexPosition(loadWarmPosition, false);
-            if (indexEntryPositionOffset.failure()) {
-                logger.warn("load index fail! {}", indexEntryPositionOffset.getMsg());
-                break;
-            }
-            IndexEntry.OffsetPosition data = indexEntryPositionOffset.getData();
-            this.warmIndexEntries.put(loadWarmPosition, data);
-            loadWarmPosition = loadWarmPosition + LogConstants.INDEX_BYTES;
-        }
-        logger.info("load offsetIndex success, current indexSize:{} warm indexEntrySize:{}", indexSize, this.warmIndexEntries.estimatedSize());
     }
 
     public void flush() {

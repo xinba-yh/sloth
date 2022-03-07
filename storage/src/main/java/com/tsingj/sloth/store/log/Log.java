@@ -26,10 +26,10 @@ public class Log {
 
     private static final Logger logger = LoggerFactory.getLogger(Log.class);
 
-    private final LogSegmentSet logSegmentSet;
+    private final LogSegmentManager logSegmentManager;
 
-    public Log(LogSegmentSet logSegmentSet) {
-        this.logSegmentSet = logSegmentSet;
+    public Log(LogSegmentManager logSegmentManager) {
+        this.logSegmentManager = logSegmentManager;
     }
 
     /**
@@ -58,12 +58,12 @@ public class Log {
             //lock start
             lock.lock();
             //find latest logSegmentFile
-            LogSegment latestLogSegment = logSegmentSet.getLatestLogSegmentFile(topic, partition);
+            LogSegment latestLogSegment = logSegmentManager.getLatestLogSegmentFile(topic, partition);
             //1、not found create
             //2、full rolling logSegmentFile with index
             if (latestLogSegment == null || latestLogSegment.isFull()) {
                 offset = latestLogSegment == null ? 0 : latestLogSegment.incrementOffsetAndGet();
-                latestLogSegment = logSegmentSet.newLogSegmentFile(topic, partition, offset);
+                latestLogSegment = logSegmentManager.newLogSegmentFile(topic, partition, offset);
                 if (latestLogSegment == null) {
                     logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
                     return new PutMessageResult(PutMessageStatus.CREATE_LOG_FILE_FAILED);
@@ -111,7 +111,7 @@ public class Log {
      * @return
      */
     public GetMessageResult getMessage(String topic, int partition, long offset) {
-        LogSegment logSegment = logSegmentSet.findLogSegmentByOffset(topic, partition, offset);
+        LogSegment logSegment = logSegmentManager.findLogSegmentByOffset(topic, partition, offset);
         if (logSegment == null) {
             return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }
@@ -233,7 +233,11 @@ public class Log {
                 //12、msgBody - cal
                 byte[] body = new byte[msgSize];
                 storeByteBuffer.get(body);
-                message.setBody(body);
+                Result<byte[]> uncompressResult = CompressUtil.GZIP.uncompress(body);
+                if (!uncompressResult.success()) {
+                    return Results.failure(uncompressResult.getMsg());
+                }
+                message.setBody(uncompressResult.getData());
                 return Results.success(message);
             } catch (Throwable e) {
                 logger.error("store log message decode error.", e);

@@ -23,16 +23,8 @@ public class GetMessageResult {
         return status;
     }
 
-    public void setStatus(GetMessageStatus status) {
-        this.status = status;
-    }
-
     public String getErrorMsg() {
         return errorMsg;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
     }
 
     public Message getMessage() {
@@ -41,10 +33,6 @@ public class GetMessageResult {
 
     public void setMessage(Message message) {
         this.message = message;
-    }
-
-    public GetMessageResult() {
-
     }
 
     public GetMessageResult(GetMessageStatus status) {

@@ -30,8 +30,8 @@ public class ConsumerClient {
         final CountDownLatch countDownLatch = new CountDownLatch(partitionCount);
         long consumerStartTime = System.currentTimeMillis();
         AtomicLong success = new AtomicLong(0);
-        for (int partition = 0; partition < partitionCount; partition++) {
-
+        for (int i = 0; i < partitionCount; i++) {
+            int partition = i + 1;
             String helloWorld = "hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello wor";
             LOGGER.info("test message length:{}", helloWorld.length());
 
@@ -78,7 +78,7 @@ public class ConsumerClient {
             }).start();
         }
         try {
-            countDownLatch.await(10, TimeUnit.SECONDS);
+            countDownLatch.await(20, TimeUnit.SECONDS);
             LOGGER.info("consumer cost:{}", System.currentTimeMillis() - consumerStartTime);
             LOGGER.info("success count {}.", success.get());
         } catch (InterruptedException ignored) {

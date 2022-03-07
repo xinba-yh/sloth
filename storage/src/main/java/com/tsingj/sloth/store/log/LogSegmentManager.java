@@ -1,13 +1,18 @@
 package com.tsingj.sloth.store.log;
 
 
+import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import com.tsingj.sloth.store.utils.CommonUtil;
+import com.tsingj.sloth.store.utils.StoragePathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.IntervalTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Component;
@@ -30,14 +35,17 @@ import java.util.stream.Collectors;
  */
 @EnableScheduling
 @Component
-public class LogSegmentSet implements SchedulingConfigurer {
+public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogSegmentSet.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogSegmentManager.class);
+
+    private final StoragePathHelper storagePathHelper;
 
     private final StorageProperties storageProperties;
 
-    public LogSegmentSet(StorageProperties storageProperties) {
+    public LogSegmentManager(StorageProperties storageProperties, StoragePathHelper storagePathHelper) {
         this.storageProperties = storageProperties;
+        this.storagePathHelper = storagePathHelper;
     }
 
     /**
@@ -51,13 +59,14 @@ public class LogSegmentSet implements SchedulingConfigurer {
      * -- 加载dataPath目录下所有segment文件和index文件。
      */
     @PostConstruct
-    public void loadLogs() {
-        String dataPath = storageProperties.getDataPath();
+    @Override
+    public void load() {
+        String logDirPath = storagePathHelper.getLogDir();
         try {
-            File dataDir = new File(dataPath);
-            File[] topicFiles = dataDir.listFiles();
+            File logDir = new File(logDirPath);
+            File[] topicFiles = logDir.listFiles();
             if (topicFiles == null || topicFiles.length == 0) {
-                logger.info("dataPath:{} is empty dir, skip initialization.", dataPath);
+                logger.info("logDirPath:{} is empty dir, skip initialization.", logDirPath);
                 return;
             }
             //initialization segments file memory mapping.
@@ -78,7 +87,14 @@ public class LogSegmentSet implements SchedulingConfigurer {
                         String segmentFileName = segmentFile.getName();
                         if (segmentFileName.endsWith(LogConstants.FileSuffix.LOG)) {
                             logger.info("prepare init topic:{} partition:{} segment:{}", topic, partition, segmentFileName);
-                            LogSegment logSegment = LogSegment.loadLogs(segmentFile, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
+                            /*
+                             * 1、初始化LogSegment、OffsetIndex、TimeIndex
+                             */
+                            String logPath = segmentFile.getAbsolutePath().replace(LogConstants.FileSuffix.LOG, "");
+                            long startOffset = CommonUtil.fileName2Offset(segmentFile.getName());
+                            LogSegment logSegment = new LogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
+                            logSegment.load();
+//                            LogSegment logSegment = LogSegment.loadLogs(segmentFile, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
                             this.addLogSegment(topic, partition, logSegment);
                         }
                     }
@@ -100,6 +116,14 @@ public class LogSegmentSet implements SchedulingConfigurer {
         logger.trace("storage destroy done.");
     }
 
+
+    @Bean
+    public TaskScheduler scheduledExecutorService() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(2);
+        scheduler.setThreadNamePrefix("scheduled-thread-");
+        return scheduler;
+    }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
@@ -125,7 +149,7 @@ public class LogSegmentSet implements SchedulingConfigurer {
 
     public LogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
         //创建文件
-        String topicPartitionDirPath = storageProperties.getDataPath() + File.separator + topic + File.separator + partition;
+        String topicPartitionDirPath = storagePathHelper.getLogDir() + File.separator + topic + File.separator + partition;
         File dir = new File(topicPartitionDirPath);
         if (!dir.exists()) {
             boolean mkdirs = dir.mkdirs();
@@ -164,7 +188,6 @@ public class LogSegmentSet implements SchedulingConfigurer {
     public ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> getLogSegmentsMapping() {
         return this.DATA_LOGFILE_MAP;
     }
-
 
 
     //----------------------------------------------------------private方法--------------------------------------------------------------------
@@ -230,5 +253,6 @@ public class LogSegmentSet implements SchedulingConfigurer {
     private void cleanupLogs() {
         logger.info("cleanupLogs");
     }
+
 
 }

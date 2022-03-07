@@ -1,12 +1,12 @@
 package com.tsingj.sloth.broker.grpc;
 
+import com.tsingj.sloth.broker.grpc.handler.MessageHandler;
 import com.tsingj.sloth.broker.grpc.protobuf.NotificationGrpc;
 import com.tsingj.sloth.broker.grpc.protobuf.NotificationOuterClass;
 import com.tsingj.sloth.store.pojo.Result;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author yanghao
@@ -14,10 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @GrpcService
-public class MessageGrpcService extends NotificationGrpc.NotificationImplBase {
+public class BrokerController extends NotificationGrpc.NotificationImplBase {
 
-    @Autowired
-    private MessageHandler messageHandler;
+    private final MessageHandler messageHandler;
+
+    public BrokerController(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
 
     @Override
     public StreamObserver<NotificationOuterClass.SendRequest> send(StreamObserver<NotificationOuterClass.SendResult> resp) {
@@ -46,7 +49,7 @@ public class MessageGrpcService extends NotificationGrpc.NotificationImplBase {
                             resp.onNext(NotificationOuterClass.SendResult.newBuilder().setAck(ack).build());
                         } else {
                             ack = NotificationOuterClass.SendResult.Ack.newBuilder()
-                                    .setRetCode(NotificationOuterClass.SendResult.Ack.RetCode.SUCCESS)
+                                    .setRetCode(NotificationOuterClass.SendResult.Ack.RetCode.ERROR)
                                     .setMessageId(messageId)
                                     .build();
                         }

@@ -35,8 +35,8 @@ public class ProducerClient {
         ExecutorService executorService = Executors.newFixedThreadPool(8);
 
         long producerStartTime = System.currentTimeMillis();
-        int[] partitions = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        for (int partition : partitions) {
+        for (int i = 0; i < partitionCount; i++) {
+            int partition = i + 1;
             String helloWorld = "hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello wor";
             LOGGER.info("test message length:{}", helloWorld.length());
 
@@ -56,8 +56,8 @@ public class ProducerClient {
                 }
                 countDownLatch.countDown();
             }).start();
-
         }
+
         try {
             countDownLatch.await(10, TimeUnit.SECONDS);
             LOGGER.info("producer count:{} cost:{}", partitionMessageCount * 9, System.currentTimeMillis() - producerStartTime);

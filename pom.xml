@@ -26,6 +26,7 @@
         <protobuf-java-format.version>1.4</protobuf-java-format.version>
 
         <lombok.version>1.18.8</lombok.version>
+        <com.alibaba.fastjson.version>1.2.69</com.alibaba.fastjson.version>
     </properties>
 
     <parent>

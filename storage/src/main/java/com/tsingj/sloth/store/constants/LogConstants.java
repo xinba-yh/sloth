@@ -15,7 +15,7 @@ public class LogConstants {
 
     }
 
-    public static class MessageKeyBytes{
+    public static class MessageKeyBytes {
 
         /**
          * offset长度
@@ -28,7 +28,7 @@ public class LogConstants {
         public final static int STORE = 4;
 
         /**
-         *  消息头长度
+         * 消息头长度
          */
         public final static int LOG_OVERHEAD = OFFSET + STORE;
 
@@ -67,19 +67,11 @@ public class LogConstants {
          * partitionId长度
          */
         public final static int PARTITION = 4;
-        
+
 
     }
 
 
     public static final int INDEX_BYTES = 16;
-
-    public static class IndexKeyBytes {
-       
-        public final static int KEY = 8;
-        
-        public final static int VALUE = 8;
-    }
-
 
 }

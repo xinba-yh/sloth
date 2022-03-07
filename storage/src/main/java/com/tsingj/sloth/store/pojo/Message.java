@@ -14,9 +14,11 @@ public class Message implements Serializable {
 
     private String topic;
 
-    private Map<String, String> properties;
-
     private int partition;
+
+    private String messageId;
+
+    private Map<String, String> properties;
 
     private byte[] body;
 
@@ -91,10 +93,6 @@ public class Message implements Serializable {
         this.offset = offset;
     }
 
-    public int getStoreSize() {
-        return storeSize;
-    }
-
     public void setStoreSize(int storeSize) {
         this.storeSize = storeSize;
     }
@@ -115,10 +113,6 @@ public class Message implements Serializable {
         this.version = version;
     }
 
-    public int getMsgSize() {
-        return msgSize;
-    }
-
     public void setMsgSize(int msgSize) {
         this.msgSize = msgSize;
     }
@@ -131,13 +125,21 @@ public class Message implements Serializable {
         this.crc = crc;
     }
 
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
 
     @Override
     public String toString() {
         return "Message{" +
                 "topic='" + topic + '\'' +
-                ", properties=" + properties +
                 ", partition=" + partition +
+                ", messageId='" + messageId + '\'' +
+                ", properties=" + properties +
                 ", body=" + body.length +
                 ", offset=" + offset +
                 ", storeSize=" + storeSize +
