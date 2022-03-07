@@ -3,6 +3,7 @@ package com.tsingj.sloth.broker.grpc;
 import com.tsingj.sloth.broker.grpc.handler.MessageHandler;
 import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationGrpc;
 import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +22,7 @@ public class BrokerGrpcImpl extends NotificationGrpc.NotificationImplBase {
 
     @Override
     public StreamObserver<NotificationOuterClass.SendRequest> send(StreamObserver<NotificationOuterClass.SendResult> resp) {
-
+        log.info("receive client connect.");
         StreamObserver<NotificationOuterClass.SendRequest> streamObserver = new StreamObserver<NotificationOuterClass.SendRequest>() {
             @Override
             public void onNext(NotificationOuterClass.SendRequest request) {

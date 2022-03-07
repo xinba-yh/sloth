@@ -5,13 +5,12 @@ import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationGrpc;
 import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
-import io.grpc.netty.shaded.io.netty.channel.ChannelOption;
+import io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.StreamObserver;
+import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.nio.charset.StandardCharsets;
@@ -98,18 +97,23 @@ public class ProducerClientTest {
                 .build();
         NotificationGrpc.NotificationStub notificationStub = NotificationGrpc.newStub(channel);
 
+        final Object lock = new Object();
         //默认8个partition，所以这里循环100000 * 8次。
         int defaultPartition = 8;
-        int partitionCount = 100;
+        int partitionCount = 10000;
         final CountDownLatch finishLatch = new CountDownLatch(1);
         final AtomicLong ackCount = new AtomicLong();
+
 
         final StreamObserver<NotificationOuterClass.SendResult> responseObserver = new StreamObserver<NotificationOuterClass.SendResult>() {
             @Override
             public void onNext(NotificationOuterClass.SendResult sendResult) {
+                synchronized (lock) {
+                    lock.notify();
+                }
                 long currentAckCount = ackCount.addAndGet(1);
-                log.info("receive count:{} new ack:{}", currentAckCount, sendResult.toString());
-                if (currentAckCount % 100 == 0) {
+                if (currentAckCount % 10000 == 0) {
+                    log.info("receive count:{} new ack:{}", currentAckCount, sendResult.toString());
                     if (currentAckCount == partitionCount * defaultPartition) {
                         finishLatch.countDown();
                     }
@@ -124,12 +128,18 @@ public class ProducerClientTest {
             @Override
             public void onError(Throwable throwable) {
                 log.error("error:{}", throwable.getMessage());
+                synchronized (lock) {
+                    lock.notify();
+                }
                 finishLatch.countDown();
             }
 
             @Override
             public void onCompleted() {
                 log.info("finished onCompleted");
+                synchronized (lock) {
+                    lock.notify();
+                }
                 finishLatch.countDown();
             }
         };
@@ -137,6 +147,7 @@ public class ProducerClientTest {
         StreamObserver<NotificationOuterClass.SendRequest> requestObserver = notificationStub.send(responseObserver);
         try {
             for (int i = 0; i < (defaultPartition * partitionCount); i++) {
+                long startTime = System.currentTimeMillis();
                 String body = "hello world! " + i;
                 NotificationOuterClass.SendRequest request = NotificationOuterClass.SendRequest.newBuilder()
                         .setRequestType(NotificationOuterClass.SendRequest.SendRequestType.MESSAGE)
@@ -148,17 +159,26 @@ public class ProducerClientTest {
                                 .build())
                         .build();
                 requestObserver.onNext(request);
-                //why faster blocking!
-                Thread.sleep(50);
+                //why faster need sleep!  netty grpc - Failed to get SOMAXCONN from sysctl and file
+                synchronized (lock) {
+                    lock.wait(100);
+                }
+                if (i % 10000 == 0) {
+                    System.out.println("----------------send " + i + "---------------");
+                }
+                long takeTime = System.currentTimeMillis() - startTime;
+                if (takeTime > 100) {
+                    System.out.println("send slow!" + takeTime + " ms");
+                }
             }
             System.out.println("------------------------------------------------");
         } catch (Throwable e) {
             e.printStackTrace();
             requestObserver.onError(e);
         }
+        requestObserver.onCompleted();
         try {
-            finishLatch.await(20, TimeUnit.SECONDS);
-            requestObserver.onCompleted();
+            finishLatch.await(60, TimeUnit.SECONDS);
         } catch (InterruptedException ignored) {
         }
     }

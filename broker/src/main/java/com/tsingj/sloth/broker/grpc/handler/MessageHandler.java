@@ -32,7 +32,6 @@ public class MessageHandler {
 
     public NotificationOuterClass.SendResult storeMessage(NotificationOuterClass.SendRequest.Message msg) {
         String requestId = msg.getRequestId();
-        logger.info("receive request {}.", requestId);
         /*
          * check and set default param
          */
