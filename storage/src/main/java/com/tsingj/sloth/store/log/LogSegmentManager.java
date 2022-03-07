@@ -61,6 +61,7 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
     @PostConstruct
     @Override
     public void load() {
+        logger.info("--------------------prepare load logSegment----------------------");
         String logDirPath = storagePathHelper.getLogDir();
         try {
             File logDir = new File(logDirPath);
@@ -94,13 +95,12 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
                             long startOffset = CommonUtil.fileName2Offset(segmentFile.getName());
                             LogSegment logSegment = new LogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
                             logSegment.load();
-//                            LogSegment logSegment = LogSegment.loadLogs(segmentFile, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
                             this.addLogSegment(topic, partition, logSegment);
                         }
                     }
                 }
             }
-            logger.info("-------------------------------------------------load segments over----------------------------------------------------------------");
+            logger.info("--------------------load logSegment over----------------------");
         } catch (Throwable e) {
             logger.error("log recovery fail, please check your log!", e);
             throw new LogRecoveryException(e);
