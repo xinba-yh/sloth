@@ -5,9 +5,9 @@ import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationGrpc;
 import com.tsingj.sloth.rpcmodel.grpc.protobuf.NotificationOuterClass;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+import io.grpc.netty.shaded.io.netty.channel.ChannelOption;
 import io.grpc.stub.StreamObserver;
-import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,9 +114,6 @@ public class ProducerClientTest {
                 long currentAckCount = ackCount.addAndGet(1);
                 if (currentAckCount % 10000 == 0) {
                     log.info("receive count:{} new ack:{}", currentAckCount, sendResult.toString());
-                    if (currentAckCount == partitionCount * defaultPartition) {
-                        finishLatch.countDown();
-                    }
                 } else {
                     NotificationOuterClass.SendResult.Ack ack = sendResult.getAck();
                     if (ack.getRetCode() == NotificationOuterClass.SendResult.Ack.RetCode.ERROR) {
@@ -161,7 +158,7 @@ public class ProducerClientTest {
                 requestObserver.onNext(request);
                 //why faster need sleep!  netty grpc - Failed to get SOMAXCONN from sysctl and file
                 synchronized (lock) {
-                    lock.wait(100);
+                    lock.wait(1000);
                 }
                 if (i % 10000 == 0) {
                     System.out.println("----------------send " + i + "---------------");
