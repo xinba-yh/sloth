@@ -6,7 +6,7 @@ package com.tsingj.sloth.broker.handler.protocol;
  */
 public class DataPackage {
 
-    public DataPackage(String magicCode, long correlationId, byte version, int command, byte[] data) {
+    public DataPackage(String magicCode, long correlationId, byte version, byte command, byte[] data) {
         this.magicCode = magicCode;
         this.correlationId = correlationId;
         this.version = version;
@@ -20,7 +20,7 @@ public class DataPackage {
 
     private byte version = 1;
 
-    private int command;
+    private byte command;
 
     private transient byte[] data;
 
@@ -48,11 +48,11 @@ public class DataPackage {
         this.version = version;
     }
 
-    public int getCommand() {
+    public byte getCommand() {
         return command;
     }
 
-    public void setCommand(int command) {
+    public void setCommand(byte command) {
         this.command = command;
     }
 

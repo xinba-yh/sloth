@@ -1,6 +1,7 @@
 package com.tsingj.sloth.broker.handler.protocol;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
@@ -56,4 +57,16 @@ public class PackageCodec {
         return new DataPackage(magicCode, correlationId, version, command, dataBytes);
     }
 
+    public static ByteBuf encode(DataPackage dataPackage) {
+        int dataPackageLen = ProtocolConstants.FieldLength.ALL + dataPackage.getData().length;
+        ByteBuf byteBuf = Unpooled.buffer(dataPackageLen, dataPackageLen);
+        byte[] magicCodeBytes = ProtocolConstants.MAGIC_CODE.getBytes(StandardCharsets.UTF_8);
+        byteBuf.writeBytes(magicCodeBytes);
+        byteBuf.writeLong(dataPackage.getCorrelationId());
+        byteBuf.writeByte(dataPackage.getVersion());
+        byteBuf.writeByte(dataPackage.getCommand());
+        byteBuf.writeInt(dataPackage.getData().length);
+        byteBuf.writeBytes(dataPackage.getData());
+        return byteBuf;
+    }
 }

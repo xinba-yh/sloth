@@ -5,7 +5,7 @@ package com.tsingj.sloth.broker.handler.protocol;
  */
 public class ProtocolConstants {
 
-    public static final String MAGIC_CODE = "tsingj";
+    public static final String MAGIC_CODE = "sloth";
 
     public static class FieldLength {
 
