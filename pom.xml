@@ -39,7 +39,6 @@
         <module>storage</module>
         <module>broker</module>
         <module>example</module>
-        <module>rpc-model</module>
         <module>remoting</module>
         <module>client</module>
     </modules>
