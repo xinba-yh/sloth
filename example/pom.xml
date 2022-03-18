@@ -29,12 +29,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.tsingj.sloth</groupId>
-            <artifactId>rpc-model</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>
