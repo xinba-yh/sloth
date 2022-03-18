@@ -1,5 +1,0 @@
-magic_code 5字节
-version  1字节
-command  1字节
-dataLen  4字节
-data     N字节

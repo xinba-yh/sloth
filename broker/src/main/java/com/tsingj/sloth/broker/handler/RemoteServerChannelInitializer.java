@@ -1,6 +1,8 @@
 package com.tsingj.sloth.broker.handler;
 
-import com.tsingj.sloth.broker.handler.protocol.ProtocolConstants;
+import com.tsingj.sloth.remoting.PackageDecodeHandler;
+import com.tsingj.sloth.remoting.PackageEncodeHandler;
+import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -12,17 +14,19 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author yanghao
  */
-public class BrokerServerChannelInitializer extends ChannelInitializer<SocketChannel> {
+public class RemoteServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
     private static final String SPLIT = "split";
 
     private static final String DECODER = "decoder";
 
+    private static final String ENCODER = "encoder";
+
     private static final String BROKER_HANDLER = "broker_handler";
 
     private final int maxMessageSize;
 
-    public BrokerServerChannelInitializer(int maxMessageSize) {
+    public RemoteServerChannelInitializer(int maxMessageSize) {
         this.maxMessageSize = maxMessageSize;
     }
 
@@ -30,8 +34,6 @@ public class BrokerServerChannelInitializer extends ChannelInitializer<SocketCha
     protected void initChannel(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
         // receive request data
-
-
         pipeline.addLast("channel_state", new IdleStateHandler(0, 0, 90, TimeUnit.SECONDS));
         pipeline.addLast("channel_life_cycle", LiftCycleHandler.INSTANCE);
 
@@ -45,21 +47,20 @@ public class BrokerServerChannelInitializer extends ChannelInitializer<SocketCha
         //3. 分隔符拆包器 DelimiterBasedFrameDecoder
         //4. 基于长度域拆包器 LengthFieldBasedFrameDecoder
         /*
-         *   1、自定义协议如下：
-         *      magic_code 5字节
-         *      correlation_id 8字节
-         *      version  1字节
-         *      command  1字节
-         *      dataLen  4字节
-         *      data     N字节
-         *   2、计算LengthFieldBasedFrameDecoder入参
+         *      计算LengthFieldBasedFrameDecoder入参
          *      maxFrameLength = storage.maxMessageSize
-         *      长度字段的offset -> lengthFieldOffset = magic_code + correlationId + version + command = 15
+         *      长度字段的offset -> lengthFieldOffset = magic_code + version + command = 7
          *      长度字段大小 -> lengthFieldLength = dataLen = 4
          */
-        pipeline.addLast(SPLIT, new LengthFieldBasedFrameDecoder(maxMessageSize, ProtocolConstants.FieldLength.MAGIC_CODE + ProtocolConstants.FieldLength.CORRELATION_ID + ProtocolConstants.FieldLength.VERSION + ProtocolConstants.FieldLength.COMMAND, ProtocolConstants.FieldLength.DATA_LEN));
+        pipeline.addLast(SPLIT, new LengthFieldBasedFrameDecoder(maxMessageSize,
+                ProtocolConstants.FieldLength.MAGIC_CODE + ProtocolConstants.FieldLength.VERSION + ProtocolConstants.FieldLength.COMMAND,
+                        ProtocolConstants.FieldLength.TOTAL_LEN));
+        //receive netty bytebuf -> dataPackage convert
         pipeline.addLast(DECODER, new PackageDecodeHandler());
-        pipeline.addLast(BROKER_HANDLER, new BrokerServerHandler());
+        //process command
+        pipeline.addLast(BROKER_HANDLER, new RemoteServerHandler());
+        //response dataPackage -> netty bytebuf convert
+        pipeline.addLast(ENCODER, new PackageEncodeHandler());
 
     }
 }

@@ -1,10 +1,9 @@
 package com.tsingj.sloth.broker;
 
 import com.tsingj.sloth.broker.handler.LiftCycleHandler;
-import com.tsingj.sloth.broker.handler.PackageEncodeHandler;
-import com.tsingj.sloth.broker.handler.protocol.DataPackage;
-import com.tsingj.sloth.broker.handler.protocol.PackageCodec;
-import com.tsingj.sloth.broker.handler.protocol.ProtocolConstants;
+import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.PackageCodec;
+import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
@@ -70,7 +69,7 @@ public class MyClient {
              *      长度字段大小 -> lengthFieldLength = dataLen = 4
              */
             int maxMessageSize = 1024 * 1024 * 4;
-            pipeline.addLast(SPLIT, new LengthFieldBasedFrameDecoder(maxMessageSize, ProtocolConstants.FieldLength.MAGIC_CODE + ProtocolConstants.FieldLength.CORRELATION_ID + ProtocolConstants.FieldLength.VERSION + ProtocolConstants.FieldLength.COMMAND, ProtocolConstants.FieldLength.DATA_LEN));
+            pipeline.addLast(SPLIT, new LengthFieldBasedFrameDecoder(maxMessageSize, ProtocolConstants.FieldLength.MAGIC_CODE + ProtocolConstants.FieldLength.VERSION + ProtocolConstants.FieldLength.COMMAND, ProtocolConstants.FieldLength.DATA_LEN));
 //            pipeline.addLast(ENCODER, new PackageEncodeHandler());
             pipeline.addLast(new MyClientHandler());
         }
@@ -95,7 +94,7 @@ public class MyClient {
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             for (int i = 0; i < 1; i++) {
                 byte[] data = ("helloworld-"+i).getBytes(StandardCharsets.UTF_8);
-                DataPackage dataPackage = new DataPackage(ProtocolConstants.MAGIC_CODE, 1, (byte) 1, (byte) 1, data);
+                DataPackage dataPackage = DataPackage.builder().magicCode(ProtocolConstants.MAGIC_CODE).version((byte) 1).command((byte) 1).requestType(ProtocolConstants.RequestType.SYNC).correlationId(1L).timestamp(System.currentTimeMillis()).data(data).build();
                 ByteBuf byteBuf = PackageCodec.encode(dataPackage);
                 ctx.writeAndFlush(byteBuf);
             }

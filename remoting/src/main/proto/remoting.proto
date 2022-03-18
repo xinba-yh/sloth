@@ -1,0 +1,39 @@
+//  Owner: yanghao
+syntax = "proto3";
+
+option java_package = "com.tsingj.sloth.remoting.message";
+
+message HeartbeatRequest {
+    string ping = 1;
+}
+
+message HeartbeatResult {
+    string pong = 1;
+}
+
+message Message {
+    string topic = 1;
+    uint32 partition = 2;
+    string request_id = 3;
+    map<string, string> properties = 4;
+    bytes body = 5; //业务侧消息体
+    bool ack = 6; //是否需要ack 默认：true
+}
+
+message SendResult {
+    enum RetCode {
+        SUCCESS = 0;
+        ERROR = 1;
+        TIMEOUT = 2;
+    }
+    message ResultInfo {
+        string topic = 1;
+        uint32 partition = 2;
+        int64 offset = 3;
+    }
+    RetCode retCode = 1;
+    string errorInfo = 2;
+    ResultInfo resultInfo = 3;
+}
+
+

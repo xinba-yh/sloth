@@ -1,14 +1,12 @@
 package com.tsingj.sloth.broker;
 
-import com.tsingj.sloth.broker.handler.BrokerServerChannelInitializer;
+import com.tsingj.sloth.broker.handler.RemoteServerChannelInitializer;
 import com.tsingj.sloth.broker.properties.BrokerProperties;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -42,8 +40,7 @@ public class BrokerServer {
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 1024)
                     .option(ChannelOption.SO_REUSEADDR, true)
-//                    .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new BrokerServerChannelInitializer(storageProperties.getMessageMaxSize()))
+                    .childHandler(new RemoteServerChannelInitializer(storageProperties.getMessageMaxSize()))
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childOption(ChannelOption.TCP_NODELAY, true);
             Channel ch = b.bind(brokerProperties.getPort()).sync().channel();

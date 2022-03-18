@@ -1,0 +1,23 @@
+自定义协议
+1、client
+请求报文
+*      | Head | Meta | Data
+*      --Head
+*      magic_code      5字节
+*      version         1字节
+*      command         1字节
+*      total_size      4字节
+*      --Meta
+*      send_type        1字节  //oneway 1 | sync 2
+*      correlation_id   8字节
+*      create_timestamp 8字节
+*      --Data
+*      data_len         4字节
+*      data             N字节  //protobuf bytes
+
+响应报文（sync模式）
+*      correlation_id   8字节
+*      code             1字节  //成功 0 | 失败 1
+*      error_msg_len    4字节
+*      error_msg        N字节
+
