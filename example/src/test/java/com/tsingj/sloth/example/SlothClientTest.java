@@ -1,34 +1,38 @@
-package com.tsingj.sloth.client;
+package com.tsingj.sloth.example;
 
 import com.google.protobuf.ByteString;
+import com.tsingj.sloth.client.SlothClient;
+import com.tsingj.sloth.client.SlothClientOptions;
 import com.tsingj.sloth.remoting.message.Remoting;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-
 @Slf4j
+@SpringBootTest()
 @RunWith(SpringJUnit4ClassRunner.class)
-public class ProducerClientTest {
+public class SlothClientTest {
+
+    @Autowired
+    private SlothClient slothClient;
 
     /**
      * 1S 10W server收到
      */
     @Test
     public void sendOneWayTest() throws InterruptedException {
-        ClientOptions clientOptions = new ClientOptions("127.0.0.1:9000");
-        ProducerClient producerClient = new ProducerClient(clientOptions);
-        producerClient.start();
-
+        int count = 1000;
         AtomicLong ID = new AtomicLong(1);
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                for (int j = 0; j < 100000; j++) {
+                for (int j = 0; j < count; j++) {
                     long reqId = ID.getAndAdd(1);
                     Remoting.Message.Builder builder = Remoting.Message.newBuilder();
                     builder.setBody(ByteString.copyFromUtf8(" PutMessageResult putMessageResult = storageEngine.putMessage(message);\n" +
@@ -51,7 +55,7 @@ public class ProducerClientTest {
                     builder.setTopic("test-topic");
                     builder.setPartition(1);
                     builder.setRequestId("" + reqId);
-                    producerClient.sendOneway(builder.build());
+                    slothClient.sendOneway(builder.build());
                 }
             }).start();
         }
@@ -66,9 +70,9 @@ public class ProducerClientTest {
      */
     @Test
     public void sendSyncResponseTest() throws InterruptedException {
-        ClientOptions clientOptions = new ClientOptions("127.0.0.1:9000");
-        ProducerClient producerClient = new ProducerClient(clientOptions);
-        producerClient.start();
+        SlothClientOptions slothClientOptions = new SlothClientOptions("127.0.0.1:9000");
+        SlothClient slothClient = new SlothClient(slothClientOptions);
+        slothClient.start();
 
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
@@ -97,7 +101,7 @@ public class ProducerClientTest {
                             "//    }------------------" + j));
                     builder.setTopic("test-topic");
                     builder.setPartition(1);
-                    Remoting.SendResult sendResult = producerClient.send(builder.build());
+                    Remoting.SendResult sendResult = slothClient.send(builder.build());
                     if (sendResult.getRetCode() != Remoting.SendResult.RetCode.SUCCESS) {
                         log.warn("sync response:{}", sendResult);
                     }

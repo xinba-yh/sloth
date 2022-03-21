@@ -6,9 +6,9 @@ import org.springframework.util.Assert;
  * @author yanghao
  */
 
-public class ClientOptions {
+public class SlothClientOptions {
 
-    public ClientOptions(String brokerUrl) {
+    public SlothClientOptions(String brokerUrl) {
         String[] brokerUrlArr = brokerUrl.split(":");
         Assert.isTrue(brokerUrlArr.length == 2, "please check your brokerUrl! not expect [host:port] !¬");
         this.host = brokerUrlArr[0];

@@ -5,6 +5,7 @@ import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.PackageCodec;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
+import com.tsingj.sloth.remoting.utils.CommonUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -18,25 +19,39 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, DataPackage msg) throws Exception {
-        switch (msg.getCommand()) {
-            case ProtocolConstants.Command.HEARTBEAT:
+        try {
+            switch (msg.getCommand()) {
+                case ProtocolConstants.Command.HEARTBEAT:
 
-                break;
+                    break;
 
-            case ProtocolConstants.Command.SEND_MESSAGE:
-                this.processMessage(ctx, msg);
-                break;
+                case ProtocolConstants.Command.SEND_MESSAGE:
+                    this.processMessage(ctx, msg);
+                    break;
 
-            default:
-                // TODO: 2022/3/18 close channel
-                log.error("invalid command:{}!", msg.getCommand());
+                default:
+                    // TODO: 2022/3/18 close channel
+                    log.error("invalid command:{}!", msg.getCommand());
 
+            }
+        } catch (Exception e) {
+            log.error("process command:{} exception", msg.getCommand(), e);
+            if (msg.getRequestType() == ProtocolConstants.RequestType.SYNC) {
+                DataPackage responseDataPackage = msg;
+                responseDataPackage.setTimestamp(System.currentTimeMillis());
+                responseDataPackage.setData(
+                        Remoting.SendResult.newBuilder()
+                                .setRetCode(Remoting.SendResult.RetCode.ERROR)
+                                .setErrorInfo(CommonUtils.simpleErrorInfo(e))
+                                .build()
+                                .toByteArray());
+                ctx.channel().writeAndFlush(responseDataPackage);
+            }
         }
-
     }
 
     private void processMessage(ChannelHandlerContext ctx, DataPackage msg) throws InvalidProtocolBufferException {
-        if(msg.getRequestType() == ProtocolConstants.RequestType.ONE_WAY){
+        if (msg.getRequestType() == ProtocolConstants.RequestType.ONE_WAY) {
             Remoting.Message message = Remoting.Message.parseFrom(msg.getData());
             int reqId = Integer.parseInt(message.getRequestId());
             if (reqId == 1 || reqId % 10000 == 0) {
@@ -52,20 +67,11 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
                 .setRetCode(Remoting.SendResult.RetCode.SUCCESS)
                 .setResultInfo(Remoting.SendResult.ResultInfo.newBuilder().setOffset(msg.getCorrelationId()).setTopic(message.getTopic()).setPartition(message.getPartition()).build())
                 .build();
-        DataPackage responseDataPackage = this.buildSendResultResponse(msg, sendResult);
+        DataPackage responseDataPackage = msg;
+        responseDataPackage.setTimestamp(System.currentTimeMillis());
+        responseDataPackage.setData(sendResult.toByteArray());
         ctx.channel().writeAndFlush(responseDataPackage);
     }
 
-    private DataPackage buildSendResultResponse(DataPackage msg, Remoting.SendResult sendResult) {
-        return DataPackage.builder()
-                .magicCode(ProtocolConstants.MAGIC_CODE)
-                .command(msg.getCommand())
-                .version(msg.getVersion())
-                .requestType(msg.getRequestType())
-                .correlationId(msg.getCorrelationId())
-                .timestamp(System.currentTimeMillis())
-                .data(sendResult.toByteArray())
-                .build();
-    }
 
 }

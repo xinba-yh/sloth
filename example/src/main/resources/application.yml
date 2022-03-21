@@ -1,6 +1,9 @@
 spring:
   application:
     name: example
+  sloth:
+    brokerUrl: 127.0.0.1:9000
+    connectTimeout: 3000
 logging:
   level:
     com.tsingj.sloth: info

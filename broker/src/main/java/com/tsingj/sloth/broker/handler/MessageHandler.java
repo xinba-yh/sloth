@@ -1,5 +1,7 @@
-package com.tsingj.sloth.broker.handler;//package com.tsingj.sloth.broker.server.handler;
-//
+package com.tsingj.sloth.broker.handler;
+
+//package com.tsingj.sloth.broker.server.handler;
+
 //import com.google.protobuf.ByteString;
 //import com.tsingj.sloth.rpcmodel.protocol.SendResp;
 //import com.tsingj.sloth.store.topic.TopicConfig;

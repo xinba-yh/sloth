@@ -4,15 +4,14 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.tsingj.sloth.remoting.ResponseFuture;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
-import com.tsingj.sloth.remoting.protocol.PackageCodec;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -21,12 +20,13 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author yanghao
  */
-public class ProducerClient {
+@Slf4j
+public class SlothClient {
 
     /**
      * The rpc client options.
      */
-    private ClientOptions clientOptions;
+    private SlothClientOptions slothClientOptions;
 
     /**
      * The worker group.
@@ -50,30 +50,31 @@ public class ProducerClient {
 
     private Channel channel;
 
-    public ProducerClient(ClientOptions clientOptions) {
-        this.clientOptions = clientOptions;
+    public SlothClient(SlothClientOptions slothClientOptions) {
+        this.slothClientOptions = slothClientOptions;
     }
 
 
     public void start() {
-        if (this.clientOptions.getIoEventGroupType() == ClientOptions.POLL_EVENT_GROUP) {
-            this.workerGroup = new NioEventLoopGroup(this.clientOptions.getWorkGroupThreadSize(),
+        if (this.slothClientOptions.getIoEventGroupType() == SlothClientOptions.POLL_EVENT_GROUP) {
+            this.workerGroup = new NioEventLoopGroup(this.slothClientOptions.getWorkGroupThreadSize(),
                     new DefaultThreadFactory(CLIENT_THREAD_NAME));
         } else {
-            this.workerGroup = new EpollEventLoopGroup(this.clientOptions.getWorkGroupThreadSize(),
+            this.workerGroup = new EpollEventLoopGroup(this.slothClientOptions.getWorkGroupThreadSize(),
                     new DefaultThreadFactory(CLIENT_THREAD_NAME));
         }
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(this.workerGroup).channel(NioSocketChannel.class)
-                .handler(new RemoteClientChannelInitializer(clientOptions.getMaxSize()))
-                .option(ChannelOption.SO_REUSEADDR, clientOptions.isReuseAddress())
-                .option(ChannelOption.SO_KEEPALIVE, clientOptions.isKeepAlive())
-                .option(ChannelOption.TCP_NODELAY, clientOptions.isTcpNoDelay());
+                .handler(new RemoteClientChannelInitializer(slothClientOptions.getMaxSize()))
+                .option(ChannelOption.SO_REUSEADDR, slothClientOptions.isReuseAddress())
+                .option(ChannelOption.SO_KEEPALIVE, slothClientOptions.isKeepAlive())
+                .option(ChannelOption.TCP_NODELAY, slothClientOptions.isTcpNoDelay());
         try {
-            this.channel = bootstrap.connect(this.clientOptions.getHost(), this.clientOptions.getPort()).sync().channel();
+            this.channel = bootstrap.connect(this.slothClientOptions.getHost(), this.slothClientOptions.getPort()).sync().channel();
         } catch (InterruptedException e) {
             throw new RuntimeException("Init producer client fail!", e);
         }
+        log.info("sloth client init done.");
     }
 
     public void close() {
@@ -125,7 +126,7 @@ public class ProducerClient {
             //send data
             this.channel.writeAndFlush(dataPackage);
 
-            DataPackage responseData = responseFuture.waitResponse(clientOptions.getOnceTalkTimeout());
+            DataPackage responseData = responseFuture.waitResponse(slothClientOptions.getOnceTalkTimeout());
             if (responseData == null) {
                 return Remoting.SendResult.newBuilder().setRetCode(Remoting.SendResult.RetCode.ERROR).setErrorInfo("receive data null!").build();
             }

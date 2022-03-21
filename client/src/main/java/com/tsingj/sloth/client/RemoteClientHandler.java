@@ -7,7 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.tsingj.sloth.client.ProducerClient.CORRELATION_ID_RESPONSE_MAP;
+import static com.tsingj.sloth.client.SlothClient.CORRELATION_ID_RESPONSE_MAP;
 
 /**
  * @author yanghao
@@ -31,7 +31,7 @@ public class RemoteClientHandler extends SimpleChannelInboundHandler<DataPackage
         responseFuture.putResponse(dataPackage);
         CORRELATION_ID_RESPONSE_MAP.remove(correlationId);
 
-//        log.debug("client receive:{}", Remoting.SendResult.parseFrom(responseData));
+        log.debug("client receive:{}", Remoting.SendResult.parseFrom(responseData));
     }
 
 }
