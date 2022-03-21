@@ -26,6 +26,7 @@ public class RemoteServerChannelInitializer extends ChannelInitializer<SocketCha
 
     private final int maxMessageSize;
 
+
     public RemoteServerChannelInitializer(int maxMessageSize) {
         this.maxMessageSize = maxMessageSize;
     }

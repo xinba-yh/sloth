@@ -1,15 +1,13 @@
 package com.tsingj.sloth.broker.handler;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import com.tsingj.sloth.broker.handler.processor.RemoteRequestProcessorSelector;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
-import com.tsingj.sloth.remoting.protocol.PackageCodec;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.remoting.utils.CommonUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 /**
  * @author yanghao
@@ -50,27 +48,23 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
         }
     }
 
-    private void processMessage(ChannelHandlerContext ctx, DataPackage msg) throws InvalidProtocolBufferException {
-        if (msg.getRequestType() == ProtocolConstants.RequestType.ONE_WAY) {
-            Remoting.Message message = Remoting.Message.parseFrom(msg.getData());
+    private void processMessage(ChannelHandlerContext ctx, DataPackage request) throws Exception {
+        DataPackage response;
+        if (request.getRequestType() == ProtocolConstants.RequestType.ONE_WAY) {
+            Remoting.Message message = Remoting.Message.parseFrom(request.getData());
             int reqId = Integer.parseInt(message.getRequestId());
             if (reqId == 1 || reqId % 10000 == 0) {
-                log.info("receive command:{} oneWay reqId:{}.", msg.getCommand(), reqId);
+                log.info("receive command:{} oneWay reqId:{}.", request.getCommand(), reqId);
             }
-            return;
+            RemoteRequestProcessorSelector.select(ProtocolConstants.Command.SEND_MESSAGE).process(request);
+        } else {
+            if (request.getCorrelationId() == 1 || request.getCorrelationId() % 10000 == 0) {
+                log.info("receive command:{} correlationId:{}.", request.getCommand(), request.getCorrelationId());
+            }
+            //only sync response msg.
+            response = RemoteRequestProcessorSelector.select(ProtocolConstants.Command.SEND_MESSAGE).process(request);
+            ctx.channel().writeAndFlush(response);
         }
-        if (msg.getCorrelationId() == 1 || msg.getCorrelationId() % 10000 == 0) {
-            log.info("receive command:{} correlationId:{}.", msg.getCommand(), msg.getCorrelationId());
-        }
-        Remoting.Message message = Remoting.Message.parseFrom(msg.getData());
-        Remoting.SendResult sendResult = Remoting.SendResult.newBuilder()
-                .setRetCode(Remoting.SendResult.RetCode.SUCCESS)
-                .setResultInfo(Remoting.SendResult.ResultInfo.newBuilder().setOffset(msg.getCorrelationId()).setTopic(message.getTopic()).setPartition(message.getPartition()).build())
-                .build();
-        DataPackage responseDataPackage = msg;
-        responseDataPackage.setTimestamp(System.currentTimeMillis());
-        responseDataPackage.setData(sendResult.toByteArray());
-        ctx.channel().writeAndFlush(responseDataPackage);
     }
 
 

@@ -2,7 +2,6 @@ package com.tsingj.sloth.example;
 
 import com.google.protobuf.ByteString;
 import com.tsingj.sloth.client.SlothClient;
-import com.tsingj.sloth.client.SlothClientOptions;
 import com.tsingj.sloth.remoting.message.Remoting;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -53,13 +52,13 @@ public class SlothClientTest {
                             "//        }\n" +
                             "//    }------------------" + reqId));
                     builder.setTopic("test-topic");
-                    builder.setPartition(1);
+//                    builder.setPartition(1);
                     builder.setRequestId("" + reqId);
                     slothClient.sendOneway(builder.build());
                 }
             }).start();
         }
-        Thread.sleep(5000);
+        Thread.sleep(10000);
 
     }
 
@@ -70,10 +69,6 @@ public class SlothClientTest {
      */
     @Test
     public void sendSyncResponseTest() throws InterruptedException {
-        SlothClientOptions slothClientOptions = new SlothClientOptions("127.0.0.1:9000");
-        SlothClient slothClient = new SlothClient(slothClientOptions);
-        slothClient.start();
-
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {

@@ -11,9 +11,6 @@ public class Application {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(Application.class, args);
-        run.getEnvironment();
-        SlothClientProperties bean = run.getBean(SlothClientProperties.class);
-        System.out.println(bean);
     }
 
 }
