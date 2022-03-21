@@ -95,7 +95,7 @@ public class SlothClientTest {
                             "//        }\n" +
                             "//    }------------------" + j));
                     builder.setTopic("test-topic");
-                    builder.setPartition(1);
+//                    builder.setPartition(1);
                     Remoting.SendResult sendResult = slothClient.send(builder.build());
                     if (sendResult.getRetCode() != Remoting.SendResult.RetCode.SUCCESS) {
                         log.warn("sync response:{}", sendResult);

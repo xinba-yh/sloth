@@ -30,7 +30,7 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
                 default:
                     // TODO: 2022/3/18 close channel
                     log.error("invalid command:{}!", msg.getCommand());
-
+                    CommonUtils.closeChannel(ctx.channel(), "invalid command:" + msg.getCommand());
             }
         } catch (Exception e) {
             log.error("process command:{} exception", msg.getCommand(), e);

@@ -99,7 +99,7 @@ public class MessageProcessor implements RemoteRequestProcessor {
     }
 
     private DataPackage respSuccess(DataPackage request, PutMessageResult putMessageResult) {
-        log.warn("process command sendMessage success! {} {} {}", putMessageResult.getTopic(), putMessageResult.getPartition(), putMessageResult.getOffset());
+//        log.info("process command sendMessage success! {} {} {}", putMessageResult.getTopic(), putMessageResult.getPartition(), putMessageResult.getOffset());
         Remoting.SendResult sendResult = Remoting.SendResult.newBuilder()
                 .setRetCode(Remoting.SendResult.RetCode.SUCCESS)
                 .setResultInfo(Remoting.SendResult.ResultInfo.newBuilder().setOffset(putMessageResult.getOffset()).setTopic(putMessageResult.getTopic()).setPartition(putMessageResult.getPartition()).build())
