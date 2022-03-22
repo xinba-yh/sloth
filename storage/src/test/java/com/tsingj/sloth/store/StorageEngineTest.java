@@ -1,9 +1,7 @@
 package com.tsingj.sloth.store;
 
-import com.tsingj.sloth.store.log.*;
 import com.tsingj.sloth.store.mock.ConsumerClient;
 import com.tsingj.sloth.store.mock.ProducerClient;
-import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,15 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.StopWatch;
-
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.concurrent.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest

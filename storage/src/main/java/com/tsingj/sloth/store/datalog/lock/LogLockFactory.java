@@ -1,6 +1,6 @@
-package com.tsingj.sloth.store.log.lock;
+package com.tsingj.sloth.store.datalog.lock;
 
-import com.tsingj.sloth.store.log.Log;
+import com.tsingj.sloth.store.datalog.DataLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class LogLockFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(Log.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataLog.class);
 
     private static final Map<String, LogSpinLock> SPIN_LOCK_MAP = new ConcurrentHashMap<>();
 

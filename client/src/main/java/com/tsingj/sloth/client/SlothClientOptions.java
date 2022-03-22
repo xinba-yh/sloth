@@ -17,6 +17,8 @@ public class SlothClientOptions {
         this.keepAlive = true;
         this.tcpNoDelay = true;
         this.reuseAddress = true;
+        this.sndBufSize = 65535;
+        this.rcvBufSize = 65535;
     }
 
     /**
@@ -48,6 +50,11 @@ public class SlothClientOptions {
      * The reuse address.
      */
     private boolean reuseAddress;
+
+
+    private int sndBufSize;
+
+    private int rcvBufSize;
 
     /**
      * The work group thread size. Netty work thread size, default is NettyRuntime.availableProcessors() * 2
@@ -160,4 +167,19 @@ public class SlothClientOptions {
         this.port = port;
     }
 
+    public int getSndBufSize() {
+        return sndBufSize;
+    }
+
+    public void setSndBufSize(int sndBufSize) {
+        this.sndBufSize = sndBufSize;
+    }
+
+    public int getRcvBufSize() {
+        return rcvBufSize;
+    }
+
+    public void setRcvBufSize(int rcvBufSize) {
+        this.rcvBufSize = rcvBufSize;
+    }
 }

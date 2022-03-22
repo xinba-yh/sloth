@@ -96,7 +96,7 @@ public class MyClient {
                 byte[] data = ("helloworld-"+i).getBytes(StandardCharsets.UTF_8);
                 DataPackage dataPackage = DataPackage.builder().magicCode(ProtocolConstants.MAGIC_CODE).version((byte) 1).command((byte) 1).requestType(ProtocolConstants.RequestType.SYNC).correlationId(1L).timestamp(System.currentTimeMillis()).data(data).build();
                 ByteBuf byteBuf = PackageCodec.encode(dataPackage);
-                ctx.writeAndFlush(byteBuf);
+                ctx.channel().writeAndFlush(byteBuf);
             }
             System.out.println("11111111");
         }

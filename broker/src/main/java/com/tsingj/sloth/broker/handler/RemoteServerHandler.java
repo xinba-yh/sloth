@@ -58,10 +58,9 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
             }
             RemoteRequestProcessorSelector.select(ProtocolConstants.Command.SEND_MESSAGE).process(request);
         } else {
-//            if (request.getCorrelationId() == 1 || request.getCorrelationId() % 10000 == 0) {
-//                log.info("receive command:{} correlationId:{}.", request.getCommand(), request.getCorrelationId());
-//            }
-            log.info("receive command:{} correlationId:{}.", request.getCommand(), request.getCorrelationId());
+            if (request.getCorrelationId() == 1 || request.getCorrelationId() % 10000 == 0) {
+                log.info("receive command:{} correlationId:{}.", request.getCommand(), request.getCorrelationId());
+            }
             //only sync response msg.
             response = RemoteRequestProcessorSelector.select(ProtocolConstants.Command.SEND_MESSAGE).process(request);
             ctx.channel().writeAndFlush(response);

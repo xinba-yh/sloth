@@ -33,12 +33,11 @@ public class RemoteClientChannelInitializer extends ChannelInitializer<SocketCha
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-//        pipeline.addLast(SPLIT, new LengthFieldBasedFrameDecoder(maxMessageSize,
-//                ProtocolConstants.FieldLength.MAGIC_CODE + ProtocolConstants.FieldLength.VERSION + ProtocolConstants.FieldLength.COMMAND,
-//                ProtocolConstants.FieldLength.TOTAL_LEN));
+        pipeline.addLast(SPLIT, new LengthFieldBasedFrameDecoder(maxMessageSize,
+                ProtocolConstants.FieldLength.MAGIC_CODE + ProtocolConstants.FieldLength.VERSION + ProtocolConstants.FieldLength.COMMAND,
+                ProtocolConstants.FieldLength.TOTAL_LEN));
         pipeline.addLast(ENCODER, new PackageEncodeHandler());
         pipeline.addLast(DECODER, new PackageDecodeHandler());
-        pipeline.addLast("channel_state", new IdleStateHandler(0, 0, 90, TimeUnit.SECONDS));
         pipeline.addLast(CLIENT, new RemoteClientHandler());
     }
 

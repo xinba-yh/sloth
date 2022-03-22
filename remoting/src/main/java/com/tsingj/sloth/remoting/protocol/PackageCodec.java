@@ -26,8 +26,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class PackageCodec {
 
-    // TODO: 2022/3/18 request response 一致性。
-
+    //已在上层完成TCP粘包
     public static DataPackage decode(ByteBuf byteBuf) {
 
         // Make sure if the length field was received.

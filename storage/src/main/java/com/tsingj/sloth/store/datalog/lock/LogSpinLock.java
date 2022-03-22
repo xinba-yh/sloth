@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store.log.lock;
+package com.tsingj.sloth.store.datalog.lock;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

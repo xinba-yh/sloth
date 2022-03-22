@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
@@ -63,16 +65,18 @@ public class SlothClientTest {
     }
 
     /**
-     * 1S 4W
+     * 通信1S 4W
+     * 通信+存储数据 1S
      * 单client、多client性能一致。
      * @throws InterruptedException
      */
     @Test
     public void sendSyncResponseTest() throws InterruptedException {
         int threadCount = 4;
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 100;
+                int count = 10000;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();
@@ -95,7 +99,7 @@ public class SlothClientTest {
                             "//        }\n" +
                             "//    }------------------" + j));
                     builder.setTopic("test-topic");
-//                    builder.setPartition(1);
+//                    builder.setPartition(1); auto assign partition.
                     Remoting.SendResult sendResult = slothClient.send(builder.build());
                     if (sendResult.getRetCode() != Remoting.SendResult.RetCode.SUCCESS) {
                         log.warn("sync response:{}", sendResult);
@@ -103,10 +107,10 @@ public class SlothClientTest {
                     stopWatch.stop();
                 }
                 log.info("sendSync count:{} take:{} avg:{}", count, stopWatch.getTotalTimeMillis(), stopWatch.getTotalTimeMillis() / count);
+                countDownLatch.countDown();
             }).start();
         }
-
-        Thread.sleep(5000);
+        countDownLatch.await(10, TimeUnit.SECONDS);
         slothClient.close();
 
     }

@@ -38,11 +38,13 @@ public class BrokerServer {
                     .group(bossGroup, workGroup)
                     //todo add epoll condition
                     .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 1024)
-                    .option(ChannelOption.SO_REUSEADDR, true)
+                    .option(ChannelOption.SO_BACKLOG, brokerProperties.getBackLogSize())
+                    .option(ChannelOption.SO_REUSEADDR, brokerProperties.isReuseAddress())
+//                    .option(ChannelOption.SO_KEEPALIVE, false)
                     .childHandler(new RemoteServerChannelInitializer(storageProperties.getMessageMaxSize()))
-                    .childOption(ChannelOption.SO_KEEPALIVE, true)
-                    .childOption(ChannelOption.TCP_NODELAY, true);
+                    .childOption(ChannelOption.TCP_NODELAY, brokerProperties.isTcpNoDelay())
+                    .childOption(ChannelOption.SO_SNDBUF, brokerProperties.getSndBufSize())
+                    .childOption(ChannelOption.SO_RCVBUF, brokerProperties.getRcvBufSize());
             Channel ch = b.bind(brokerProperties.getPort()).sync().channel();
             log.info("broker server start on port:" + brokerProperties.getPort());
             ch.closeFuture().sync();

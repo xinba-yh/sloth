@@ -3,7 +3,7 @@ package com.tsingj.sloth.store.topic;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.tsingj.sloth.store.DataRecovery;
-import com.tsingj.sloth.store.log.LogRecoveryException;
+import com.tsingj.sloth.store.datalog.DataLogRecoveryException;
 import com.tsingj.sloth.store.pojo.Result;
 import com.tsingj.sloth.store.pojo.Results;
 import com.tsingj.sloth.store.utils.StoragePathHelper;
@@ -72,7 +72,7 @@ public class TopicManager implements DataRecovery {
                 logger.info("load topic from topics.json done. size:{}", TOPIC_MAP.size());
             }
         } catch (IOException e) {
-            throw new LogRecoveryException("topic recovery exception!", e);
+            throw new DataLogRecoveryException("topic recovery exception!", e);
         }
         logger.info("-------------------------------------------------load topic over----------------------------------------------------------------");
     }

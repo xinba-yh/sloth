@@ -66,10 +66,12 @@ public class SlothClient {
         }
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(this.workerGroup).channel(NioSocketChannel.class)
-                .handler(new RemoteClientChannelInitializer(slothClientOptions.getMaxSize()))
-//                .option(ChannelOption.SO_REUSEADDR, slothClientOptions.isReuseAddress())
-//                .option(ChannelOption.SO_KEEPALIVE, slothClientOptions.isKeepAlive())
-                .option(ChannelOption.TCP_NODELAY, slothClientOptions.isTcpNoDelay());
+                .option(ChannelOption.SO_REUSEADDR, slothClientOptions.isReuseAddress())
+                .option(ChannelOption.SO_KEEPALIVE, slothClientOptions.isKeepAlive())
+                .option(ChannelOption.TCP_NODELAY, slothClientOptions.isTcpNoDelay())
+                .option(ChannelOption.SO_SNDBUF, slothClientOptions.getSndBufSize())
+                .option(ChannelOption.SO_RCVBUF, slothClientOptions.getRcvBufSize())
+                .handler(new RemoteClientChannelInitializer(slothClientOptions.getMaxSize()));
         try {
             this.channel = bootstrap.connect(this.slothClientOptions.getHost(), this.slothClientOptions.getPort()).sync().channel();
         } catch (InterruptedException e) {

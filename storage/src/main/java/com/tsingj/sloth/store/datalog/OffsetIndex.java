@@ -1,9 +1,9 @@
-package com.tsingj.sloth.store.log;
+package com.tsingj.sloth.store.datalog;
 
 import com.github.benmanes.caffeine.cache.*;
 import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
-import com.tsingj.sloth.store.log.lock.LogReentrantLock;
+import com.tsingj.sloth.store.datalog.lock.LogReentrantLock;
 import com.tsingj.sloth.store.pojo.Result;
 import com.tsingj.sloth.store.pojo.Results;
 import org.checkerframework.checker.nullness.qual.NonNull;

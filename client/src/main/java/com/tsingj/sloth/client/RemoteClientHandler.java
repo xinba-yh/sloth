@@ -29,7 +29,7 @@ public class RemoteClientHandler extends SimpleChannelInboundHandler<DataPackage
             return;
         }
         responseFuture.putResponse(dataPackage);
-        log.info("client receive correlationId:{} data:{}", correlationId, Remoting.SendResult.parseFrom(responseData));
+        log.debug("client receive correlationId:{} data:{}", correlationId, Remoting.SendResult.parseFrom(responseData));
     }
 
 }

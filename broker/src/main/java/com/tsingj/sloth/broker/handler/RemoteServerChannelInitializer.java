@@ -2,9 +2,11 @@ package com.tsingj.sloth.broker.handler;
 
 import com.tsingj.sloth.remoting.PackageDecodeHandler;
 import com.tsingj.sloth.remoting.PackageEncodeHandler;
+import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 
 import java.util.concurrent.TimeUnit;
@@ -48,16 +50,16 @@ public class RemoteServerChannelInitializer extends ChannelInitializer<SocketCha
          *      长度字段的offset -> lengthFieldOffset = magic_code + version + command = 7
          *      长度字段大小 -> lengthFieldLength = dataLen = 4
          */
-//        pipeline.addLast(SPLIT, new LengthFieldBasedFrameDecoder(maxMessageSize,
-//                ProtocolConstants.FieldLength.MAGIC_CODE + ProtocolConstants.FieldLength.VERSION + ProtocolConstants.FieldLength.COMMAND,
-//                        ProtocolConstants.FieldLength.TOTAL_LEN));
+        pipeline.addLast(SPLIT, new LengthFieldBasedFrameDecoder(maxMessageSize,
+                ProtocolConstants.FieldLength.MAGIC_CODE + ProtocolConstants.FieldLength.VERSION + ProtocolConstants.FieldLength.COMMAND,
+                        ProtocolConstants.FieldLength.TOTAL_LEN));
 
         //response dataPackage -> netty bytebuf convert
         pipeline.addLast(ENCODER, new PackageEncodeHandler());
         //receive netty bytebuf -> dataPackage convert
         pipeline.addLast(DECODER, new PackageDecodeHandler());
         //connect manager
-        pipeline.addLast("channel_state", new IdleStateHandler(0, 0, 20, TimeUnit.SECONDS));
+        pipeline.addLast("channel_state", new IdleStateHandler(0, 0, 30, TimeUnit.SECONDS));
         pipeline.addLast("channel_life_cycle", LiftCycleHandler.INSTANCE);
         //process command
         pipeline.addLast(BROKER_HANDLER, new RemoteServerHandler());

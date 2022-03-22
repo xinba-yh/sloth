@@ -1,9 +1,7 @@
-package com.tsingj.sloth.store.log;
+package com.tsingj.sloth.store.datalog;
 
 import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.constants.LogConstants;
-import com.tsingj.sloth.store.log.lock.LogLock;
-import com.tsingj.sloth.store.log.lock.LogLockFactory;
 import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import com.tsingj.sloth.store.utils.CompressUtil;
@@ -16,21 +14,24 @@ import org.springframework.stereotype.Component;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author yanghao
  * 提供消息存储和获取能力
  */
 @Component
-public class Log {
+public class DataLog {
 
-    private static final Logger logger = LoggerFactory.getLogger(Log.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataLog.class);
 
-    private final LogSegmentManager logSegmentManager;
+    private final DataLogSegmentManager dataLogSegmentManager;
 
-    public Log(LogSegmentManager logSegmentManager) {
-        this.logSegmentManager = logSegmentManager;
+    public DataLog(DataLogSegmentManager dataLogSegmentManager) {
+        this.dataLogSegmentManager = dataLogSegmentManager;
     }
+
+    private ReentrantLock LOCK = new ReentrantLock();
 
     /**
      * 消息存储
@@ -52,28 +53,29 @@ public class Log {
 
         //get log lock, 每个topic、partition同时仅可以有一个线程进行写入，并发写入的提速在partition层。
         //kafka used synchronized , rocketmq used spinLock(AtomicBoolean) , 实现该部分流程不同，需要采用topic-partition分段锁，使用ReentrantLock.
-        LogLock lock = LogLockFactory.getReentrantLock(topic, partition);
+//        LogLock lock = LogLockFactory.getReentrantLock(topic, partition);
+
         long offset;
         try {
             //lock start
-            lock.lock();
+            LOCK.lock();
             //find latest logSegmentFile
-            LogSegment latestLogSegment = logSegmentManager.getLatestLogSegmentFile(topic, partition);
+            DataLogSegment latestDataLogSegment = dataLogSegmentManager.getLatestLogSegmentFile(topic, partition);
             //1、not found create
             //2、full rolling logSegmentFile with index
-            if (latestLogSegment == null || latestLogSegment.isFull()) {
-                offset = latestLogSegment == null ? 0 : latestLogSegment.incrementOffsetAndGet();
-                latestLogSegment = logSegmentManager.newLogSegmentFile(topic, partition, offset);
-                if (latestLogSegment == null) {
+            if (latestDataLogSegment == null || latestDataLogSegment.isFull()) {
+                offset = latestDataLogSegment == null ? 0 : latestDataLogSegment.incrementOffsetAndGet();
+                latestDataLogSegment = dataLogSegmentManager.newLogSegmentFile(topic, partition, offset);
+                if (latestDataLogSegment == null) {
                     logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
                     return new PutMessageResult(PutMessageStatus.CREATE_LOG_FILE_FAILED);
                 }
             } else {
                 //3、found and not full,increment offset
-                offset = latestLogSegment.incrementOffsetAndGet();
+                offset = latestDataLogSegment.incrementOffsetAndGet();
             }
             //check offset
-            if (offset < latestLogSegment.getFileFromOffset()) {
+            if (offset < latestDataLogSegment.getFileFromOffset()) {
                 return new PutMessageResult(PutMessageStatus.UNKNOWN_ERROR, "offset was reset!");
             }
             //set 偏移量
@@ -88,7 +90,7 @@ public class Log {
             ByteBuffer messageBytes = encodeResult.getData();
 
             //追加文件
-            Result appendResult = latestLogSegment.doAppend(messageBytes, offset, message.getStoreTimestamp());
+            Result appendResult = latestDataLogSegment.doAppend(messageBytes, offset, message.getStoreTimestamp());
             if (!appendResult.success()) {
                 return new PutMessageResult(PutMessageStatus.LOG_FILE_APPEND_FAIL, appendResult.getMsg());
             }
@@ -96,7 +98,7 @@ public class Log {
             logger.error("put message error!", e);
             return new PutMessageResult(PutMessageStatus.UNKNOWN_ERROR, e.getMessage());
         } finally {
-            lock.unlock();
+            LOCK.unlock();
         }
         return new PutMessageResult(PutMessageStatus.OK,topic,partition, offset);
     }
@@ -111,12 +113,12 @@ public class Log {
      * @return
      */
     public GetMessageResult getMessage(String topic, int partition, long offset) {
-        LogSegment logSegment = logSegmentManager.findLogSegmentByOffset(topic, partition, offset);
-        if (logSegment == null) {
+        DataLogSegment dataLogSegment = dataLogSegmentManager.findLogSegmentByOffset(topic, partition, offset);
+        if (dataLogSegment == null) {
             return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }
         try {
-            Result<ByteBuffer> getMessageResult = logSegment.getMessage(offset);
+            Result<ByteBuffer> getMessageResult = dataLogSegment.getMessage(offset);
             if (getMessageResult.failure()) {
                 return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, getMessageResult.getMsg());
             }

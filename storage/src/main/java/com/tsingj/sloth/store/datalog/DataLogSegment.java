@@ -1,9 +1,9 @@
-package com.tsingj.sloth.store.log;
+package com.tsingj.sloth.store.datalog;
 
 import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
-import com.tsingj.sloth.store.log.lock.LogLock;
-import com.tsingj.sloth.store.log.lock.LogReentrantLock;
+import com.tsingj.sloth.store.datalog.lock.LogLock;
+import com.tsingj.sloth.store.datalog.lock.LogReentrantLock;
 import com.tsingj.sloth.store.pojo.Result;
 import com.tsingj.sloth.store.pojo.Results;
 import org.slf4j.Logger;
@@ -17,9 +17,9 @@ import java.nio.channels.FileChannel;
 /**
  * @author yanghao
  */
-public class LogSegment implements DataRecovery {
+public class DataLogSegment implements DataRecovery {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogSegment.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataLogSegment.class);
 
     /**
      * 文件开始offset
@@ -77,7 +77,7 @@ public class LogSegment implements DataRecovery {
     private int logIndexIntervalBytes;
 
 
-    public LogSegment(String logPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
+    public DataLogSegment(String logPath, long startOffset, int maxFileSize, int logIndexIntervalBytes) throws FileNotFoundException {
         this.initialization(logPath, startOffset, maxFileSize, logIndexIntervalBytes);
     }
 
@@ -145,7 +145,7 @@ public class LogSegment implements DataRecovery {
                 position = position + (LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
             } catch (IOException e) {
                 logger.error("find lastOffset IO operation fail!", e);
-                throw new LogRecoveryException("find last offset from latest segmentFile fail!", e);
+                throw new DataLogRecoveryException("find last offset from latest segmentFile fail!", e);
             } finally {
                 this.readWriteLock.unlock();
             }
@@ -175,7 +175,7 @@ public class LogSegment implements DataRecovery {
                 this.logFileChannel.position(this.wrotePosition);
                 this.logFileChannel.write(log);
             } finally {
-                this.readWriteLock.lock();
+                this.readWriteLock.unlock();
             }
 
             //记录上一次index插入后，新存入的消息
@@ -202,8 +202,6 @@ public class LogSegment implements DataRecovery {
         } catch (IOException e) {
             logger.error("log append fail!", e);
             return Results.failure("log append fail!" + e.getMessage());
-        } finally {
-            this.readWriteLock.unlock();
         }
     }
 

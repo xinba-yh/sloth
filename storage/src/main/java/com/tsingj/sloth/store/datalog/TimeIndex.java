@@ -1,8 +1,7 @@
-package com.tsingj.sloth.store.log;
+package com.tsingj.sloth.store.datalog;
 
 import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

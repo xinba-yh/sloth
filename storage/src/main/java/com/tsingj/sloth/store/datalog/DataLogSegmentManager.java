@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store.log;
+package com.tsingj.sloth.store.datalog;
 
 
 import com.tsingj.sloth.store.DataRecovery;
@@ -35,15 +35,15 @@ import java.util.stream.Collectors;
  */
 @EnableScheduling
 @Component
-public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
+public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogSegmentManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataLogSegmentManager.class);
 
     private final StoragePathHelper storagePathHelper;
 
     private final StorageProperties storageProperties;
 
-    public LogSegmentManager(StorageProperties storageProperties, StoragePathHelper storagePathHelper) {
+    public DataLogSegmentManager(StorageProperties storageProperties, StoragePathHelper storagePathHelper) {
         this.storageProperties = storageProperties;
         this.storagePathHelper = storagePathHelper;
     }
@@ -51,7 +51,7 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
     /**
      * topic-partition log文件内存映射。
      */
-    protected final ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> DATA_LOGFILE_MAP = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<String, ConcurrentSkipListMap<Long, DataLogSegment>> DATA_LOGFILE_MAP = new ConcurrentHashMap<>();
 
 
     /**
@@ -93,9 +93,9 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
                              */
                             String logPath = segmentFile.getAbsolutePath().replace(LogConstants.FileSuffix.LOG, "");
                             long startOffset = CommonUtil.fileName2Offset(segmentFile.getName());
-                            LogSegment logSegment = new LogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
-                            logSegment.load();
-                            this.addLogSegment(topic, partition, logSegment);
+                            DataLogSegment dataLogSegment = new DataLogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
+                            dataLogSegment.load();
+                            this.addLogSegment(topic, partition, dataLogSegment);
                         }
                     }
                 }
@@ -103,7 +103,7 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
             logger.info("--------------------load logSegment over----------------------");
         } catch (Throwable e) {
             logger.error("log recovery fail, please check your log!", e);
-            throw new LogRecoveryException(e);
+            throw new DataLogRecoveryException(e);
         }
     }
 
@@ -138,8 +138,8 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
 
     //----------------------------------------------------------public方法--------------------------------------------------------------------
 
-    public LogSegment getLatestLogSegmentFile(String topic, int partition) {
-        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+    public DataLogSegment getLatestLogSegmentFile(String topic, int partition) {
+        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
         if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
             return null;
         } else {
@@ -147,7 +147,7 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
         }
     }
 
-    public LogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
+    public DataLogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
         //创建文件
         String topicPartitionDirPath = storagePathHelper.getLogDir() + File.separator + topic + File.separator + partition;
         File dir = new File(topicPartitionDirPath);
@@ -161,43 +161,43 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
         }
         String fileName = CommonUtil.offset2FileName(startOffset);
         String logPath = dir + File.separator + fileName;
-        LogSegment newLogSegment;
+        DataLogSegment newDataLogSegment;
         try {
-            newLogSegment = new LogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
+            newDataLogSegment = new DataLogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
         } catch (FileNotFoundException e) {
             return null;
         }
-        this.addLogSegment(topic, partition, newLogSegment);
-        return newLogSegment;
+        this.addLogSegment(topic, partition, newDataLogSegment);
+        return newDataLogSegment;
     }
 
-    public LogSegment findLogSegmentByOffset(String topic, int partition, long offset) {
-        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+    public DataLogSegment findLogSegmentByOffset(String topic, int partition, long offset) {
+        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
         if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
             return null;
         }
-        Map.Entry<Long, LogSegment> logSegmentEntry = logSegmentsSkipListMap.floorEntry(offset);
+        Map.Entry<Long, DataLogSegment> logSegmentEntry = logSegmentsSkipListMap.floorEntry(offset);
         if (logSegmentEntry == null) {
             return null;
         }
-        LogSegment logSegment = logSegmentEntry.getValue();
-        logger.debug("offset:{} find logSegment startOffset:{}", offset, logSegment.getFileFromOffset());
-        return logSegment;
+        DataLogSegment dataLogSegment = logSegmentEntry.getValue();
+        logger.debug("offset:{} find logSegment startOffset:{}", offset, dataLogSegment.getFileFromOffset());
+        return dataLogSegment;
     }
 
-    public ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> getLogSegmentsMapping() {
+    public ConcurrentHashMap<String, ConcurrentSkipListMap<Long, DataLogSegment>> getLogSegmentsMapping() {
         return this.DATA_LOGFILE_MAP;
     }
 
 
     //----------------------------------------------------------private方法--------------------------------------------------------------------
 
-    private void addLogSegment(String topic, long partition, LogSegment logSegment) {
-        ConcurrentSkipListMap<Long, LogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+    private void addLogSegment(String topic, long partition, DataLogSegment dataLogSegment) {
+        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
         if (logSegmentsSkipListMap == null) {
             logSegmentsSkipListMap = new ConcurrentSkipListMap<>();
         }
-        logSegmentsSkipListMap.put(logSegment.getFileFromOffset(), logSegment);
+        logSegmentsSkipListMap.put(dataLogSegment.getFileFromOffset(), dataLogSegment);
         this.DATA_LOGFILE_MAP.put(topic + "_" + partition, logSegmentsSkipListMap);
     }
 
@@ -205,18 +205,18 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
      * 输出indexCacheStats
      */
     private void showIndexCacheStats() {
-        ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> logSegmentsMapping = this.getLogSegmentsMapping();
+        ConcurrentHashMap<String, ConcurrentSkipListMap<Long, DataLogSegment>> logSegmentsMapping = this.getLogSegmentsMapping();
         if (logSegmentsMapping.isEmpty()) {
             return;
         }
-        for (Map.Entry<String, ConcurrentSkipListMap<Long, LogSegment>> entry : logSegmentsMapping.entrySet()) {
-            ConcurrentSkipListMap<Long, LogSegment> logSegmentSkipListMap = entry.getValue();
+        for (Map.Entry<String, ConcurrentSkipListMap<Long, DataLogSegment>> entry : logSegmentsMapping.entrySet()) {
+            ConcurrentSkipListMap<Long, DataLogSegment> logSegmentSkipListMap = entry.getValue();
             if (logSegmentSkipListMap.isEmpty()) {
                 continue;
             }
-            Collection<LogSegment> logSegments = logSegmentSkipListMap.values();
-            for (LogSegment logSegment : logSegments) {
-                logSegment.getOffsetIndex().showIndexCacheStats();
+            Collection<DataLogSegment> dataLogSegments = logSegmentSkipListMap.values();
+            for (DataLogSegment dataLogSegment : dataLogSegments) {
+                dataLogSegment.getOffsetIndex().showIndexCacheStats();
             }
         }
     }
@@ -226,21 +226,21 @@ public class LogSegmentManager implements SchedulingConfigurer, DataRecovery {
      */
     private void flushDirtyLogs() {
         logger.debug("prepare flush dirtyLogs.");
-        ConcurrentHashMap<String, ConcurrentSkipListMap<Long, LogSegment>> logSegmentsMapping = this.getLogSegmentsMapping();
+        ConcurrentHashMap<String, ConcurrentSkipListMap<Long, DataLogSegment>> logSegmentsMapping = this.getLogSegmentsMapping();
         if (logSegmentsMapping.isEmpty()) {
             return;
         }
-        for (Map.Entry<String, ConcurrentSkipListMap<Long, LogSegment>> entry : logSegmentsMapping.entrySet()) {
-            ConcurrentSkipListMap<Long, LogSegment> logSegmentSkipListMap = entry.getValue();
+        for (Map.Entry<String, ConcurrentSkipListMap<Long, DataLogSegment>> entry : logSegmentsMapping.entrySet()) {
+            ConcurrentSkipListMap<Long, DataLogSegment> logSegmentSkipListMap = entry.getValue();
             if (logSegmentSkipListMap.isEmpty()) {
                 continue;
             }
-            Collection<LogSegment> logSegments = logSegmentSkipListMap.values();
-            for (LogSegment logSegment : logSegments) {
-                logSegment.flush();
-                logSegment.getOffsetIndex().flush();
-                logSegment.getOffsetIndex().freeNoWarmIndexCache();
-                logSegment.getTimeIndex().flush();
+            Collection<DataLogSegment> dataLogSegments = logSegmentSkipListMap.values();
+            for (DataLogSegment dataLogSegment : dataLogSegments) {
+                dataLogSegment.flush();
+                dataLogSegment.getOffsetIndex().flush();
+                dataLogSegment.getOffsetIndex().freeNoWarmIndexCache();
+                dataLogSegment.getTimeIndex().flush();
             }
         }
         logger.debug("flush dirtyLogs done.");
