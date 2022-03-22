@@ -2,6 +2,8 @@ package com.tsingj.sloth.store.datalog;
 
 import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.datalog.lock.LogLock;
+import com.tsingj.sloth.store.datalog.lock.LogLockFactory;
 import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import com.tsingj.sloth.store.utils.CompressUtil;
@@ -31,8 +33,6 @@ public class DataLog {
         this.dataLogSegmentManager = dataLogSegmentManager;
     }
 
-    private ReentrantLock LOCK = new ReentrantLock();
-
     /**
      * 消息存储
      *
@@ -53,12 +53,12 @@ public class DataLog {
 
         //get log lock, 每个topic、partition同时仅可以有一个线程进行写入，并发写入的提速在partition层。
         //kafka used synchronized , rocketmq used spinLock(AtomicBoolean) , 实现该部分流程不同，需要采用topic-partition分段锁，使用ReentrantLock.
-//        LogLock lock = LogLockFactory.getReentrantLock(topic, partition);
+        LogLock lock = LogLockFactory.getReentrantLock(topic, partition);
 
         long offset;
         try {
             //lock start
-            LOCK.lock();
+            lock.lock();
             //find latest logSegmentFile
             DataLogSegment latestDataLogSegment = dataLogSegmentManager.getLatestLogSegmentFile(topic, partition);
             //1、not found create
@@ -98,7 +98,7 @@ public class DataLog {
             logger.error("put message error!", e);
             return new PutMessageResult(PutMessageStatus.UNKNOWN_ERROR, e.getMessage());
         } finally {
-            LOCK.unlock();
+            lock.unlock();
         }
         return new PutMessageResult(PutMessageStatus.OK,topic,partition, offset);
     }
