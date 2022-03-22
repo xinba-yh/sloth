@@ -24,19 +24,20 @@ public class LiftCycleHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error("LiftCycle: exceptionCaught exception.", cause);
+        log.error("LiftCycle: channel {} exceptionCaught exception.", ctx.channel().id(), cause);
         CommonUtils.closeChannel(ctx.channel(), cause.getMessage());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        log.info("LiftCycle: channel inactive.");
-        super.channelInactive(ctx);
+        log.info("LiftCycle: channel {} inactive.", ctx.channel().id());
+//        super.channelInactive(ctx);
+        CommonUtils.closeChannel(ctx.channel(), "channel inactive");
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("LiftCycle: channel active.");
+        log.info("LiftCycle: channel {} active.", ctx.channel().id());
     }
 
     @Override
@@ -44,7 +45,7 @@ public class LiftCycleHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state().equals(IdleState.ALL_IDLE)) {
-                CommonUtils.closeChannel(ctx.channel(), "LiftCycle: IDLE exception");
+                CommonUtils.closeChannel(ctx.channel(), "LiftCycle: channel:" + ctx.channel().id() + " IDLE exception");
             }
         }
         ctx.fireUserEventTriggered(evt);

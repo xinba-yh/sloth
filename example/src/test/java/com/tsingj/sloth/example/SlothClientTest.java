@@ -59,7 +59,7 @@ public class SlothClientTest {
             }).start();
         }
         Thread.sleep(10000);
-
+        slothClient.close();
     }
 
     /**
@@ -72,7 +72,7 @@ public class SlothClientTest {
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 100000;
+                int count = 100;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();
@@ -106,7 +106,8 @@ public class SlothClientTest {
             }).start();
         }
 
-        Thread.sleep(20000);
+        Thread.sleep(5000);
+        slothClient.close();
 
     }
 

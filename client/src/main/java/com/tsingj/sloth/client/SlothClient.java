@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -66,8 +67,8 @@ public class SlothClient {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(this.workerGroup).channel(NioSocketChannel.class)
                 .handler(new RemoteClientChannelInitializer(slothClientOptions.getMaxSize()))
-                .option(ChannelOption.SO_REUSEADDR, slothClientOptions.isReuseAddress())
-                .option(ChannelOption.SO_KEEPALIVE, slothClientOptions.isKeepAlive())
+//                .option(ChannelOption.SO_REUSEADDR, slothClientOptions.isReuseAddress())
+//                .option(ChannelOption.SO_KEEPALIVE, slothClientOptions.isKeepAlive())
                 .option(ChannelOption.TCP_NODELAY, slothClientOptions.isTcpNoDelay());
         try {
             this.channel = bootstrap.connect(this.slothClientOptions.getHost(), this.slothClientOptions.getPort()).sync().channel();
@@ -85,8 +86,9 @@ public class SlothClient {
 
         if (this.channel != null) {
             try {
-                this.channel.close().sync();
-            } catch (InterruptedException ignored) {
+                this.channel.close().await(10, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                log.error("close channel fail!");
             }
         }
 
@@ -128,6 +130,7 @@ public class SlothClient {
 
             DataPackage responseData = responseFuture.waitResponse(slothClientOptions.getOnceTalkTimeout());
             if (responseData == null) {
+                log.warn("correlationId {} wait response null!", currentCorrelationId);
                 return Remoting.SendResult.newBuilder().setRetCode(Remoting.SendResult.RetCode.ERROR).setErrorInfo("receive data null!").build();
             }
             byte[] data = responseData.getData();
@@ -136,6 +139,8 @@ public class SlothClient {
             return Remoting.SendResult.newBuilder().setRetCode(Remoting.SendResult.RetCode.TIMEOUT).build();
         } catch (InvalidProtocolBufferException e) {
             return Remoting.SendResult.newBuilder().setRetCode(Remoting.SendResult.RetCode.ERROR).setErrorInfo("protobuf parse error!" + e.getMessage()).build();
+        } finally {
+            CORRELATION_ID_RESPONSE_MAP.remove(currentCorrelationId);
         }
     }
 

@@ -28,7 +28,7 @@ public class ResponseFuture {
 
     private final long correlationId;
 
-    private DataPackage dataPackage = null;
+    private volatile DataPackage dataPackage = null;
 
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -39,7 +39,10 @@ public class ResponseFuture {
     }
 
     public DataPackage waitResponse(long timeoutMillis) throws InterruptedException {
-        this.countDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
+        boolean await = this.countDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
+        if (!await) {
+            throw new InterruptedException("timeout!");
+        }
         return this.dataPackage;
     }
 

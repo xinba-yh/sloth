@@ -24,14 +24,12 @@ public class RemoteClientHandler extends SimpleChannelInboundHandler<DataPackage
             log.warn("invalid correlationId:{}!", correlationId);
             return;
         }
-        if(responseData == null){
+        if (responseData == null) {
             log.warn("correlationId:{} response null!", correlationId);
             return;
         }
         responseFuture.putResponse(dataPackage);
-        CORRELATION_ID_RESPONSE_MAP.remove(correlationId);
-
-        log.debug("client receive:{}", Remoting.SendResult.parseFrom(responseData));
+        log.info("client receive correlationId:{} data:{}", correlationId, Remoting.SendResult.parseFrom(responseData));
     }
 
 }

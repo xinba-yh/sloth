@@ -2,6 +2,7 @@ package com.tsingj.sloth.remoting;
 
 import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.PackageCodec;
+import com.tsingj.sloth.remoting.utils.CommonUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -21,10 +22,12 @@ public class PackageEncodeHandler extends MessageToByteEncoder<DataPackage> {
     @Override
     protected void encode(ChannelHandlerContext ctx, DataPackage msg, ByteBuf out) throws Exception {
         try {
-            out.writeBytes(PackageCodec.encode(msg));
+            ByteBuf encode = PackageCodec.encode(msg);
+            log.debug("encode length:{}", encode.readableBytes());
+            out.writeBytes(encode);
         } catch (Exception e) {
             log.error("encode exception, {}", msg.toString(), e);
-            ctx.channel().close().addListener((ChannelFutureListener) future -> log.info("closeChannel: close the connection result: {}", future.isSuccess()));
+            CommonUtils.closeChannel(ctx.channel(), "encode error!");
         }
     }
 

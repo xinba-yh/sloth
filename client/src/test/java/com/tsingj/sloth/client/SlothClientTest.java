@@ -28,7 +28,7 @@ public class SlothClientTest {
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                for (int j = 0; j < 100000; j++) {
+                for (int j = 0; j < 1000; j++) {
                     long reqId = ID.getAndAdd(1);
                     Remoting.Message.Builder builder = Remoting.Message.newBuilder();
                     builder.setBody(ByteString.copyFromUtf8(" PutMessageResult putMessageResult = storageEngine.putMessage(message);\n" +
@@ -73,7 +73,7 @@ public class SlothClientTest {
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 100000;
+                int count = 10;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();
@@ -96,7 +96,7 @@ public class SlothClientTest {
                             "//        }\n" +
                             "//    }------------------" + j));
                     builder.setTopic("test-topic");
-                    builder.setPartition(1);
+//                    builder.setPartition(1);
                     Remoting.SendResult sendResult = slothClient.send(builder.build());
                     if (sendResult.getRetCode() != Remoting.SendResult.RetCode.SUCCESS) {
                         log.warn("sync response:{}", sendResult);
