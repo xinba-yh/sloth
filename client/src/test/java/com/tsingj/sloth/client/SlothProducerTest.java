@@ -1,39 +1,37 @@
-package com.tsingj.sloth.example;
+package com.tsingj.sloth.client;
 
 import com.google.protobuf.ByteString;
-import com.tsingj.sloth.client.SlothClient;
+import com.tsingj.sloth.client.producer.SlothProducer;
+import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import com.tsingj.sloth.remoting.message.Remoting;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Slf4j
-@SpringBootTest()
-@RunWith(SpringJUnit4ClassRunner.class)
-public class SlothClientTest {
 
-    @Autowired
-    private SlothClient slothClient;
+@Slf4j
+@RunWith(SpringJUnit4ClassRunner.class)
+public class SlothProducerTest {
 
     /**
      * 1S 10W server收到
      */
     @Test
     public void sendOneWayTest() throws InterruptedException {
-        int count = 1000;
+        SlothClientProperties slothClientProperties = new SlothClientProperties();
+        slothClientProperties.setBrokerUrl("127.0.0.1:9000");
+        SlothProducer slothProducer = new SlothProducer(slothClientProperties);
+        slothProducer.start();
+
         AtomicLong ID = new AtomicLong(1);
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                for (int j = 0; j < count; j++) {
+                for (int j = 0; j < 1000; j++) {
                     long reqId = ID.getAndAdd(1);
                     Remoting.Message.Builder builder = Remoting.Message.newBuilder();
                     builder.setBody(ByteString.copyFromUtf8(" PutMessageResult putMessageResult = storageEngine.putMessage(message);\n" +
@@ -54,29 +52,32 @@ public class SlothClientTest {
                             "//        }\n" +
                             "//    }------------------" + reqId));
                     builder.setTopic("test-topic");
-//                    builder.setPartition(1);
+                    builder.setPartition(1);
                     builder.setRequestId("" + reqId);
-                    slothClient.sendOneway(builder.build());
+                    slothProducer.sendOneway(builder.build());
                 }
             }).start();
         }
-        Thread.sleep(10000);
-        slothClient.close();
+        Thread.sleep(5000);
+
     }
 
     /**
-     * 通信1S 4W
-     * 通信+存储数据 1S
+     * 1S 4W
      * 单client、多client性能一致。
      * @throws InterruptedException
      */
     @Test
     public void sendSyncResponseTest() throws InterruptedException {
+        SlothClientProperties slothClientProperties = new SlothClientProperties();
+        slothClientProperties.setBrokerUrl("127.0.0.1:9000");
+        SlothProducer slothProducer = new SlothProducer(slothClientProperties);
+        slothProducer.start();
+
         int threadCount = 4;
-        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 10000;
+                int count = 10;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();
@@ -99,19 +100,18 @@ public class SlothClientTest {
                             "//        }\n" +
                             "//    }------------------" + j));
                     builder.setTopic("test-topic");
-//                    builder.setPartition(1); auto assign partition.
-                    Remoting.SendResult sendResult = slothClient.send(builder.build());
+//                    builder.setPartition(1);
+                    Remoting.SendResult sendResult = slothProducer.send(builder.build());
                     if (sendResult.getRetCode() != Remoting.SendResult.RetCode.SUCCESS) {
                         log.warn("sync response:{}", sendResult);
                     }
                     stopWatch.stop();
                 }
                 log.info("sendSync count:{} take:{} avg:{}", count, stopWatch.getTotalTimeMillis(), stopWatch.getTotalTimeMillis() / count);
-                countDownLatch.countDown();
             }).start();
         }
-        countDownLatch.await(10, TimeUnit.SECONDS);
-        slothClient.close();
+
+        Thread.sleep(20000);
 
     }
 

@@ -3,8 +3,9 @@ spring:
     name: example
   sloth:
     brokerUrl: 127.0.0.1:9000
-    onceTalkTimeout: 1000
-    connectTimeout: 3000
+    connect:
+      onceTalkTimeout: 1000
+      connectTimeout: 3100
 logging:
   level:
     com.tsingj.sloth: info

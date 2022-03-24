@@ -28,18 +28,28 @@ public class ResponseFuture {
 
     private final long correlationId;
 
+    private final long timeoutMillis;
+
     private volatile DataPackage dataPackage = null;
 
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
     private volatile Throwable cause;
 
-    public ResponseFuture(long correlationId) {
+    private final long startTimestamp;
+
+    public ResponseFuture(long correlationId, long timeoutMillis) {
         this.correlationId = correlationId;
+        this.timeoutMillis = timeoutMillis;
+        this.startTimestamp = System.currentTimeMillis();
     }
 
-    public DataPackage waitResponse(long timeoutMillis) throws InterruptedException {
-        boolean await = this.countDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
+    public boolean isTimeout() {
+        return System.currentTimeMillis() - this.startTimestamp > this.timeoutMillis;
+    }
+
+    public DataPackage waitResponse() throws InterruptedException {
+        boolean await = this.countDownLatch.await(this.timeoutMillis, TimeUnit.MILLISECONDS);
         if (!await) {
             throw new InterruptedException("timeout!");
         }
