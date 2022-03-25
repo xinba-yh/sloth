@@ -23,12 +23,16 @@ public class StoragePathHelper {
 
 
 
-    public String getConfigDir() {
+    public String getDataJsonDir() {
         return storageProperties.getDataPath() + File.separator + metadataDir;
     }
 
     public String getTopicPath() {
-        return getConfigDir() + File.separator + "topics.json";
+        return getDataJsonDir() + File.separator + "topics.json";
+    }
+
+    public String getConsumerOffsetsPath() {
+        return getDataJsonDir() + File.separator + "consumerOffsets.json";
     }
 
     public String getLogDir() {

@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -62,7 +61,7 @@ public class TopicManager extends AbstractCachePersistence {
         if (topicData.size() > 0) {
             TOPIC_MAP.putAll(topicData);
         }
-        logger.info("load topic from topics.json done. size:{}", TOPIC_MAP.size());
+        logger.info("load topic done. size:{}", TOPIC_MAP.size());
     }
 
     @Override
@@ -82,11 +81,7 @@ public class TopicManager extends AbstractCachePersistence {
         }
         //create topicName && persist
         TOPIC_MAP.put(topicName, topicConfig);
-        try {
-            this.persist();
-        } catch (IOException e) {
-            return Results.failure(e.getMessage());
-        }
+        this.persist();
         return Results.success();
     }
 

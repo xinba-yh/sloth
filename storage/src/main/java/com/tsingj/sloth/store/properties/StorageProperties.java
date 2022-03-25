@@ -18,16 +18,20 @@ public class StorageProperties {
      */
     private String dataPath = System.getProperty("user.home") + File.separator + "store";
 
-
     /**
      * flush log to disk interval，default 500ms
      */
     private int logFlushInterval = 500;
 
     /**
-     * cleanup expired logs，default default 10分钟
+     * cleanup expired logs，default 10分钟
      */
     private int logCleanupInterval = 1000 * 60 * 10;
+
+    /**
+     * consumerOffset persistence interval, default 5s
+     */
+    private int consumerOffsetPersistenceInterval = 1000 * 5;
 
     /**
      * max message size
@@ -91,5 +95,13 @@ public class StorageProperties {
 
     public void setLogCleanupInterval(int logCleanupInterval) {
         this.logCleanupInterval = logCleanupInterval;
+    }
+
+    public int getConsumerOffsetPersistenceInterval() {
+        return consumerOffsetPersistenceInterval;
+    }
+
+    public void setConsumerOffsetPersistenceInterval(int consumerOffsetPersistenceInterval) {
+        this.consumerOffsetPersistenceInterval = consumerOffsetPersistenceInterval;
     }
 }
