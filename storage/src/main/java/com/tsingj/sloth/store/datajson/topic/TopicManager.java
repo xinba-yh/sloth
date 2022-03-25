@@ -47,6 +47,7 @@ public class TopicManager extends AbstractCachePersistence {
 
 
     //----------------------------------------------------------loadLogs--------------------------------------------------------------------
+
     @Override
     protected String getFilePath() {
         return storagePathHelper.getTopicPath();

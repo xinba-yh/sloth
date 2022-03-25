@@ -24,10 +24,12 @@ public abstract class AbstractCachePersistence implements CachePersistence {
         if (!topicFile.exists()) {
             topicFile = new File(fileName + ".bak");
             if (!topicFile.exists()) {
+                logger.info(fileName + " not exist, skip initialization.");
                 return;
             }
         }
         if (topicFile.length() == 0) {
+            logger.info(fileName + " exist but nil, skip initialization.");
             return;
         }
         try {
