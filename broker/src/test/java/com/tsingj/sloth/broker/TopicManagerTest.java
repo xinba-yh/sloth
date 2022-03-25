@@ -1,8 +1,8 @@
 package com.tsingj.sloth.broker;
 
 import com.alibaba.fastjson.JSON;
-import com.tsingj.sloth.store.topic.TopicConfig;
-import com.tsingj.sloth.store.topic.TopicManager;
+import com.tsingj.sloth.store.datajson.topic.TopicConfig;
+import com.tsingj.sloth.store.datajson.topic.TopicManager;
 import com.tsingj.sloth.store.pojo.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;

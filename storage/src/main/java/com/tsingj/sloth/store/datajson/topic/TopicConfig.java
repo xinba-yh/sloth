@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store.topic;
+package com.tsingj.sloth.store.datajson.topic;
 
 /**
  * @author yanghao
