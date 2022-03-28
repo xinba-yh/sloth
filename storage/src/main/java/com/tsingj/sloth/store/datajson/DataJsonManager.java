@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * @author yanghao
+ */
 @Component
 public class DataJsonManager implements SchedulingConfigurer {
 

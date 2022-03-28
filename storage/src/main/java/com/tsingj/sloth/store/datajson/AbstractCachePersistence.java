@@ -19,7 +19,7 @@ public abstract class AbstractCachePersistence implements CachePersistence {
     @Override
     public void load() {
         String fileName = getFilePath();
-        logger.info("-------------------------------------------------prepare load " + fileName + "----------------------------------------------------------------");
+        logger.info("---------------------prepare load " + fileName + "---------------------");
         File topicFile = new File(fileName);
         if (!topicFile.exists()) {
             topicFile = new File(fileName + ".bak");

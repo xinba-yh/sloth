@@ -46,9 +46,9 @@ public class SlothClient {
         }
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(this.workerGroup).channel(NioSocketChannel.class)
-                .option(ChannelOption.SO_REUSEADDR, connectProperties.isReuseAddress())
-                .option(ChannelOption.SO_KEEPALIVE, connectProperties.isKeepAlive())
-                .option(ChannelOption.TCP_NODELAY, connectProperties.isTcpNoDelay())
+                .option(ChannelOption.SO_REUSEADDR, connectProperties.getReuseAddress())
+                .option(ChannelOption.SO_KEEPALIVE, connectProperties.getKeepAlive())
+                .option(ChannelOption.TCP_NODELAY, connectProperties.getTcpNoDelay())
                 .option(ChannelOption.SO_SNDBUF, connectProperties.getSndBufSize())
                 .option(ChannelOption.SO_RCVBUF, connectProperties.getRcvBufSize())
                 .handler(new RemoteClientChannelInitializer(connectProperties.getMaxSize()));

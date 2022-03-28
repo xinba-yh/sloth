@@ -6,6 +6,11 @@ spring:
     connect:
       onceTalkTimeout: 1000
       connectTimeout: 3100
+    consumer:
+      test-topic:
+        topic: test-topic
+        tag: aaa
+        groupName: test-topic-group
 logging:
   level:
     com.tsingj.sloth: info

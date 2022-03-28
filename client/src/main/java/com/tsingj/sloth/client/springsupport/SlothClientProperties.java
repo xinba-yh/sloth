@@ -3,6 +3,8 @@ package com.tsingj.sloth.client.springsupport;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Map;
+
 /**
  * @author yanghao
  */
@@ -14,7 +16,7 @@ public class SlothClientProperties {
 
     private ProducerProperties producer;
 
-    private ConsumerProperties consumer;
+    private Map<String, ConsumerProperties> consumer;
 
     private ConnectProperties connect;
 

@@ -61,26 +61,18 @@ public class ConsumerOffsetManager extends AbstractCachePersistence {
     }
 
 
-    public void commitOffset(final String group, final String topic, final int partitionId,
-                                    final long offset) {
-        // topic@group
+    public void commitOffset(String group, String topic, int partitionId, long offset) {
         String key = topic + TOPIC_GROUP_SEPARATOR + group;
-        this.commitOffset(key, partitionId, offset);
-    }
-
-    private void commitOffset(final String key, final int partitionId, final long offset) {
         ConcurrentMap<Integer, Long> partitionOffsetMap = TOPIC_GROUP_OFFSETS.computeIfAbsent(key, s -> new ConcurrentHashMap<>(8));
-        Long storeOffset = partitionOffsetMap.get(partitionId);
+        Long storeOffset = partitionOffsetMap.put(partitionId, offset);
         if (storeOffset != null && storeOffset > offset) {
-            logger.warn("commit consumerOffset < current offset. key [{}] partitionId [{}] commit [{}], current [{}].", key, partitionId, offset, storeOffset);
+            logger.warn("commit consumerOffset < current offset. group [{}] topic [{}] partitionId [{}] commit [{}], current [{}].", group, topic, partitionId, offset, storeOffset);
             return;
         }
-        partitionOffsetMap.put(partitionId, offset);
         TOPIC_GROUP_OFFSETS.put(key, partitionOffsetMap);
     }
 
     public long queryOffset(final String group, final String topic, final int partitionId) {
-        // topic@group
         String key = topic + TOPIC_GROUP_SEPARATOR + group;
         ConcurrentMap<Integer, Long> partitionOffsetMap = TOPIC_GROUP_OFFSETS.get(key);
         if (partitionOffsetMap == null) {
