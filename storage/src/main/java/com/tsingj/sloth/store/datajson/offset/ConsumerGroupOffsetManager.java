@@ -16,14 +16,14 @@ import java.util.concurrent.ConcurrentMap;
  * @author yanghao
  */
 @Component
-public class ConsumerOffsetManager extends AbstractCachePersistence {
+public class ConsumerGroupOffsetManager extends AbstractCachePersistence {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConsumerOffsetManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConsumerGroupOffsetManager.class);
 
 
     private final StoragePathHelper storagePathHelper;
 
-    public ConsumerOffsetManager(StoragePathHelper storagePathHelper) {
+    public ConsumerGroupOffsetManager(StoragePathHelper storagePathHelper) {
         this.storagePathHelper = storagePathHelper;
     }
 

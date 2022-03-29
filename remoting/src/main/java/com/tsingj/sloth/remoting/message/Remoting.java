@@ -14,43 +14,186 @@ public final class Remoting {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface HeartbeatRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:HeartbeatRequest)
+  /**
+   * Protobuf enum {@code RetCode}
+   */
+  public enum RetCode
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>SUCCESS = 0;</code>
+     */
+    SUCCESS(0),
+    /**
+     * <code>ERROR = 1;</code>
+     */
+    ERROR(1),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>SUCCESS = 0;</code>
+     */
+    public static final int SUCCESS_VALUE = 0;
+    /**
+     * <code>ERROR = 1;</code>
+     */
+    public static final int ERROR_VALUE = 1;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static RetCode valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static RetCode forNumber(int value) {
+      switch (value) {
+        case 0: return SUCCESS;
+        case 1: return ERROR;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<RetCode>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        RetCode> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<RetCode>() {
+            public RetCode findValueByNumber(int number) {
+              return RetCode.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.getDescriptor().getEnumTypes().get(0);
+    }
+
+    private static final RetCode[] VALUES = values();
+
+    public static RetCode valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private RetCode(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:RetCode)
+  }
+
+  public interface NotifyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Notify)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string ping = 1;</code>
-     * @return The ping.
+     * <code>.Notify.Event event = 1;</code>
+     * @return The enum numeric value on the wire for event.
      */
-    java.lang.String getPing();
+    int getEventValue();
     /**
-     * <code>string ping = 1;</code>
-     * @return The bytes for ping.
+     * <code>.Notify.Event event = 1;</code>
+     * @return The event.
      */
-    com.google.protobuf.ByteString
-        getPingBytes();
+    com.tsingj.sloth.remoting.message.Remoting.Notify.Event getEvent();
+
+    /**
+     * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+     * @return Whether the topicConsumer field is set.
+     */
+    boolean hasTopicConsumer();
+    /**
+     * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+     * @return The topicConsumer.
+     */
+    com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer getTopicConsumer();
+    /**
+     * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+     */
+    com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerOrBuilder getTopicConsumerOrBuilder();
+
+    /**
+     * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+     * @return Whether the topicConsumerPartition field is set.
+     */
+    boolean hasTopicConsumerPartition();
+    /**
+     * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+     * @return The topicConsumerPartition.
+     */
+    com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition getTopicConsumerPartition();
+    /**
+     * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+     */
+    com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartitionOrBuilder getTopicConsumerPartitionOrBuilder();
+
+    public com.tsingj.sloth.remoting.message.Remoting.Notify.DataCase getDataCase();
   }
   /**
-   * Protobuf type {@code HeartbeatRequest}
+   * <pre>
+   *-----------------broker-----------------------
+   * </pre>
+   *
+   * Protobuf type {@code Notify}
    */
-  public static final class HeartbeatRequest extends
+  public static final class Notify extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:HeartbeatRequest)
-      HeartbeatRequestOrBuilder {
+      // @@protoc_insertion_point(message_implements:Notify)
+      NotifyOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use HeartbeatRequest.newBuilder() to construct.
-    private HeartbeatRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use Notify.newBuilder() to construct.
+    private Notify(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private HeartbeatRequest() {
-      ping_ = "";
+    private Notify() {
+      event_ = 0;
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new HeartbeatRequest();
+      return new Notify();
     }
 
     @java.lang.Override
@@ -58,7 +201,7 @@ public final class Remoting {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private HeartbeatRequest(
+    private Notify(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -76,10 +219,38 @@ public final class Remoting {
             case 0:
               done = true;
               break;
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
+            case 8: {
+              int rawValue = input.readEnum();
 
-              ping_ = s;
+              event_ = rawValue;
+              break;
+            }
+            case 18: {
+              com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.Builder subBuilder = null;
+              if (dataCase_ == 2) {
+                subBuilder = ((com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_).toBuilder();
+              }
+              data_ =
+                  input.readMessage(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_);
+                data_ = subBuilder.buildPartial();
+              }
+              dataCase_ = 2;
+              break;
+            }
+            case 26: {
+              com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.Builder subBuilder = null;
+              if (dataCase_ == 3) {
+                subBuilder = ((com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_).toBuilder();
+              }
+              data_ =
+                  input.readMessage(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_);
+                data_ = subBuilder.buildPartial();
+              }
+              dataCase_ = 3;
               break;
             }
             default: {
@@ -103,53 +274,1783 @@ public final class Remoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatRequest_descriptor;
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatRequest_fieldAccessorTable
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest.class, com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest.Builder.class);
+              com.tsingj.sloth.remoting.message.Remoting.Notify.class, com.tsingj.sloth.remoting.message.Remoting.Notify.Builder.class);
     }
 
-    public static final int PING_FIELD_NUMBER = 1;
-    private volatile java.lang.Object ping_;
     /**
-     * <code>string ping = 1;</code>
-     * @return The ping.
+     * Protobuf enum {@code Notify.Event}
      */
-    @java.lang.Override
-    public java.lang.String getPing() {
-      java.lang.Object ref = ping_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        ping_ = s;
-        return s;
+    public enum Event
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <pre>
+       *广播ReBalance事件
+       * </pre>
+       *
+       * <code>RE_BALANCE_BROADCAST = 0;</code>
+       */
+      RE_BALANCE_BROADCAST(0),
+      /**
+       * <pre>
+       *唤醒消费者
+       * </pre>
+       *
+       * <code>CONSUMER_WEEK_UP = 1;</code>
+       */
+      CONSUMER_WEEK_UP(1),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <pre>
+       *广播ReBalance事件
+       * </pre>
+       *
+       * <code>RE_BALANCE_BROADCAST = 0;</code>
+       */
+      public static final int RE_BALANCE_BROADCAST_VALUE = 0;
+      /**
+       * <pre>
+       *唤醒消费者
+       * </pre>
+       *
+       * <code>CONSUMER_WEEK_UP = 1;</code>
+       */
+      public static final int CONSUMER_WEEK_UP_VALUE = 1;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
       }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static Event valueOf(int value) {
+        return forNumber(value);
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
+      public static Event forNumber(int value) {
+        switch (value) {
+          case 0: return RE_BALANCE_BROADCAST;
+          case 1: return CONSUMER_WEEK_UP;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<Event>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          Event> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Event>() {
+              public Event findValueByNumber(int number) {
+                return Event.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.Notify.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final Event[] VALUES = values();
+
+      public static Event valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private Event(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:Notify.Event)
+    }
+
+    public interface TopicConsumerPartitionOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:Notify.TopicConsumerPartition)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>string group = 1;</code>
+       * @return The group.
+       */
+      java.lang.String getGroup();
+      /**
+       * <code>string group = 1;</code>
+       * @return The bytes for group.
+       */
+      com.google.protobuf.ByteString
+          getGroupBytes();
+
+      /**
+       * <code>string topic = 2;</code>
+       * @return The topic.
+       */
+      java.lang.String getTopic();
+      /**
+       * <code>string topic = 2;</code>
+       * @return The bytes for topic.
+       */
+      com.google.protobuf.ByteString
+          getTopicBytes();
+
+      /**
+       * <code>int32 partition = 3;</code>
+       * @return The partition.
+       */
+      int getPartition();
     }
     /**
-     * <code>string ping = 1;</code>
-     * @return The bytes for ping.
+     * <pre>
+     *weekup 指定topic partition消费者
+     * </pre>
+     *
+     * Protobuf type {@code Notify.TopicConsumerPartition}
+     */
+    public static final class TopicConsumerPartition extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:Notify.TopicConsumerPartition)
+        TopicConsumerPartitionOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use TopicConsumerPartition.newBuilder() to construct.
+      private TopicConsumerPartition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private TopicConsumerPartition() {
+        group_ = "";
+        topic_ = "";
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new TopicConsumerPartition();
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private TopicConsumerPartition(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                group_ = s;
+                break;
+              }
+              case 18: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                topic_ = s;
+                break;
+              }
+              case 24: {
+
+                partition_ = input.readInt32();
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumerPartition_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumerPartition_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.class, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.Builder.class);
+      }
+
+      public static final int GROUP_FIELD_NUMBER = 1;
+      private volatile java.lang.Object group_;
+      /**
+       * <code>string group = 1;</code>
+       * @return The group.
+       */
+      @java.lang.Override
+      public java.lang.String getGroup() {
+        java.lang.Object ref = group_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          group_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string group = 1;</code>
+       * @return The bytes for group.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getGroupBytes() {
+        java.lang.Object ref = group_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          group_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int TOPIC_FIELD_NUMBER = 2;
+      private volatile java.lang.Object topic_;
+      /**
+       * <code>string topic = 2;</code>
+       * @return The topic.
+       */
+      @java.lang.Override
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @return The bytes for topic.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int PARTITION_FIELD_NUMBER = 3;
+      private int partition_;
+      /**
+       * <code>int32 partition = 3;</code>
+       * @return The partition.
+       */
+      @java.lang.Override
+      public int getPartition() {
+        return partition_;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(group_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, group_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
+        }
+        if (partition_ != 0) {
+          output.writeInt32(3, partition_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(group_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, group_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
+        }
+        if (partition_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(3, partition_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition)) {
+          return super.equals(obj);
+        }
+        com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition other = (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) obj;
+
+        if (!getGroup()
+            .equals(other.getGroup())) return false;
+        if (!getTopic()
+            .equals(other.getTopic())) return false;
+        if (getPartition()
+            != other.getPartition()) return false;
+        if (!unknownFields.equals(other.unknownFields)) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getGroup().hashCode();
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPartition();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * <pre>
+       *weekup 指定topic partition消费者
+       * </pre>
+       *
+       * Protobuf type {@code Notify.TopicConsumerPartition}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:Notify.TopicConsumerPartition)
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartitionOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumerPartition_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumerPartition_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.class, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.Builder.class);
+        }
+
+        // Construct using com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          group_ = "";
+
+          topic_ = "";
+
+          partition_ = 0;
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumerPartition_descriptor;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition getDefaultInstanceForType() {
+          return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition build() {
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition buildPartial() {
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition result = new com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition(this);
+          result.group_ = group_;
+          result.topic_ = topic_;
+          result.partition_ = partition_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) {
+            return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition other) {
+          if (other == com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance()) return this;
+          if (!other.getGroup().isEmpty()) {
+            group_ = other.group_;
+            onChanged();
+          }
+          if (!other.getTopic().isEmpty()) {
+            topic_ = other.topic_;
+            onChanged();
+          }
+          if (other.getPartition() != 0) {
+            setPartition(other.getPartition());
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private java.lang.Object group_ = "";
+        /**
+         * <code>string group = 1;</code>
+         * @return The group.
+         */
+        public java.lang.String getGroup() {
+          java.lang.Object ref = group_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            group_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string group = 1;</code>
+         * @return The bytes for group.
+         */
+        public com.google.protobuf.ByteString
+            getGroupBytes() {
+          java.lang.Object ref = group_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            group_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string group = 1;</code>
+         * @param value The group to set.
+         * @return This builder for chaining.
+         */
+        public Builder setGroup(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          group_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string group = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearGroup() {
+          
+          group_ = getDefaultInstance().getGroup();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string group = 1;</code>
+         * @param value The bytes for group to set.
+         * @return This builder for chaining.
+         */
+        public Builder setGroupBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          group_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object topic_ = "";
+        /**
+         * <code>string topic = 2;</code>
+         * @return The topic.
+         */
+        public java.lang.String getTopic() {
+          java.lang.Object ref = topic_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string topic = 2;</code>
+         * @return The bytes for topic.
+         */
+        public com.google.protobuf.ByteString
+            getTopicBytes() {
+          java.lang.Object ref = topic_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            topic_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string topic = 2;</code>
+         * @param value The topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopic(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          topic_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string topic = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearTopic() {
+          
+          topic_ = getDefaultInstance().getTopic();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string topic = 2;</code>
+         * @param value The bytes for topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopicBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          topic_ = value;
+          onChanged();
+          return this;
+        }
+
+        private int partition_ ;
+        /**
+         * <code>int32 partition = 3;</code>
+         * @return The partition.
+         */
+        @java.lang.Override
+        public int getPartition() {
+          return partition_;
+        }
+        /**
+         * <code>int32 partition = 3;</code>
+         * @param value The partition to set.
+         * @return This builder for chaining.
+         */
+        public Builder setPartition(int value) {
+          
+          partition_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int32 partition = 3;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearPartition() {
+          
+          partition_ = 0;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:Notify.TopicConsumerPartition)
+      }
+
+      // @@protoc_insertion_point(class_scope:Notify.TopicConsumerPartition)
+      private static final com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition();
+      }
+
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<TopicConsumerPartition>
+          PARSER = new com.google.protobuf.AbstractParser<TopicConsumerPartition>() {
+        @java.lang.Override
+        public TopicConsumerPartition parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new TopicConsumerPartition(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<TopicConsumerPartition> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<TopicConsumerPartition> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public interface TopicConsumerOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:Notify.TopicConsumer)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>string group = 1;</code>
+       * @return The group.
+       */
+      java.lang.String getGroup();
+      /**
+       * <code>string group = 1;</code>
+       * @return The bytes for group.
+       */
+      com.google.protobuf.ByteString
+          getGroupBytes();
+
+      /**
+       * <code>string topic = 2;</code>
+       * @return The topic.
+       */
+      java.lang.String getTopic();
+      /**
+       * <code>string topic = 2;</code>
+       * @return The bytes for topic.
+       */
+      com.google.protobuf.ByteString
+          getTopicBytes();
+    }
+    /**
+     * <pre>
+     *通知指定topicConsumer需要重新获取partition进行重平衡
+     * </pre>
+     *
+     * Protobuf type {@code Notify.TopicConsumer}
+     */
+    public static final class TopicConsumer extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:Notify.TopicConsumer)
+        TopicConsumerOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use TopicConsumer.newBuilder() to construct.
+      private TopicConsumer(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private TopicConsumer() {
+        group_ = "";
+        topic_ = "";
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new TopicConsumer();
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private TopicConsumer(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                group_ = s;
+                break;
+              }
+              case 18: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                topic_ = s;
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumer_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumer_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.class, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.Builder.class);
+      }
+
+      public static final int GROUP_FIELD_NUMBER = 1;
+      private volatile java.lang.Object group_;
+      /**
+       * <code>string group = 1;</code>
+       * @return The group.
+       */
+      @java.lang.Override
+      public java.lang.String getGroup() {
+        java.lang.Object ref = group_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          group_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string group = 1;</code>
+       * @return The bytes for group.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getGroupBytes() {
+        java.lang.Object ref = group_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          group_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int TOPIC_FIELD_NUMBER = 2;
+      private volatile java.lang.Object topic_;
+      /**
+       * <code>string topic = 2;</code>
+       * @return The topic.
+       */
+      @java.lang.Override
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @return The bytes for topic.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(group_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, group_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(group_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, group_);
+        }
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer)) {
+          return super.equals(obj);
+        }
+        com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer other = (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) obj;
+
+        if (!getGroup()
+            .equals(other.getGroup())) return false;
+        if (!getTopic()
+            .equals(other.getTopic())) return false;
+        if (!unknownFields.equals(other.unknownFields)) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + GROUP_FIELD_NUMBER;
+        hash = (53 * hash) + getGroup().hashCode();
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * <pre>
+       *通知指定topicConsumer需要重新获取partition进行重平衡
+       * </pre>
+       *
+       * Protobuf type {@code Notify.TopicConsumer}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:Notify.TopicConsumer)
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumer_descriptor;
+        }
+
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumer_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.class, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.Builder.class);
+        }
+
+        // Construct using com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          group_ = "";
+
+          topic_ = "";
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_TopicConsumer_descriptor;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer getDefaultInstanceForType() {
+          return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer build() {
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer buildPartial() {
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer result = new com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer(this);
+          result.group_ = group_;
+          result.topic_ = topic_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) {
+            return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer other) {
+          if (other == com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance()) return this;
+          if (!other.getGroup().isEmpty()) {
+            group_ = other.group_;
+            onChanged();
+          }
+          if (!other.getTopic().isEmpty()) {
+            topic_ = other.topic_;
+            onChanged();
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private java.lang.Object group_ = "";
+        /**
+         * <code>string group = 1;</code>
+         * @return The group.
+         */
+        public java.lang.String getGroup() {
+          java.lang.Object ref = group_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            group_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string group = 1;</code>
+         * @return The bytes for group.
+         */
+        public com.google.protobuf.ByteString
+            getGroupBytes() {
+          java.lang.Object ref = group_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            group_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string group = 1;</code>
+         * @param value The group to set.
+         * @return This builder for chaining.
+         */
+        public Builder setGroup(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          group_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string group = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearGroup() {
+          
+          group_ = getDefaultInstance().getGroup();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string group = 1;</code>
+         * @param value The bytes for group to set.
+         * @return This builder for chaining.
+         */
+        public Builder setGroupBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          group_ = value;
+          onChanged();
+          return this;
+        }
+
+        private java.lang.Object topic_ = "";
+        /**
+         * <code>string topic = 2;</code>
+         * @return The topic.
+         */
+        public java.lang.String getTopic() {
+          java.lang.Object ref = topic_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string topic = 2;</code>
+         * @return The bytes for topic.
+         */
+        public com.google.protobuf.ByteString
+            getTopicBytes() {
+          java.lang.Object ref = topic_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            topic_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string topic = 2;</code>
+         * @param value The topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopic(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          topic_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string topic = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearTopic() {
+          
+          topic_ = getDefaultInstance().getTopic();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string topic = 2;</code>
+         * @param value The bytes for topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopicBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          topic_ = value;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:Notify.TopicConsumer)
+      }
+
+      // @@protoc_insertion_point(class_scope:Notify.TopicConsumer)
+      private static final com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer();
+      }
+
+      public static com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<TopicConsumer>
+          PARSER = new com.google.protobuf.AbstractParser<TopicConsumer>() {
+        @java.lang.Override
+        public TopicConsumer parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new TopicConsumer(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<TopicConsumer> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<TopicConsumer> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    private int dataCase_ = 0;
+    private java.lang.Object data_;
+    public enum DataCase
+        implements com.google.protobuf.Internal.EnumLite,
+            com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+      TOPICCONSUMER(2),
+      TOPICCONSUMERPARTITION(3),
+      DATA_NOT_SET(0);
+      private final int value;
+      private DataCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @param value The number of the enum to look for.
+       * @return The enum associated with the given number.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static DataCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static DataCase forNumber(int value) {
+        switch (value) {
+          case 2: return TOPICCONSUMER;
+          case 3: return TOPICCONSUMERPARTITION;
+          case 0: return DATA_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public DataCase
+    getDataCase() {
+      return DataCase.forNumber(
+          dataCase_);
+    }
+
+    public static final int EVENT_FIELD_NUMBER = 1;
+    private int event_;
+    /**
+     * <code>.Notify.Event event = 1;</code>
+     * @return The enum numeric value on the wire for event.
+     */
+    @java.lang.Override public int getEventValue() {
+      return event_;
+    }
+    /**
+     * <code>.Notify.Event event = 1;</code>
+     * @return The event.
+     */
+    @java.lang.Override public com.tsingj.sloth.remoting.message.Remoting.Notify.Event getEvent() {
+      @SuppressWarnings("deprecation")
+      com.tsingj.sloth.remoting.message.Remoting.Notify.Event result = com.tsingj.sloth.remoting.message.Remoting.Notify.Event.valueOf(event_);
+      return result == null ? com.tsingj.sloth.remoting.message.Remoting.Notify.Event.UNRECOGNIZED : result;
+    }
+
+    public static final int TOPICCONSUMER_FIELD_NUMBER = 2;
+    /**
+     * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+     * @return Whether the topicConsumer field is set.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPingBytes() {
-      java.lang.Object ref = ping_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        ping_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    public boolean hasTopicConsumer() {
+      return dataCase_ == 2;
+    }
+    /**
+     * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+     * @return The topicConsumer.
+     */
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer getTopicConsumer() {
+      if (dataCase_ == 2) {
+         return (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_;
       }
+      return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance();
+    }
+    /**
+     * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+     */
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerOrBuilder getTopicConsumerOrBuilder() {
+      if (dataCase_ == 2) {
+         return (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_;
+      }
+      return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance();
+    }
+
+    public static final int TOPICCONSUMERPARTITION_FIELD_NUMBER = 3;
+    /**
+     * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+     * @return Whether the topicConsumerPartition field is set.
+     */
+    @java.lang.Override
+    public boolean hasTopicConsumerPartition() {
+      return dataCase_ == 3;
+    }
+    /**
+     * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+     * @return The topicConsumerPartition.
+     */
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition getTopicConsumerPartition() {
+      if (dataCase_ == 3) {
+         return (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_;
+      }
+      return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance();
+    }
+    /**
+     * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+     */
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartitionOrBuilder getTopicConsumerPartitionOrBuilder() {
+      if (dataCase_ == 3) {
+         return (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_;
+      }
+      return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -166,8 +2067,14 @@ public final class Remoting {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ping_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, ping_);
+      if (event_ != com.tsingj.sloth.remoting.message.Remoting.Notify.Event.RE_BALANCE_BROADCAST.getNumber()) {
+        output.writeEnum(1, event_);
+      }
+      if (dataCase_ == 2) {
+        output.writeMessage(2, (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_);
+      }
+      if (dataCase_ == 3) {
+        output.writeMessage(3, (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_);
       }
       unknownFields.writeTo(output);
     }
@@ -178,8 +2085,17 @@ public final class Remoting {
       if (size != -1) return size;
 
       size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ping_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, ping_);
+      if (event_ != com.tsingj.sloth.remoting.message.Remoting.Notify.Event.RE_BALANCE_BROADCAST.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, event_);
+      }
+      if (dataCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_);
+      }
+      if (dataCase_ == 3) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -191,13 +2107,25 @@ public final class Remoting {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest)) {
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.Notify)) {
         return super.equals(obj);
       }
-      com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest other = (com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest) obj;
+      com.tsingj.sloth.remoting.message.Remoting.Notify other = (com.tsingj.sloth.remoting.message.Remoting.Notify) obj;
 
-      if (!getPing()
-          .equals(other.getPing())) return false;
+      if (event_ != other.event_) return false;
+      if (!getDataCase().equals(other.getDataCase())) return false;
+      switch (dataCase_) {
+        case 2:
+          if (!getTopicConsumer()
+              .equals(other.getTopicConsumer())) return false;
+          break;
+        case 3:
+          if (!getTopicConsumerPartition()
+              .equals(other.getTopicConsumerPartition())) return false;
+          break;
+        case 0:
+        default:
+      }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -209,76 +2137,88 @@ public final class Remoting {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + PING_FIELD_NUMBER;
-      hash = (53 * hash) + getPing().hashCode();
+      hash = (37 * hash) + EVENT_FIELD_NUMBER;
+      hash = (53 * hash) + event_;
+      switch (dataCase_) {
+        case 2:
+          hash = (37 * hash) + TOPICCONSUMER_FIELD_NUMBER;
+          hash = (53 * hash) + getTopicConsumer().hashCode();
+          break;
+        case 3:
+          hash = (37 * hash) + TOPICCONSUMERPARTITION_FIELD_NUMBER;
+          hash = (53 * hash) + getTopicConsumerPartition().hashCode();
+          break;
+        case 0:
+        default:
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(byte[] data)
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(java.io.InputStream input)
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseDelimitedFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -291,7 +2231,7 @@ public final class Remoting {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest prototype) {
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.Notify prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -307,26 +2247,30 @@ public final class Remoting {
       return builder;
     }
     /**
-     * Protobuf type {@code HeartbeatRequest}
+     * <pre>
+     *-----------------broker-----------------------
+     * </pre>
+     *
+     * Protobuf type {@code Notify}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:HeartbeatRequest)
-        com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequestOrBuilder {
+        // @@protoc_insertion_point(builder_implements:Notify)
+        com.tsingj.sloth.remoting.message.Remoting.NotifyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatRequest_descriptor;
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatRequest_fieldAccessorTable
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest.class, com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest.Builder.class);
+                com.tsingj.sloth.remoting.message.Remoting.Notify.class, com.tsingj.sloth.remoting.message.Remoting.Notify.Builder.class);
       }
 
-      // Construct using com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest.newBuilder()
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.Notify.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -344,25 +2288,27 @@ public final class Remoting {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        ping_ = "";
+        event_ = 0;
 
+        dataCase_ = 0;
+        data_ = null;
         return this;
       }
 
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatRequest_descriptor;
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_Notify_descriptor;
       }
 
       @java.lang.Override
-      public com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest getDefaultInstanceForType() {
-        return com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest.getDefaultInstance();
+      public com.tsingj.sloth.remoting.message.Remoting.Notify getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.Notify.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest build() {
-        com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest result = buildPartial();
+      public com.tsingj.sloth.remoting.message.Remoting.Notify build() {
+        com.tsingj.sloth.remoting.message.Remoting.Notify result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -370,9 +2316,24 @@ public final class Remoting {
       }
 
       @java.lang.Override
-      public com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest buildPartial() {
-        com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest result = new com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest(this);
-        result.ping_ = ping_;
+      public com.tsingj.sloth.remoting.message.Remoting.Notify buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.Notify result = new com.tsingj.sloth.remoting.message.Remoting.Notify(this);
+        result.event_ = event_;
+        if (dataCase_ == 2) {
+          if (topicConsumerBuilder_ == null) {
+            result.data_ = data_;
+          } else {
+            result.data_ = topicConsumerBuilder_.build();
+          }
+        }
+        if (dataCase_ == 3) {
+          if (topicConsumerPartitionBuilder_ == null) {
+            result.data_ = data_;
+          } else {
+            result.data_ = topicConsumerPartitionBuilder_.build();
+          }
+        }
+        result.dataCase_ = dataCase_;
         onBuilt();
         return result;
       }
@@ -411,19 +2372,31 @@ public final class Remoting {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest) {
-          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest)other);
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.Notify) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.Notify)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest other) {
-        if (other == com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest.getDefaultInstance()) return this;
-        if (!other.getPing().isEmpty()) {
-          ping_ = other.ping_;
-          onChanged();
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.Notify other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.Notify.getDefaultInstance()) return this;
+        if (other.event_ != 0) {
+          setEventValue(other.getEventValue());
+        }
+        switch (other.getDataCase()) {
+          case TOPICCONSUMER: {
+            mergeTopicConsumer(other.getTopicConsumer());
+            break;
+          }
+          case TOPICCONSUMERPARTITION: {
+            mergeTopicConsumerPartition(other.getTopicConsumerPartition());
+            break;
+          }
+          case DATA_NOT_SET: {
+            break;
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -440,11 +2413,11 @@ public final class Remoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest parsedMessage = null;
+        com.tsingj.sloth.remoting.message.Remoting.Notify parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.Notify) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -453,81 +2426,356 @@ public final class Remoting {
         }
         return this;
       }
+      private int dataCase_ = 0;
+      private java.lang.Object data_;
+      public DataCase
+          getDataCase() {
+        return DataCase.forNumber(
+            dataCase_);
+      }
 
-      private java.lang.Object ping_ = "";
+      public Builder clearData() {
+        dataCase_ = 0;
+        data_ = null;
+        onChanged();
+        return this;
+      }
+
+
+      private int event_ = 0;
       /**
-       * <code>string ping = 1;</code>
-       * @return The ping.
+       * <code>.Notify.Event event = 1;</code>
+       * @return The enum numeric value on the wire for event.
        */
-      public java.lang.String getPing() {
-        java.lang.Object ref = ping_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          ping_ = s;
-          return s;
+      @java.lang.Override public int getEventValue() {
+        return event_;
+      }
+      /**
+       * <code>.Notify.Event event = 1;</code>
+       * @param value The enum numeric value on the wire for event to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEventValue(int value) {
+        
+        event_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.Notify.Event event = 1;</code>
+       * @return The event.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.Event getEvent() {
+        @SuppressWarnings("deprecation")
+        com.tsingj.sloth.remoting.message.Remoting.Notify.Event result = com.tsingj.sloth.remoting.message.Remoting.Notify.Event.valueOf(event_);
+        return result == null ? com.tsingj.sloth.remoting.message.Remoting.Notify.Event.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.Notify.Event event = 1;</code>
+       * @param value The event to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEvent(com.tsingj.sloth.remoting.message.Remoting.Notify.Event value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        event_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.Notify.Event event = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEvent() {
+        
+        event_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.Builder, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerOrBuilder> topicConsumerBuilder_;
+      /**
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+       * @return Whether the topicConsumer field is set.
+       */
+      @java.lang.Override
+      public boolean hasTopicConsumer() {
+        return dataCase_ == 2;
+      }
+      /**
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+       * @return The topicConsumer.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer getTopicConsumer() {
+        if (topicConsumerBuilder_ == null) {
+          if (dataCase_ == 2) {
+            return (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_;
+          }
+          return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance();
         } else {
-          return (java.lang.String) ref;
+          if (dataCase_ == 2) {
+            return topicConsumerBuilder_.getMessage();
+          }
+          return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance();
         }
       }
       /**
-       * <code>string ping = 1;</code>
-       * @return The bytes for ping.
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
        */
-      public com.google.protobuf.ByteString
-          getPingBytes() {
-        java.lang.Object ref = ping_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          ping_ = b;
-          return b;
+      public Builder setTopicConsumer(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer value) {
+        if (topicConsumerBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          data_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          topicConsumerBuilder_.setMessage(value);
+        }
+        dataCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+       */
+      public Builder setTopicConsumer(
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.Builder builderForValue) {
+        if (topicConsumerBuilder_ == null) {
+          data_ = builderForValue.build();
+          onChanged();
+        } else {
+          topicConsumerBuilder_.setMessage(builderForValue.build());
+        }
+        dataCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+       */
+      public Builder mergeTopicConsumer(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer value) {
+        if (topicConsumerBuilder_ == null) {
+          if (dataCase_ == 2 &&
+              data_ != com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance()) {
+            data_ = com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.newBuilder((com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            data_ = value;
+          }
+          onChanged();
+        } else {
+          if (dataCase_ == 2) {
+            topicConsumerBuilder_.mergeFrom(value);
+          }
+          topicConsumerBuilder_.setMessage(value);
+        }
+        dataCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+       */
+      public Builder clearTopicConsumer() {
+        if (topicConsumerBuilder_ == null) {
+          if (dataCase_ == 2) {
+            dataCase_ = 0;
+            data_ = null;
+            onChanged();
+          }
+        } else {
+          if (dataCase_ == 2) {
+            dataCase_ = 0;
+            data_ = null;
+          }
+          topicConsumerBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+       */
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.Builder getTopicConsumerBuilder() {
+        return getTopicConsumerFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerOrBuilder getTopicConsumerOrBuilder() {
+        if ((dataCase_ == 2) && (topicConsumerBuilder_ != null)) {
+          return topicConsumerBuilder_.getMessageOrBuilder();
+        } else {
+          if (dataCase_ == 2) {
+            return (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_;
+          }
+          return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance();
         }
       }
       /**
-       * <code>string ping = 1;</code>
-       * @param value The ping to set.
-       * @return This builder for chaining.
+       * <code>.Notify.TopicConsumer topicConsumer = 2;</code>
        */
-      public Builder setPing(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        ping_ = value;
-        onChanged();
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.Builder, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerOrBuilder> 
+          getTopicConsumerFieldBuilder() {
+        if (topicConsumerBuilder_ == null) {
+          if (!(dataCase_ == 2)) {
+            data_ = com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.getDefaultInstance();
+          }
+          topicConsumerBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer.Builder, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerOrBuilder>(
+                  (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer) data_,
+                  getParentForChildren(),
+                  isClean());
+          data_ = null;
+        }
+        dataCase_ = 2;
+        onChanged();;
+        return topicConsumerBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.Builder, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartitionOrBuilder> topicConsumerPartitionBuilder_;
+      /**
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+       * @return Whether the topicConsumerPartition field is set.
+       */
+      @java.lang.Override
+      public boolean hasTopicConsumerPartition() {
+        return dataCase_ == 3;
+      }
+      /**
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+       * @return The topicConsumerPartition.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition getTopicConsumerPartition() {
+        if (topicConsumerPartitionBuilder_ == null) {
+          if (dataCase_ == 3) {
+            return (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_;
+          }
+          return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance();
+        } else {
+          if (dataCase_ == 3) {
+            return topicConsumerPartitionBuilder_.getMessage();
+          }
+          return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+       */
+      public Builder setTopicConsumerPartition(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition value) {
+        if (topicConsumerPartitionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          data_ = value;
+          onChanged();
+        } else {
+          topicConsumerPartitionBuilder_.setMessage(value);
+        }
+        dataCase_ = 3;
         return this;
       }
       /**
-       * <code>string ping = 1;</code>
-       * @return This builder for chaining.
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
        */
-      public Builder clearPing() {
-        
-        ping_ = getDefaultInstance().getPing();
-        onChanged();
+      public Builder setTopicConsumerPartition(
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.Builder builderForValue) {
+        if (topicConsumerPartitionBuilder_ == null) {
+          data_ = builderForValue.build();
+          onChanged();
+        } else {
+          topicConsumerPartitionBuilder_.setMessage(builderForValue.build());
+        }
+        dataCase_ = 3;
         return this;
       }
       /**
-       * <code>string ping = 1;</code>
-       * @param value The bytes for ping to set.
-       * @return This builder for chaining.
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
        */
-      public Builder setPingBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        ping_ = value;
-        onChanged();
+      public Builder mergeTopicConsumerPartition(com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition value) {
+        if (topicConsumerPartitionBuilder_ == null) {
+          if (dataCase_ == 3 &&
+              data_ != com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance()) {
+            data_ = com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.newBuilder((com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            data_ = value;
+          }
+          onChanged();
+        } else {
+          if (dataCase_ == 3) {
+            topicConsumerPartitionBuilder_.mergeFrom(value);
+          }
+          topicConsumerPartitionBuilder_.setMessage(value);
+        }
+        dataCase_ = 3;
         return this;
+      }
+      /**
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+       */
+      public Builder clearTopicConsumerPartition() {
+        if (topicConsumerPartitionBuilder_ == null) {
+          if (dataCase_ == 3) {
+            dataCase_ = 0;
+            data_ = null;
+            onChanged();
+          }
+        } else {
+          if (dataCase_ == 3) {
+            dataCase_ = 0;
+            data_ = null;
+          }
+          topicConsumerPartitionBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+       */
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.Builder getTopicConsumerPartitionBuilder() {
+        return getTopicConsumerPartitionFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartitionOrBuilder getTopicConsumerPartitionOrBuilder() {
+        if ((dataCase_ == 3) && (topicConsumerPartitionBuilder_ != null)) {
+          return topicConsumerPartitionBuilder_.getMessageOrBuilder();
+        } else {
+          if (dataCase_ == 3) {
+            return (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_;
+          }
+          return com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.Notify.TopicConsumerPartition topicConsumerPartition = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.Builder, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartitionOrBuilder> 
+          getTopicConsumerPartitionFieldBuilder() {
+        if (topicConsumerPartitionBuilder_ == null) {
+          if (!(dataCase_ == 3)) {
+            data_ = com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.getDefaultInstance();
+          }
+          topicConsumerPartitionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition.Builder, com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartitionOrBuilder>(
+                  (com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumerPartition) data_,
+                  getParentForChildren(),
+                  isClean());
+          data_ = null;
+        }
+        dataCase_ = 3;
+        onChanged();;
+        return topicConsumerPartitionBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -542,83 +2790,113 @@ public final class Remoting {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:HeartbeatRequest)
+      // @@protoc_insertion_point(builder_scope:Notify)
     }
 
-    // @@protoc_insertion_point(class_scope:HeartbeatRequest)
-    private static final com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:Notify)
+    private static final com.tsingj.sloth.remoting.message.Remoting.Notify DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest();
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.Notify();
     }
 
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest getDefaultInstance() {
+    public static com.tsingj.sloth.remoting.message.Remoting.Notify getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<HeartbeatRequest>
-        PARSER = new com.google.protobuf.AbstractParser<HeartbeatRequest>() {
+    private static final com.google.protobuf.Parser<Notify>
+        PARSER = new com.google.protobuf.AbstractParser<Notify>() {
       @java.lang.Override
-      public HeartbeatRequest parsePartialFrom(
+      public Notify parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new HeartbeatRequest(input, extensionRegistry);
+        return new Notify(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<HeartbeatRequest> parser() {
+    public static com.google.protobuf.Parser<Notify> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<HeartbeatRequest> getParserForType() {
+    public com.google.protobuf.Parser<Notify> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.tsingj.sloth.remoting.message.Remoting.HeartbeatRequest getDefaultInstanceForType() {
+    public com.tsingj.sloth.remoting.message.Remoting.Notify getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface HeartbeatResultOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:HeartbeatResult)
+  public interface ConsumerHeartbeatRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:ConsumerHeartbeatRequest)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string pong = 1;</code>
-     * @return The pong.
+     * <code>string clientId = 1;</code>
+     * @return The clientId.
      */
-    java.lang.String getPong();
+    java.lang.String getClientId();
     /**
-     * <code>string pong = 1;</code>
-     * @return The bytes for pong.
+     * <code>string clientId = 1;</code>
+     * @return The bytes for clientId.
      */
     com.google.protobuf.ByteString
-        getPongBytes();
+        getClientIdBytes();
+
+    /**
+     * <code>string groupName = 2;</code>
+     * @return The groupName.
+     */
+    java.lang.String getGroupName();
+    /**
+     * <code>string groupName = 2;</code>
+     * @return The bytes for groupName.
+     */
+    com.google.protobuf.ByteString
+        getGroupNameBytes();
+
+    /**
+     * <code>string topic = 3;</code>
+     * @return The topic.
+     */
+    java.lang.String getTopic();
+    /**
+     * <code>string topic = 3;</code>
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+        getTopicBytes();
   }
   /**
-   * Protobuf type {@code HeartbeatResult}
+   * <pre>
+   *-----------------consumerGroup client心跳-----------------------
+   * </pre>
+   *
+   * Protobuf type {@code ConsumerHeartbeatRequest}
    */
-  public static final class HeartbeatResult extends
+  public static final class ConsumerHeartbeatRequest extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:HeartbeatResult)
-      HeartbeatResultOrBuilder {
+      // @@protoc_insertion_point(message_implements:ConsumerHeartbeatRequest)
+      ConsumerHeartbeatRequestOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use HeartbeatResult.newBuilder() to construct.
-    private HeartbeatResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use ConsumerHeartbeatRequest.newBuilder() to construct.
+    private ConsumerHeartbeatRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private HeartbeatResult() {
-      pong_ = "";
+    private ConsumerHeartbeatRequest() {
+      clientId_ = "";
+      groupName_ = "";
+      topic_ = "";
     }
 
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
         UnusedPrivateParameter unused) {
-      return new HeartbeatResult();
+      return new ConsumerHeartbeatRequest();
     }
 
     @java.lang.Override
@@ -626,7 +2904,7 @@ public final class Remoting {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private HeartbeatResult(
+    private ConsumerHeartbeatRequest(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -647,7 +2925,19 @@ public final class Remoting {
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              pong_ = s;
+              clientId_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              groupName_ = s;
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              topic_ = s;
               break;
             }
             default: {
@@ -671,49 +2961,125 @@ public final class Remoting {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatResult_descriptor;
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatResult_fieldAccessorTable
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult.class, com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult.Builder.class);
+              com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest.class, com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest.Builder.class);
     }
 
-    public static final int PONG_FIELD_NUMBER = 1;
-    private volatile java.lang.Object pong_;
+    public static final int CLIENTID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object clientId_;
     /**
-     * <code>string pong = 1;</code>
-     * @return The pong.
+     * <code>string clientId = 1;</code>
+     * @return The clientId.
      */
     @java.lang.Override
-    public java.lang.String getPong() {
-      java.lang.Object ref = pong_;
+    public java.lang.String getClientId() {
+      java.lang.Object ref = clientId_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        pong_ = s;
+        clientId_ = s;
         return s;
       }
     }
     /**
-     * <code>string pong = 1;</code>
-     * @return The bytes for pong.
+     * <code>string clientId = 1;</code>
+     * @return The bytes for clientId.
      */
     @java.lang.Override
     public com.google.protobuf.ByteString
-        getPongBytes() {
-      java.lang.Object ref = pong_;
+        getClientIdBytes() {
+      java.lang.Object ref = clientId_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        pong_ = b;
+        clientId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int GROUPNAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object groupName_;
+    /**
+     * <code>string groupName = 2;</code>
+     * @return The groupName.
+     */
+    @java.lang.Override
+    public java.lang.String getGroupName() {
+      java.lang.Object ref = groupName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        groupName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string groupName = 2;</code>
+     * @return The bytes for groupName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getGroupNameBytes() {
+      java.lang.Object ref = groupName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        groupName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 3;
+    private volatile java.lang.Object topic_;
+    /**
+     * <code>string topic = 3;</code>
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string topic = 3;</code>
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -734,8 +3100,14 @@ public final class Remoting {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(pong_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, pong_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(clientId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, clientId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(groupName_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, groupName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, topic_);
       }
       unknownFields.writeTo(output);
     }
@@ -746,8 +3118,14 @@ public final class Remoting {
       if (size != -1) return size;
 
       size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(pong_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, pong_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(clientId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, clientId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(groupName_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, groupName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, topic_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -759,13 +3137,17 @@ public final class Remoting {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult)) {
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest)) {
         return super.equals(obj);
       }
-      com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult other = (com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult) obj;
+      com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest other = (com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest) obj;
 
-      if (!getPong()
-          .equals(other.getPong())) return false;
+      if (!getClientId()
+          .equals(other.getClientId())) return false;
+      if (!getGroupName()
+          .equals(other.getGroupName())) return false;
+      if (!getTopic()
+          .equals(other.getTopic())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -777,76 +3159,80 @@ public final class Remoting {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + PONG_FIELD_NUMBER;
-      hash = (53 * hash) + getPong().hashCode();
+      hash = (37 * hash) + CLIENTID_FIELD_NUMBER;
+      hash = (53 * hash) + getClientId().hashCode();
+      hash = (37 * hash) + GROUPNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getGroupName().hashCode();
+      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getTopic().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(byte[] data)
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(java.io.InputStream input)
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseDelimitedFrom(java.io.InputStream input)
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseDelimitedFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parseFrom(
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -859,7 +3245,7 @@ public final class Remoting {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult prototype) {
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -875,26 +3261,30 @@ public final class Remoting {
       return builder;
     }
     /**
-     * Protobuf type {@code HeartbeatResult}
+     * <pre>
+     *-----------------consumerGroup client心跳-----------------------
+     * </pre>
+     *
+     * Protobuf type {@code ConsumerHeartbeatRequest}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:HeartbeatResult)
-        com.tsingj.sloth.remoting.message.Remoting.HeartbeatResultOrBuilder {
+        // @@protoc_insertion_point(builder_implements:ConsumerHeartbeatRequest)
+        com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatResult_descriptor;
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatRequest_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatResult_fieldAccessorTable
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult.class, com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult.Builder.class);
+                com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest.class, com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest.Builder.class);
       }
 
-      // Construct using com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult.newBuilder()
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -912,7 +3302,11 @@ public final class Remoting {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        pong_ = "";
+        clientId_ = "";
+
+        groupName_ = "";
+
+        topic_ = "";
 
         return this;
       }
@@ -920,17 +3314,17 @@ public final class Remoting {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tsingj.sloth.remoting.message.Remoting.internal_static_HeartbeatResult_descriptor;
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatRequest_descriptor;
       }
 
       @java.lang.Override
-      public com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult getDefaultInstanceForType() {
-        return com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult.getDefaultInstance();
+      public com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult build() {
-        com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult result = buildPartial();
+      public com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest build() {
+        com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -938,9 +3332,11 @@ public final class Remoting {
       }
 
       @java.lang.Override
-      public com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult buildPartial() {
-        com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult result = new com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult(this);
-        result.pong_ = pong_;
+      public com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest result = new com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest(this);
+        result.clientId_ = clientId_;
+        result.groupName_ = groupName_;
+        result.topic_ = topic_;
         onBuilt();
         return result;
       }
@@ -979,18 +3375,26 @@ public final class Remoting {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult) {
-          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult)other);
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult other) {
-        if (other == com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult.getDefaultInstance()) return this;
-        if (!other.getPong().isEmpty()) {
-          pong_ = other.pong_;
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest.getDefaultInstance()) return this;
+        if (!other.getClientId().isEmpty()) {
+          clientId_ = other.clientId_;
+          onChanged();
+        }
+        if (!other.getGroupName().isEmpty()) {
+          groupName_ = other.groupName_;
+          onChanged();
+        }
+        if (!other.getTopic().isEmpty()) {
+          topic_ = other.topic_;
           onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -1008,11 +3412,11 @@ public final class Remoting {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult parsedMessage = null;
+        com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult) e.getUnfinishedMessage();
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1022,78 +3426,230 @@ public final class Remoting {
         return this;
       }
 
-      private java.lang.Object pong_ = "";
+      private java.lang.Object clientId_ = "";
       /**
-       * <code>string pong = 1;</code>
-       * @return The pong.
+       * <code>string clientId = 1;</code>
+       * @return The clientId.
        */
-      public java.lang.String getPong() {
-        java.lang.Object ref = pong_;
+      public java.lang.String getClientId() {
+        java.lang.Object ref = clientId_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          pong_ = s;
+          clientId_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>string pong = 1;</code>
-       * @return The bytes for pong.
+       * <code>string clientId = 1;</code>
+       * @return The bytes for clientId.
        */
       public com.google.protobuf.ByteString
-          getPongBytes() {
-        java.lang.Object ref = pong_;
+          getClientIdBytes() {
+        java.lang.Object ref = clientId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          pong_ = b;
+          clientId_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>string pong = 1;</code>
-       * @param value The pong to set.
+       * <code>string clientId = 1;</code>
+       * @param value The clientId to set.
        * @return This builder for chaining.
        */
-      public Builder setPong(
+      public Builder setClientId(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   
-        pong_ = value;
+        clientId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>string pong = 1;</code>
+       * <code>string clientId = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearPong() {
+      public Builder clearClientId() {
         
-        pong_ = getDefaultInstance().getPong();
+        clientId_ = getDefaultInstance().getClientId();
         onChanged();
         return this;
       }
       /**
-       * <code>string pong = 1;</code>
-       * @param value The bytes for pong to set.
+       * <code>string clientId = 1;</code>
+       * @param value The bytes for clientId to set.
        * @return This builder for chaining.
        */
-      public Builder setPongBytes(
+      public Builder setClientIdBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
         
-        pong_ = value;
+        clientId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object groupName_ = "";
+      /**
+       * <code>string groupName = 2;</code>
+       * @return The groupName.
+       */
+      public java.lang.String getGroupName() {
+        java.lang.Object ref = groupName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          groupName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string groupName = 2;</code>
+       * @return The bytes for groupName.
+       */
+      public com.google.protobuf.ByteString
+          getGroupNameBytes() {
+        java.lang.Object ref = groupName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          groupName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string groupName = 2;</code>
+       * @param value The groupName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGroupName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        groupName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string groupName = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGroupName() {
+        
+        groupName_ = getDefaultInstance().getGroupName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string groupName = 2;</code>
+       * @param value The bytes for groupName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGroupNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        groupName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object topic_ = "";
+      /**
+       * <code>string topic = 3;</code>
+       * @return The topic.
+       */
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string topic = 3;</code>
+       * @return The bytes for topic.
+       */
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string topic = 3;</code>
+       * @param value The topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopic(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTopic() {
+        
+        topic_ = getDefaultInstance().getTopic();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 3;</code>
+       * @param value The bytes for topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopicBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        topic_ = value;
         onChanged();
         return this;
       }
@@ -1110,41 +3666,3997 @@ public final class Remoting {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:HeartbeatResult)
+      // @@protoc_insertion_point(builder_scope:ConsumerHeartbeatRequest)
     }
 
-    // @@protoc_insertion_point(class_scope:HeartbeatResult)
-    private static final com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:ConsumerHeartbeatRequest)
+    private static final com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult();
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest();
     }
 
-    public static com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult getDefaultInstance() {
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<HeartbeatResult>
-        PARSER = new com.google.protobuf.AbstractParser<HeartbeatResult>() {
+    private static final com.google.protobuf.Parser<ConsumerHeartbeatRequest>
+        PARSER = new com.google.protobuf.AbstractParser<ConsumerHeartbeatRequest>() {
       @java.lang.Override
-      public HeartbeatResult parsePartialFrom(
+      public ConsumerHeartbeatRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new HeartbeatResult(input, extensionRegistry);
+        return new ConsumerHeartbeatRequest(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<HeartbeatResult> parser() {
+    public static com.google.protobuf.Parser<ConsumerHeartbeatRequest> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<HeartbeatResult> getParserForType() {
+    public com.google.protobuf.Parser<ConsumerHeartbeatRequest> getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.tsingj.sloth.remoting.message.Remoting.HeartbeatResult getDefaultInstanceForType() {
+    public com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ConsumerHeartbeatResultOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:ConsumerHeartbeatResult)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    int getRetCodeValue();
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode();
+
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    java.lang.String getErrorInfo();
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    com.google.protobuf.ByteString
+        getErrorInfoBytes();
+
+    /**
+     * <code>repeated int32 partitions = 3;</code>
+     * @return A list containing the partitions.
+     */
+    java.util.List<java.lang.Integer> getPartitionsList();
+    /**
+     * <code>repeated int32 partitions = 3;</code>
+     * @return The count of partitions.
+     */
+    int getPartitionsCount();
+    /**
+     * <code>repeated int32 partitions = 3;</code>
+     * @param index The index of the element to return.
+     * @return The partitions at the given index.
+     */
+    int getPartitions(int index);
+  }
+  /**
+   * Protobuf type {@code ConsumerHeartbeatResult}
+   */
+  public static final class ConsumerHeartbeatResult extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:ConsumerHeartbeatResult)
+      ConsumerHeartbeatResultOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ConsumerHeartbeatResult.newBuilder() to construct.
+    private ConsumerHeartbeatResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ConsumerHeartbeatResult() {
+      retCode_ = 0;
+      errorInfo_ = "";
+      partitions_ = emptyIntList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ConsumerHeartbeatResult();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ConsumerHeartbeatResult(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              retCode_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              errorInfo_ = s;
+              break;
+            }
+            case 24: {
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                partitions_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              partitions_.addInt(input.readInt32());
+              break;
+            }
+            case 26: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                partitions_ = newIntList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                partitions_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          partitions_.makeImmutable(); // C
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatResult_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatResult_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult.class, com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult.Builder.class);
+    }
+
+    public static final int RETCODE_FIELD_NUMBER = 1;
+    private int retCode_;
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    @java.lang.Override public int getRetCodeValue() {
+      return retCode_;
+    }
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    @java.lang.Override public com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode() {
+      @SuppressWarnings("deprecation")
+      com.tsingj.sloth.remoting.message.Remoting.RetCode result = com.tsingj.sloth.remoting.message.Remoting.RetCode.valueOf(retCode_);
+      return result == null ? com.tsingj.sloth.remoting.message.Remoting.RetCode.UNRECOGNIZED : result;
+    }
+
+    public static final int ERRORINFO_FIELD_NUMBER = 2;
+    private volatile java.lang.Object errorInfo_;
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    @java.lang.Override
+    public java.lang.String getErrorInfo() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        errorInfo_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getErrorInfoBytes() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorInfo_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PARTITIONS_FIELD_NUMBER = 3;
+    private com.google.protobuf.Internal.IntList partitions_;
+    /**
+     * <code>repeated int32 partitions = 3;</code>
+     * @return A list containing the partitions.
+     */
+    @java.lang.Override
+    public java.util.List<java.lang.Integer>
+        getPartitionsList() {
+      return partitions_;
+    }
+    /**
+     * <code>repeated int32 partitions = 3;</code>
+     * @return The count of partitions.
+     */
+    public int getPartitionsCount() {
+      return partitions_.size();
+    }
+    /**
+     * <code>repeated int32 partitions = 3;</code>
+     * @param index The index of the element to return.
+     * @return The partitions at the given index.
+     */
+    public int getPartitions(int index) {
+      return partitions_.getInt(index);
+    }
+    private int partitionsMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.RetCode.SUCCESS.getNumber()) {
+        output.writeEnum(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, errorInfo_);
+      }
+      if (getPartitionsList().size() > 0) {
+        output.writeUInt32NoTag(26);
+        output.writeUInt32NoTag(partitionsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < partitions_.size(); i++) {
+        output.writeInt32NoTag(partitions_.getInt(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.RetCode.SUCCESS.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, errorInfo_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < partitions_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(partitions_.getInt(i));
+        }
+        size += dataSize;
+        if (!getPartitionsList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        partitionsMemoizedSerializedSize = dataSize;
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult other = (com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult) obj;
+
+      if (retCode_ != other.retCode_) return false;
+      if (!getErrorInfo()
+          .equals(other.getErrorInfo())) return false;
+      if (!getPartitionsList()
+          .equals(other.getPartitionsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RETCODE_FIELD_NUMBER;
+      hash = (53 * hash) + retCode_;
+      hash = (37 * hash) + ERRORINFO_FIELD_NUMBER;
+      hash = (53 * hash) + getErrorInfo().hashCode();
+      if (getPartitionsCount() > 0) {
+        hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getPartitionsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code ConsumerHeartbeatResult}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:ConsumerHeartbeatResult)
+        com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResultOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatResult_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatResult_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult.class, com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        retCode_ = 0;
+
+        errorInfo_ = "";
+
+        partitions_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_ConsumerHeartbeatResult_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult build() {
+        com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult result = new com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult(this);
+        int from_bitField0_ = bitField0_;
+        result.retCode_ = retCode_;
+        result.errorInfo_ = errorInfo_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          partitions_.makeImmutable();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.partitions_ = partitions_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult.getDefaultInstance()) return this;
+        if (other.retCode_ != 0) {
+          setRetCodeValue(other.getRetCodeValue());
+        }
+        if (!other.getErrorInfo().isEmpty()) {
+          errorInfo_ = other.errorInfo_;
+          onChanged();
+        }
+        if (!other.partitions_.isEmpty()) {
+          if (partitions_.isEmpty()) {
+            partitions_ = other.partitions_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensurePartitionsIsMutable();
+            partitions_.addAll(other.partitions_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int retCode_ = 0;
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return The enum numeric value on the wire for retCode.
+       */
+      @java.lang.Override public int getRetCodeValue() {
+        return retCode_;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @param value The enum numeric value on the wire for retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCodeValue(int value) {
+        
+        retCode_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return The retCode.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode() {
+        @SuppressWarnings("deprecation")
+        com.tsingj.sloth.remoting.message.Remoting.RetCode result = com.tsingj.sloth.remoting.message.Remoting.RetCode.valueOf(retCode_);
+        return result == null ? com.tsingj.sloth.remoting.message.Remoting.RetCode.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @param value The retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCode(com.tsingj.sloth.remoting.message.Remoting.RetCode value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        retCode_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRetCode() {
+        
+        retCode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object errorInfo_ = "";
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The errorInfo.
+       */
+      public java.lang.String getErrorInfo() {
+        java.lang.Object ref = errorInfo_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          errorInfo_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The bytes for errorInfo.
+       */
+      public com.google.protobuf.ByteString
+          getErrorInfoBytes() {
+        java.lang.Object ref = errorInfo_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errorInfo_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfo(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearErrorInfo() {
+        
+        errorInfo_ = getDefaultInstance().getErrorInfo();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The bytes for errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfoBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.IntList partitions_ = emptyIntList();
+      private void ensurePartitionsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          partitions_ = mutableCopy(partitions_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @return A list containing the partitions.
+       */
+      public java.util.List<java.lang.Integer>
+          getPartitionsList() {
+        return ((bitField0_ & 0x00000001) != 0) ?
+                 java.util.Collections.unmodifiableList(partitions_) : partitions_;
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @return The count of partitions.
+       */
+      public int getPartitionsCount() {
+        return partitions_.size();
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @param index The index of the element to return.
+       * @return The partitions at the given index.
+       */
+      public int getPartitions(int index) {
+        return partitions_.getInt(index);
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The partitions to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPartitions(
+          int index, int value) {
+        ensurePartitionsIsMutable();
+        partitions_.setInt(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @param value The partitions to add.
+       * @return This builder for chaining.
+       */
+      public Builder addPartitions(int value) {
+        ensurePartitionsIsMutable();
+        partitions_.addInt(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @param values The partitions to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllPartitions(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensurePartitionsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, partitions_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPartitions() {
+        partitions_ = emptyIntList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:ConsumerHeartbeatResult)
+    }
+
+    // @@protoc_insertion_point(class_scope:ConsumerHeartbeatResult)
+    private static final com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ConsumerHeartbeatResult>
+        PARSER = new com.google.protobuf.AbstractParser<ConsumerHeartbeatResult>() {
+      @java.lang.Override
+      public ConsumerHeartbeatResult parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ConsumerHeartbeatResult(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ConsumerHeartbeatResult> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ConsumerHeartbeatResult> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.ConsumerHeartbeatResult getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GetConsumerOffsetRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:GetConsumerOffsetRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string groupName = 1;</code>
+     * @return The groupName.
+     */
+    java.lang.String getGroupName();
+    /**
+     * <code>string groupName = 1;</code>
+     * @return The bytes for groupName.
+     */
+    com.google.protobuf.ByteString
+        getGroupNameBytes();
+
+    /**
+     * <code>string topic = 2;</code>
+     * @return The topic.
+     */
+    java.lang.String getTopic();
+    /**
+     * <code>string topic = 2;</code>
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+        getTopicBytes();
+
+    /**
+     * <code>int32 partition = 3;</code>
+     * @return The partition.
+     */
+    int getPartition();
+  }
+  /**
+   * <pre>
+   *-----------------获取当前consumerGroupOffset-----------------------
+   * </pre>
+   *
+   * Protobuf type {@code GetConsumerOffsetRequest}
+   */
+  public static final class GetConsumerOffsetRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:GetConsumerOffsetRequest)
+      GetConsumerOffsetRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GetConsumerOffsetRequest.newBuilder() to construct.
+    private GetConsumerOffsetRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GetConsumerOffsetRequest() {
+      groupName_ = "";
+      topic_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GetConsumerOffsetRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private GetConsumerOffsetRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              groupName_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              topic_ = s;
+              break;
+            }
+            case 24: {
+
+              partition_ = input.readInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest.class, com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest.Builder.class);
+    }
+
+    public static final int GROUPNAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object groupName_;
+    /**
+     * <code>string groupName = 1;</code>
+     * @return The groupName.
+     */
+    @java.lang.Override
+    public java.lang.String getGroupName() {
+      java.lang.Object ref = groupName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        groupName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string groupName = 1;</code>
+     * @return The bytes for groupName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getGroupNameBytes() {
+      java.lang.Object ref = groupName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        groupName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 2;
+    private volatile java.lang.Object topic_;
+    /**
+     * <code>string topic = 2;</code>
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string topic = 2;</code>
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PARTITION_FIELD_NUMBER = 3;
+    private int partition_;
+    /**
+     * <code>int32 partition = 3;</code>
+     * @return The partition.
+     */
+    @java.lang.Override
+    public int getPartition() {
+      return partition_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(groupName_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, groupName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
+      }
+      if (partition_ != 0) {
+        output.writeInt32(3, partition_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(groupName_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, groupName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
+      }
+      if (partition_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, partition_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest other = (com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest) obj;
+
+      if (!getGroupName()
+          .equals(other.getGroupName())) return false;
+      if (!getTopic()
+          .equals(other.getTopic())) return false;
+      if (getPartition()
+          != other.getPartition()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + GROUPNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getGroupName().hashCode();
+      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getTopic().hashCode();
+      hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+      hash = (53 * hash) + getPartition();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *-----------------获取当前consumerGroupOffset-----------------------
+     * </pre>
+     *
+     * Protobuf type {@code GetConsumerOffsetRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:GetConsumerOffsetRequest)
+        com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest.class, com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        groupName_ = "";
+
+        topic_ = "";
+
+        partition_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest build() {
+        com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest result = new com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest(this);
+        result.groupName_ = groupName_;
+        result.topic_ = topic_;
+        result.partition_ = partition_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest.getDefaultInstance()) return this;
+        if (!other.getGroupName().isEmpty()) {
+          groupName_ = other.groupName_;
+          onChanged();
+        }
+        if (!other.getTopic().isEmpty()) {
+          topic_ = other.topic_;
+          onChanged();
+        }
+        if (other.getPartition() != 0) {
+          setPartition(other.getPartition());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object groupName_ = "";
+      /**
+       * <code>string groupName = 1;</code>
+       * @return The groupName.
+       */
+      public java.lang.String getGroupName() {
+        java.lang.Object ref = groupName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          groupName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string groupName = 1;</code>
+       * @return The bytes for groupName.
+       */
+      public com.google.protobuf.ByteString
+          getGroupNameBytes() {
+        java.lang.Object ref = groupName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          groupName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string groupName = 1;</code>
+       * @param value The groupName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGroupName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        groupName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string groupName = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGroupName() {
+        
+        groupName_ = getDefaultInstance().getGroupName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string groupName = 1;</code>
+       * @param value The bytes for groupName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGroupNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        groupName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object topic_ = "";
+      /**
+       * <code>string topic = 2;</code>
+       * @return The topic.
+       */
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @return The bytes for topic.
+       */
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @param value The topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopic(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTopic() {
+        
+        topic_ = getDefaultInstance().getTopic();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @param value The bytes for topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopicBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int partition_ ;
+      /**
+       * <code>int32 partition = 3;</code>
+       * @return The partition.
+       */
+      @java.lang.Override
+      public int getPartition() {
+        return partition_;
+      }
+      /**
+       * <code>int32 partition = 3;</code>
+       * @param value The partition to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPartition(int value) {
+        
+        partition_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 partition = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPartition() {
+        
+        partition_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:GetConsumerOffsetRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:GetConsumerOffsetRequest)
+    private static final com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GetConsumerOffsetRequest>
+        PARSER = new com.google.protobuf.AbstractParser<GetConsumerOffsetRequest>() {
+      @java.lang.Override
+      public GetConsumerOffsetRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetConsumerOffsetRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GetConsumerOffsetRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetConsumerOffsetRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GetConsumerOffsetResultOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:GetConsumerOffsetResult)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    int getRetCodeValue();
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode();
+
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    java.lang.String getErrorInfo();
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    com.google.protobuf.ByteString
+        getErrorInfoBytes();
+
+    /**
+     * <code>int64 offset = 3;</code>
+     * @return The offset.
+     */
+    long getOffset();
+  }
+  /**
+   * Protobuf type {@code GetConsumerOffsetResult}
+   */
+  public static final class GetConsumerOffsetResult extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:GetConsumerOffsetResult)
+      GetConsumerOffsetResultOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GetConsumerOffsetResult.newBuilder() to construct.
+    private GetConsumerOffsetResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GetConsumerOffsetResult() {
+      retCode_ = 0;
+      errorInfo_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GetConsumerOffsetResult();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private GetConsumerOffsetResult(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              retCode_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              errorInfo_ = s;
+              break;
+            }
+            case 24: {
+
+              offset_ = input.readInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetResult_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetResult_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult.class, com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult.Builder.class);
+    }
+
+    public static final int RETCODE_FIELD_NUMBER = 1;
+    private int retCode_;
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    @java.lang.Override public int getRetCodeValue() {
+      return retCode_;
+    }
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    @java.lang.Override public com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode() {
+      @SuppressWarnings("deprecation")
+      com.tsingj.sloth.remoting.message.Remoting.RetCode result = com.tsingj.sloth.remoting.message.Remoting.RetCode.valueOf(retCode_);
+      return result == null ? com.tsingj.sloth.remoting.message.Remoting.RetCode.UNRECOGNIZED : result;
+    }
+
+    public static final int ERRORINFO_FIELD_NUMBER = 2;
+    private volatile java.lang.Object errorInfo_;
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    @java.lang.Override
+    public java.lang.String getErrorInfo() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        errorInfo_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getErrorInfoBytes() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorInfo_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int OFFSET_FIELD_NUMBER = 3;
+    private long offset_;
+    /**
+     * <code>int64 offset = 3;</code>
+     * @return The offset.
+     */
+    @java.lang.Override
+    public long getOffset() {
+      return offset_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.RetCode.SUCCESS.getNumber()) {
+        output.writeEnum(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, errorInfo_);
+      }
+      if (offset_ != 0L) {
+        output.writeInt64(3, offset_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.RetCode.SUCCESS.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, errorInfo_);
+      }
+      if (offset_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, offset_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult other = (com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult) obj;
+
+      if (retCode_ != other.retCode_) return false;
+      if (!getErrorInfo()
+          .equals(other.getErrorInfo())) return false;
+      if (getOffset()
+          != other.getOffset()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RETCODE_FIELD_NUMBER;
+      hash = (53 * hash) + retCode_;
+      hash = (37 * hash) + ERRORINFO_FIELD_NUMBER;
+      hash = (53 * hash) + getErrorInfo().hashCode();
+      hash = (37 * hash) + OFFSET_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getOffset());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code GetConsumerOffsetResult}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:GetConsumerOffsetResult)
+        com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResultOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetResult_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetResult_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult.class, com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        retCode_ = 0;
+
+        errorInfo_ = "";
+
+        offset_ = 0L;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetConsumerOffsetResult_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult build() {
+        com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult result = new com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult(this);
+        result.retCode_ = retCode_;
+        result.errorInfo_ = errorInfo_;
+        result.offset_ = offset_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult.getDefaultInstance()) return this;
+        if (other.retCode_ != 0) {
+          setRetCodeValue(other.getRetCodeValue());
+        }
+        if (!other.getErrorInfo().isEmpty()) {
+          errorInfo_ = other.errorInfo_;
+          onChanged();
+        }
+        if (other.getOffset() != 0L) {
+          setOffset(other.getOffset());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int retCode_ = 0;
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return The enum numeric value on the wire for retCode.
+       */
+      @java.lang.Override public int getRetCodeValue() {
+        return retCode_;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @param value The enum numeric value on the wire for retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCodeValue(int value) {
+        
+        retCode_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return The retCode.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode() {
+        @SuppressWarnings("deprecation")
+        com.tsingj.sloth.remoting.message.Remoting.RetCode result = com.tsingj.sloth.remoting.message.Remoting.RetCode.valueOf(retCode_);
+        return result == null ? com.tsingj.sloth.remoting.message.Remoting.RetCode.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @param value The retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCode(com.tsingj.sloth.remoting.message.Remoting.RetCode value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        retCode_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRetCode() {
+        
+        retCode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object errorInfo_ = "";
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The errorInfo.
+       */
+      public java.lang.String getErrorInfo() {
+        java.lang.Object ref = errorInfo_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          errorInfo_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The bytes for errorInfo.
+       */
+      public com.google.protobuf.ByteString
+          getErrorInfoBytes() {
+        java.lang.Object ref = errorInfo_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errorInfo_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfo(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearErrorInfo() {
+        
+        errorInfo_ = getDefaultInstance().getErrorInfo();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The bytes for errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfoBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long offset_ ;
+      /**
+       * <code>int64 offset = 3;</code>
+       * @return The offset.
+       */
+      @java.lang.Override
+      public long getOffset() {
+        return offset_;
+      }
+      /**
+       * <code>int64 offset = 3;</code>
+       * @param value The offset to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOffset(long value) {
+        
+        offset_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 offset = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOffset() {
+        
+        offset_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:GetConsumerOffsetResult)
+    }
+
+    // @@protoc_insertion_point(class_scope:GetConsumerOffsetResult)
+    private static final com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GetConsumerOffsetResult>
+        PARSER = new com.google.protobuf.AbstractParser<GetConsumerOffsetResult>() {
+      @java.lang.Override
+      public GetConsumerOffsetResult parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetConsumerOffsetResult(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GetConsumerOffsetResult> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetConsumerOffsetResult> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.GetConsumerOffsetResult getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SubmitConsumerOffsetRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:SubmitConsumerOffsetRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string groupName = 1;</code>
+     * @return The groupName.
+     */
+    java.lang.String getGroupName();
+    /**
+     * <code>string groupName = 1;</code>
+     * @return The bytes for groupName.
+     */
+    com.google.protobuf.ByteString
+        getGroupNameBytes();
+
+    /**
+     * <code>string topic = 2;</code>
+     * @return The topic.
+     */
+    java.lang.String getTopic();
+    /**
+     * <code>string topic = 2;</code>
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+        getTopicBytes();
+
+    /**
+     * <code>int32 partition = 3;</code>
+     * @return The partition.
+     */
+    int getPartition();
+
+    /**
+     * <code>int64 offset = 4;</code>
+     * @return The offset.
+     */
+    long getOffset();
+  }
+  /**
+   * <pre>
+   *-----------------提交consumerGroup offset请求-----------------------
+   * </pre>
+   *
+   * Protobuf type {@code SubmitConsumerOffsetRequest}
+   */
+  public static final class SubmitConsumerOffsetRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:SubmitConsumerOffsetRequest)
+      SubmitConsumerOffsetRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SubmitConsumerOffsetRequest.newBuilder() to construct.
+    private SubmitConsumerOffsetRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SubmitConsumerOffsetRequest() {
+      groupName_ = "";
+      topic_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SubmitConsumerOffsetRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SubmitConsumerOffsetRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              groupName_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              topic_ = s;
+              break;
+            }
+            case 24: {
+
+              partition_ = input.readInt32();
+              break;
+            }
+            case 32: {
+
+              offset_ = input.readInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest.class, com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest.Builder.class);
+    }
+
+    public static final int GROUPNAME_FIELD_NUMBER = 1;
+    private volatile java.lang.Object groupName_;
+    /**
+     * <code>string groupName = 1;</code>
+     * @return The groupName.
+     */
+    @java.lang.Override
+    public java.lang.String getGroupName() {
+      java.lang.Object ref = groupName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        groupName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string groupName = 1;</code>
+     * @return The bytes for groupName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getGroupNameBytes() {
+      java.lang.Object ref = groupName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        groupName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 2;
+    private volatile java.lang.Object topic_;
+    /**
+     * <code>string topic = 2;</code>
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string topic = 2;</code>
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PARTITION_FIELD_NUMBER = 3;
+    private int partition_;
+    /**
+     * <code>int32 partition = 3;</code>
+     * @return The partition.
+     */
+    @java.lang.Override
+    public int getPartition() {
+      return partition_;
+    }
+
+    public static final int OFFSET_FIELD_NUMBER = 4;
+    private long offset_;
+    /**
+     * <code>int64 offset = 4;</code>
+     * @return The offset.
+     */
+    @java.lang.Override
+    public long getOffset() {
+      return offset_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(groupName_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, groupName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
+      }
+      if (partition_ != 0) {
+        output.writeInt32(3, partition_);
+      }
+      if (offset_ != 0L) {
+        output.writeInt64(4, offset_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(groupName_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, groupName_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
+      }
+      if (partition_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, partition_);
+      }
+      if (offset_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, offset_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest other = (com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest) obj;
+
+      if (!getGroupName()
+          .equals(other.getGroupName())) return false;
+      if (!getTopic()
+          .equals(other.getTopic())) return false;
+      if (getPartition()
+          != other.getPartition()) return false;
+      if (getOffset()
+          != other.getOffset()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + GROUPNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getGroupName().hashCode();
+      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getTopic().hashCode();
+      hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+      hash = (53 * hash) + getPartition();
+      hash = (37 * hash) + OFFSET_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getOffset());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     *-----------------提交consumerGroup offset请求-----------------------
+     * </pre>
+     *
+     * Protobuf type {@code SubmitConsumerOffsetRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:SubmitConsumerOffsetRequest)
+        com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest.class, com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        groupName_ = "";
+
+        topic_ = "";
+
+        partition_ = 0;
+
+        offset_ = 0L;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest build() {
+        com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest result = new com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest(this);
+        result.groupName_ = groupName_;
+        result.topic_ = topic_;
+        result.partition_ = partition_;
+        result.offset_ = offset_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest.getDefaultInstance()) return this;
+        if (!other.getGroupName().isEmpty()) {
+          groupName_ = other.groupName_;
+          onChanged();
+        }
+        if (!other.getTopic().isEmpty()) {
+          topic_ = other.topic_;
+          onChanged();
+        }
+        if (other.getPartition() != 0) {
+          setPartition(other.getPartition());
+        }
+        if (other.getOffset() != 0L) {
+          setOffset(other.getOffset());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object groupName_ = "";
+      /**
+       * <code>string groupName = 1;</code>
+       * @return The groupName.
+       */
+      public java.lang.String getGroupName() {
+        java.lang.Object ref = groupName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          groupName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string groupName = 1;</code>
+       * @return The bytes for groupName.
+       */
+      public com.google.protobuf.ByteString
+          getGroupNameBytes() {
+        java.lang.Object ref = groupName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          groupName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string groupName = 1;</code>
+       * @param value The groupName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGroupName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        groupName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string groupName = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGroupName() {
+        
+        groupName_ = getDefaultInstance().getGroupName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string groupName = 1;</code>
+       * @param value The bytes for groupName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGroupNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        groupName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object topic_ = "";
+      /**
+       * <code>string topic = 2;</code>
+       * @return The topic.
+       */
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @return The bytes for topic.
+       */
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @param value The topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopic(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTopic() {
+        
+        topic_ = getDefaultInstance().getTopic();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 2;</code>
+       * @param value The bytes for topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopicBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int partition_ ;
+      /**
+       * <code>int32 partition = 3;</code>
+       * @return The partition.
+       */
+      @java.lang.Override
+      public int getPartition() {
+        return partition_;
+      }
+      /**
+       * <code>int32 partition = 3;</code>
+       * @param value The partition to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPartition(int value) {
+        
+        partition_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 partition = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPartition() {
+        
+        partition_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long offset_ ;
+      /**
+       * <code>int64 offset = 4;</code>
+       * @return The offset.
+       */
+      @java.lang.Override
+      public long getOffset() {
+        return offset_;
+      }
+      /**
+       * <code>int64 offset = 4;</code>
+       * @param value The offset to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOffset(long value) {
+        
+        offset_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 offset = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOffset() {
+        
+        offset_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:SubmitConsumerOffsetRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:SubmitConsumerOffsetRequest)
+    private static final com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SubmitConsumerOffsetRequest>
+        PARSER = new com.google.protobuf.AbstractParser<SubmitConsumerOffsetRequest>() {
+      @java.lang.Override
+      public SubmitConsumerOffsetRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SubmitConsumerOffsetRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SubmitConsumerOffsetRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SubmitConsumerOffsetRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SubmitConsumerOffsetResultOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:SubmitConsumerOffsetResult)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    int getRetCodeValue();
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode();
+
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    java.lang.String getErrorInfo();
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    com.google.protobuf.ByteString
+        getErrorInfoBytes();
+  }
+  /**
+   * Protobuf type {@code SubmitConsumerOffsetResult}
+   */
+  public static final class SubmitConsumerOffsetResult extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:SubmitConsumerOffsetResult)
+      SubmitConsumerOffsetResultOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use SubmitConsumerOffsetResult.newBuilder() to construct.
+    private SubmitConsumerOffsetResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private SubmitConsumerOffsetResult() {
+      retCode_ = 0;
+      errorInfo_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new SubmitConsumerOffsetResult();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SubmitConsumerOffsetResult(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              retCode_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              errorInfo_ = s;
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetResult_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetResult_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult.class, com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult.Builder.class);
+    }
+
+    public static final int RETCODE_FIELD_NUMBER = 1;
+    private int retCode_;
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    @java.lang.Override public int getRetCodeValue() {
+      return retCode_;
+    }
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    @java.lang.Override public com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode() {
+      @SuppressWarnings("deprecation")
+      com.tsingj.sloth.remoting.message.Remoting.RetCode result = com.tsingj.sloth.remoting.message.Remoting.RetCode.valueOf(retCode_);
+      return result == null ? com.tsingj.sloth.remoting.message.Remoting.RetCode.UNRECOGNIZED : result;
+    }
+
+    public static final int ERRORINFO_FIELD_NUMBER = 2;
+    private volatile java.lang.Object errorInfo_;
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    @java.lang.Override
+    public java.lang.String getErrorInfo() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        errorInfo_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getErrorInfoBytes() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorInfo_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.RetCode.SUCCESS.getNumber()) {
+        output.writeEnum(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, errorInfo_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.RetCode.SUCCESS.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, errorInfo_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult other = (com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult) obj;
+
+      if (retCode_ != other.retCode_) return false;
+      if (!getErrorInfo()
+          .equals(other.getErrorInfo())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RETCODE_FIELD_NUMBER;
+      hash = (53 * hash) + retCode_;
+      hash = (37 * hash) + ERRORINFO_FIELD_NUMBER;
+      hash = (53 * hash) + getErrorInfo().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code SubmitConsumerOffsetResult}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:SubmitConsumerOffsetResult)
+        com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResultOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetResult_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetResult_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult.class, com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        retCode_ = 0;
+
+        errorInfo_ = "";
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_SubmitConsumerOffsetResult_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult build() {
+        com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult result = new com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult(this);
+        result.retCode_ = retCode_;
+        result.errorInfo_ = errorInfo_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult.getDefaultInstance()) return this;
+        if (other.retCode_ != 0) {
+          setRetCodeValue(other.getRetCodeValue());
+        }
+        if (!other.getErrorInfo().isEmpty()) {
+          errorInfo_ = other.errorInfo_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int retCode_ = 0;
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return The enum numeric value on the wire for retCode.
+       */
+      @java.lang.Override public int getRetCodeValue() {
+        return retCode_;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @param value The enum numeric value on the wire for retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCodeValue(int value) {
+        
+        retCode_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return The retCode.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode() {
+        @SuppressWarnings("deprecation")
+        com.tsingj.sloth.remoting.message.Remoting.RetCode result = com.tsingj.sloth.remoting.message.Remoting.RetCode.valueOf(retCode_);
+        return result == null ? com.tsingj.sloth.remoting.message.Remoting.RetCode.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @param value The retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCode(com.tsingj.sloth.remoting.message.Remoting.RetCode value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        retCode_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRetCode() {
+        
+        retCode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object errorInfo_ = "";
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The errorInfo.
+       */
+      public java.lang.String getErrorInfo() {
+        java.lang.Object ref = errorInfo_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          errorInfo_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The bytes for errorInfo.
+       */
+      public com.google.protobuf.ByteString
+          getErrorInfoBytes() {
+        java.lang.Object ref = errorInfo_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errorInfo_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfo(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearErrorInfo() {
+        
+        errorInfo_ = getDefaultInstance().getErrorInfo();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The bytes for errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfoBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:SubmitConsumerOffsetResult)
+    }
+
+    // @@protoc_insertion_point(class_scope:SubmitConsumerOffsetResult)
+    private static final com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SubmitConsumerOffsetResult>
+        PARSER = new com.google.protobuf.AbstractParser<SubmitConsumerOffsetResult>() {
+      @java.lang.Override
+      public SubmitConsumerOffsetResult parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SubmitConsumerOffsetResult(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<SubmitConsumerOffsetResult> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SubmitConsumerOffsetResult> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.SubmitConsumerOffsetResult getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4151,15 +10663,50 @@ public final class Remoting {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_HeartbeatRequest_descriptor;
+    internal_static_Notify_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_HeartbeatRequest_fieldAccessorTable;
+      internal_static_Notify_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_HeartbeatResult_descriptor;
+    internal_static_Notify_TopicConsumerPartition_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_HeartbeatResult_fieldAccessorTable;
+      internal_static_Notify_TopicConsumerPartition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_Notify_TopicConsumer_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Notify_TopicConsumer_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ConsumerHeartbeatRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ConsumerHeartbeatRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ConsumerHeartbeatResult_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ConsumerHeartbeatResult_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetConsumerOffsetRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetConsumerOffsetRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetConsumerOffsetResult_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetConsumerOffsetResult_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SubmitConsumerOffsetRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SubmitConsumerOffsetRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_SubmitConsumerOffsetResult_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_SubmitConsumerOffsetResult_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Message_descriptor;
   private static final 
@@ -4189,39 +10736,102 @@ public final class Remoting {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016remoting.proto\" \n\020HeartbeatRequest\022\014\n\004" +
-      "ping\030\001 \001(\t\"\037\n\017HeartbeatResult\022\014\n\004pong\030\001 " +
-      "\001(\t\"\273\001\n\007Message\022\r\n\005topic\030\001 \001(\t\022\021\n\tpartit" +
-      "ion\030\002 \001(\r\022\022\n\nrequest_id\030\003 \001(\t\022,\n\npropert" +
-      "ies\030\004 \003(\0132\030.Message.PropertiesEntry\022\014\n\004b" +
-      "ody\030\005 \001(\014\022\013\n\003ack\030\006 \001(\010\0321\n\017PropertiesEntr" +
-      "y\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\341\001\n\nSe" +
-      "ndResult\022$\n\007retCode\030\001 \001(\0162\023.SendResult.R" +
-      "etCode\022\021\n\terrorInfo\030\002 \001(\t\022*\n\nresultInfo\030" +
-      "\003 \001(\0132\026.SendResult.ResultInfo\032>\n\nResultI" +
-      "nfo\022\r\n\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r\022\016\n" +
-      "\006offset\030\003 \001(\003\".\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n" +
-      "\005ERROR\020\001\022\013\n\007TIMEOUT\020\002B#\n!com.tsingj.slot" +
-      "h.remoting.messageb\006proto3"
+      "\n\016remoting.proto\"\323\002\n\006Notify\022\034\n\005event\030\001 \001" +
+      "(\0162\r.Notify.Event\022.\n\rtopicConsumer\030\002 \001(\013" +
+      "2\025.Notify.TopicConsumerH\000\022@\n\026topicConsum" +
+      "erPartition\030\003 \001(\0132\036.Notify.TopicConsumer" +
+      "PartitionH\000\032I\n\026TopicConsumerPartition\022\r\n" +
+      "\005group\030\001 \001(\t\022\r\n\005topic\030\002 \001(\t\022\021\n\tpartition" +
+      "\030\003 \001(\005\032-\n\rTopicConsumer\022\r\n\005group\030\001 \001(\t\022\r" +
+      "\n\005topic\030\002 \001(\t\"7\n\005Event\022\030\n\024RE_BALANCE_BRO" +
+      "ADCAST\020\000\022\024\n\020CONSUMER_WEEK_UP\020\001B\006\n\004data\"N" +
+      "\n\030ConsumerHeartbeatRequest\022\020\n\010clientId\030\001" +
+      " \001(\t\022\021\n\tgroupName\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\"[" +
+      "\n\027ConsumerHeartbeatResult\022\031\n\007retCode\030\001 \001" +
+      "(\0162\010.RetCode\022\021\n\terrorInfo\030\002 \001(\t\022\022\n\nparti" +
+      "tions\030\003 \003(\005\"O\n\030GetConsumerOffsetRequest\022" +
+      "\021\n\tgroupName\030\001 \001(\t\022\r\n\005topic\030\002 \001(\t\022\021\n\tpar" +
+      "tition\030\003 \001(\005\"W\n\027GetConsumerOffsetResult\022" +
+      "\031\n\007retCode\030\001 \001(\0162\010.RetCode\022\021\n\terrorInfo\030" +
+      "\002 \001(\t\022\016\n\006offset\030\003 \001(\003\"b\n\033SubmitConsumerO" +
+      "ffsetRequest\022\021\n\tgroupName\030\001 \001(\t\022\r\n\005topic" +
+      "\030\002 \001(\t\022\021\n\tpartition\030\003 \001(\005\022\016\n\006offset\030\004 \001(" +
+      "\003\"J\n\032SubmitConsumerOffsetResult\022\031\n\007retCo" +
+      "de\030\001 \001(\0162\010.RetCode\022\021\n\terrorInfo\030\002 \001(\t\"\273\001" +
+      "\n\007Message\022\r\n\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 " +
+      "\001(\r\022\022\n\nrequest_id\030\003 \001(\t\022,\n\nproperties\030\004 " +
+      "\003(\0132\030.Message.PropertiesEntry\022\014\n\004body\030\005 " +
+      "\001(\014\022\013\n\003ack\030\006 \001(\010\0321\n\017PropertiesEntry\022\013\n\003k" +
+      "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\341\001\n\nSendResu" +
+      "lt\022$\n\007retCode\030\001 \001(\0162\023.SendResult.RetCode" +
+      "\022\021\n\terrorInfo\030\002 \001(\t\022*\n\nresultInfo\030\003 \001(\0132" +
+      "\026.SendResult.ResultInfo\032>\n\nResultInfo\022\r\n" +
+      "\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r\022\016\n\006offse" +
+      "t\030\003 \001(\003\".\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n\005ERROR" +
+      "\020\001\022\013\n\007TIMEOUT\020\002*!\n\007RetCode\022\013\n\007SUCCESS\020\000\022" +
+      "\t\n\005ERROR\020\001B#\n!com.tsingj.sloth.remoting." +
+      "messageb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_HeartbeatRequest_descriptor =
+    internal_static_Notify_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_HeartbeatRequest_fieldAccessorTable = new
+    internal_static_Notify_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_HeartbeatRequest_descriptor,
-        new java.lang.String[] { "Ping", });
-    internal_static_HeartbeatResult_descriptor =
+        internal_static_Notify_descriptor,
+        new java.lang.String[] { "Event", "TopicConsumer", "TopicConsumerPartition", "Data", });
+    internal_static_Notify_TopicConsumerPartition_descriptor =
+      internal_static_Notify_descriptor.getNestedTypes().get(0);
+    internal_static_Notify_TopicConsumerPartition_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Notify_TopicConsumerPartition_descriptor,
+        new java.lang.String[] { "Group", "Topic", "Partition", });
+    internal_static_Notify_TopicConsumer_descriptor =
+      internal_static_Notify_descriptor.getNestedTypes().get(1);
+    internal_static_Notify_TopicConsumer_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_Notify_TopicConsumer_descriptor,
+        new java.lang.String[] { "Group", "Topic", });
+    internal_static_ConsumerHeartbeatRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_HeartbeatResult_fieldAccessorTable = new
+    internal_static_ConsumerHeartbeatRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_HeartbeatResult_descriptor,
-        new java.lang.String[] { "Pong", });
-    internal_static_Message_descriptor =
+        internal_static_ConsumerHeartbeatRequest_descriptor,
+        new java.lang.String[] { "ClientId", "GroupName", "Topic", });
+    internal_static_ConsumerHeartbeatResult_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_ConsumerHeartbeatResult_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ConsumerHeartbeatResult_descriptor,
+        new java.lang.String[] { "RetCode", "ErrorInfo", "Partitions", });
+    internal_static_GetConsumerOffsetRequest_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_GetConsumerOffsetRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetConsumerOffsetRequest_descriptor,
+        new java.lang.String[] { "GroupName", "Topic", "Partition", });
+    internal_static_GetConsumerOffsetResult_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_GetConsumerOffsetResult_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetConsumerOffsetResult_descriptor,
+        new java.lang.String[] { "RetCode", "ErrorInfo", "Offset", });
+    internal_static_SubmitConsumerOffsetRequest_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_SubmitConsumerOffsetRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SubmitConsumerOffsetRequest_descriptor,
+        new java.lang.String[] { "GroupName", "Topic", "Partition", "Offset", });
+    internal_static_SubmitConsumerOffsetResult_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_SubmitConsumerOffsetResult_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_SubmitConsumerOffsetResult_descriptor,
+        new java.lang.String[] { "RetCode", "ErrorInfo", });
+    internal_static_Message_descriptor =
+      getDescriptor().getMessageTypes().get(7);
     internal_static_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Message_descriptor,
@@ -4233,7 +10843,7 @@ public final class Remoting {
         internal_static_Message_PropertiesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_SendResult_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_SendResult_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SendResult_descriptor,

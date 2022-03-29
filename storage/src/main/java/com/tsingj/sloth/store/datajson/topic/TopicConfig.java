@@ -1,5 +1,8 @@
 package com.tsingj.sloth.store.datajson.topic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author yanghao
  */
@@ -33,6 +36,16 @@ public class TopicConfig {
 
     public void setPartition(int partition) {
         this.partition = partition;
+    }
+
+
+    public List<Integer> getAllPartitions() {
+        List<Integer> partitions = new ArrayList<>();
+        for (int i = 0; i < this.partition; i++) {
+            int partition = i + 1;
+            partitions.add(partition);
+        }
+        return partitions;
     }
 
 }

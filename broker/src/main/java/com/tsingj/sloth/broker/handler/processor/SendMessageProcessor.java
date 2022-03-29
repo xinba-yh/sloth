@@ -9,6 +9,7 @@ import com.tsingj.sloth.store.datajson.topic.TopicConfig;
 import com.tsingj.sloth.store.datajson.topic.TopicManager;
 import com.tsingj.sloth.store.StorageEngine;
 import com.tsingj.sloth.store.pojo.*;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -20,13 +21,13 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class MessageProcessor implements RemoteRequestProcessor {
+public class SendMessageProcessor implements RemoteRequestProcessor {
 
     private final TopicManager topicManager;
 
     private final StorageEngine storageEngine;
 
-    public MessageProcessor(StorageEngine storageEngine, TopicManager topicManager) {
+    public SendMessageProcessor(StorageEngine storageEngine, TopicManager topicManager) {
         this.storageEngine = storageEngine;
         this.topicManager = topicManager;
     }
@@ -37,7 +38,7 @@ public class MessageProcessor implements RemoteRequestProcessor {
     }
 
     @Override
-    public DataPackage process(DataPackage request) throws Exception {
+    public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
         Remoting.Message msg = Remoting.Message.parseFrom(request.getData());
 
         /*

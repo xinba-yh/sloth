@@ -10,8 +10,12 @@ public class ProtocolConstants {
     public static final byte VERSION = 1;
 
     public static class Command {
-        public static final byte HEARTBEAT = 1;
+        public static final byte PRODUCER_HEARTBEAT = 1;
         public static final byte SEND_MESSAGE = 2;
+        public static final byte CONSUMER_GROUP_HEARTBEAT = 3;
+        public static final byte GET_CONSUMER_GROUP_OFFSET = 4;
+        public static final byte SUBMIT_CONSUMER_GROUP_OFFSET = 5;
+        public static final byte BROKER_NOTIFY = 5;
     }
 
     public static class FieldLength {

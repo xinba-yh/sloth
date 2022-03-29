@@ -7,10 +7,12 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author yanghao
  */
+@Component
 @Slf4j
 @ChannelHandler.Sharable
 public class LiftCycleHandler extends ChannelInboundHandlerAdapter {
@@ -31,13 +33,12 @@ public class LiftCycleHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         log.info("LiftCycle: channel {} inactive.", ctx.channel().id());
-//        super.channelInactive(ctx);
         CommonUtils.closeChannel(ctx.channel(), "channel inactive");
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("LiftCycle: channel {} active.", ctx.channel().id());
+        log.info("LiftCycle: channel {} active.", ctx.channel().id().asLongText());
     }
 
     @Override

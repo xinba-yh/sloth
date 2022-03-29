@@ -1,11 +1,10 @@
 package com.tsingj.sloth.store.datajson;
 
-import com.tsingj.sloth.store.datajson.offset.ConsumerOffsetManager;
+import com.tsingj.sloth.store.datajson.offset.ConsumerGroupOffsetManager;
 import com.tsingj.sloth.store.datajson.topic.TopicManager;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.IntervalTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
@@ -21,21 +20,24 @@ public class DataJsonManager implements SchedulingConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(DataJsonManager.class);
 
-    @Autowired
-    private StorageProperties storageProperties;
+    private final StorageProperties storageProperties;
 
-    @Autowired
-    private TopicManager topicManager;
+    private final TopicManager topicManager;
 
-    @Autowired
-    private ConsumerOffsetManager consumerOffsetManager;
+    private final ConsumerGroupOffsetManager consumerGroupOffsetManager;
+
+    public DataJsonManager(StorageProperties storageProperties, TopicManager topicManager, ConsumerGroupOffsetManager consumerGroupOffsetManager) {
+        this.storageProperties = storageProperties;
+        this.topicManager = topicManager;
+        this.consumerGroupOffsetManager = consumerGroupOffsetManager;
+    }
 
 
     @PostConstruct
     public void init() {
 
         topicManager.load();
-        consumerOffsetManager.load();
+        consumerGroupOffsetManager.load();
 
     }
 
@@ -50,7 +52,7 @@ public class DataJsonManager implements SchedulingConfigurer {
     }
 
     private void consumerOffsetPersistence() {
-        consumerOffsetManager.persist();
+        consumerGroupOffsetManager.persist();
     }
 
 }

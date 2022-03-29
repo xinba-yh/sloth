@@ -11,10 +11,12 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author yanghao
  */
+@Slf4j
 public class SlothClient {
 
     /**
@@ -55,6 +57,7 @@ public class SlothClient {
         try {
             String[] brokerUrlArr = clientProperties.getBrokerUrl().split(":");
             this.channel = bootstrap.connect(brokerUrlArr[0], Integer.parseInt(brokerUrlArr[1])).sync().channel();
+            System.out.println("channelId:" + this.channel.id().asLongText());
         } catch (InterruptedException e) {
             throw new RuntimeException("Init producer client fail!", e);
         }
@@ -70,5 +73,14 @@ public class SlothClient {
         }
     }
 
+    protected Channel getChannel() {
+        if (!this.channel.isActive()) {
+            log.warn("channel unActive! try reconnect!");
+            //重连
+            this.closeConnect();
+            this.initConnect();
+        }
+        return this.channel;
+    }
 
 }

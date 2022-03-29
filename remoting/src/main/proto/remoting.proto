@@ -3,13 +3,86 @@ syntax = "proto3";
 
 option java_package = "com.tsingj.sloth.remoting.message";
 
-message HeartbeatRequest {
-    string ping = 1;
+enum RetCode {
+    SUCCESS = 0;
+    ERROR = 1;
 }
 
-message HeartbeatResult {
-    string pong = 1;
+//-----------------broker-----------------------
+message Notify {
+
+    enum Event {
+        //广播ReBalance事件
+        RE_BALANCE_BROADCAST = 0;
+        //唤醒消费者
+        CONSUMER_WEEK_UP = 1;
+    }
+
+    //weekup 指定topic partition消费者
+    message TopicConsumerPartition {
+        string group = 1;
+        string topic = 2;
+        int32 partition = 3;
+    }
+
+    //通知指定topicConsumer需要重新获取partition进行重平衡
+    message TopicConsumer {
+        string group = 1;
+        string topic = 2;
+    }
+
+    Event event = 1;
+
+    oneof data {
+        TopicConsumer topicConsumer = 2;
+        TopicConsumerPartition topicConsumerPartition = 3;
+    }
+
 }
+
+//-----------------consumer-----------------------
+
+//-----------------consumerGroup client心跳-----------------------
+message ConsumerHeartbeatRequest {
+    string clientId = 1;
+    string groupName = 2;
+    string topic = 3;
+}
+
+message ConsumerHeartbeatResult {
+    RetCode retCode = 1;
+    string errorInfo = 2;
+    repeated int32 partitions = 3;
+}
+
+//-----------------获取当前consumerGroupOffset-----------------------
+message GetConsumerOffsetRequest {
+    string groupName = 1;
+    string topic = 2;
+    int32 partition = 3;
+}
+
+
+message GetConsumerOffsetResult {
+    RetCode retCode = 1;
+    string errorInfo = 2;
+    int64 offset = 3;
+}
+
+//-----------------提交consumerGroup offset请求-----------------------
+message SubmitConsumerOffsetRequest {
+    string groupName = 1;
+    string topic = 2;
+    int32 partition = 3;
+    int64 offset = 4;
+}
+
+message SubmitConsumerOffsetResult {
+    RetCode retCode = 1;
+    string errorInfo = 2;
+}
+
+//-----------------producer-----------------------
 
 message Message {
     string topic = 1;
@@ -35,5 +108,7 @@ message SendResult {
     string errorInfo = 2;
     ResultInfo resultInfo = 3;
 }
+
+
 
 
