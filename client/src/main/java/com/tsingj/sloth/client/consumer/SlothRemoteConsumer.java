@@ -46,7 +46,7 @@ public class SlothRemoteConsumer {
     private String groupName;
 
 
-    public void start() {
+    public void init() {
         this.topic = this.consumerProperties.getTopic();
         this.groupName = this.consumerProperties.getGroupName();
         //1.1、立即发送一次heartbeat，并与建立clientId与channel的绑定关系（client - server）。
@@ -65,7 +65,7 @@ public class SlothRemoteConsumer {
         log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, slothRemoteClient.getClientId(), topicPartitions);
     }
 
-    public void close() {
+    public void destroy() {
         log.info("sloth consumer {} destroy.", this.topic);
     }
 

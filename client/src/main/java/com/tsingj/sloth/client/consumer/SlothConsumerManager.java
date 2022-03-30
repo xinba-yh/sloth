@@ -4,7 +4,6 @@ import com.tsingj.sloth.client.SlothRemoteClient;
 import com.tsingj.sloth.client.springsupport.ConsumerProperties;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.Map;
@@ -27,7 +26,7 @@ public class SlothConsumerManager {
 
     private final static Map<String, SlothRemoteConsumer> SLOTH_CONSUMER_MAP = new ConcurrentHashMap<>();
 
-    private void start() {
+    private void init() {
         Map<String, ConsumerProperties> consumerMap = slothClientProperties.getConsumer();
         if (consumerMap == null || consumerMap.size() == 0) {
             return;
@@ -36,7 +35,7 @@ public class SlothConsumerManager {
             log.info("prepare init consumer {}.", entry.getKey());
             try {
                 SlothRemoteConsumer slothConsumer = new SlothRemoteConsumer(slothClientProperties, entry.getValue(), slothRemoteClient);
-                slothConsumer.start();
+                slothConsumer.init();
                 SLOTH_CONSUMER_MAP.put(entry.getKey(), slothConsumer);
                 log.info("init consumer {} success.", entry.getKey());
             } catch (Throwable e) {
@@ -46,9 +45,9 @@ public class SlothConsumerManager {
         }
     }
 
-    private void close() {
+    private void destroy() {
         for (SlothRemoteConsumer slothConsumer : SLOTH_CONSUMER_MAP.values()) {
-            slothConsumer.close();
+            slothConsumer.destroy();
         }
     }
 

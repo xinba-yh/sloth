@@ -25,21 +25,17 @@ public class SlothConfiguration {
     @Bean(initMethod = "initConnect", destroyMethod = "closeConnect")
     public SlothRemoteClient slothRemoteClient(){
         this.checkClientProperties(slothClientProperties);
-        SlothRemoteClient slothRemoteClient = new SlothRemoteClient(slothClientProperties);
-        return slothRemoteClient;
+        return new SlothRemoteClient(slothClientProperties);
     }
 
     @Bean
     public SlothRemoteProducer slothProducer(SlothRemoteClient slothRemoteClient) {
-        SlothRemoteProducer slothProducer = new SlothRemoteProducer(slothClientProperties,slothRemoteClient);
-        return slothProducer;
+        return new SlothRemoteProducer(slothClientProperties,slothRemoteClient);
     }
 
-//    @ConditionalOnProperty
-    @Bean(initMethod = "start", destroyMethod = "close")
+    @Bean(initMethod = "init", destroyMethod = "destroy")
     public SlothConsumerManager slothConsumerManager(SlothRemoteClient slothRemoteClient) {
-        SlothConsumerManager slothConsumerManager = new SlothConsumerManager(slothClientProperties,slothRemoteClient);
-        return slothConsumerManager;
+        return new SlothConsumerManager(slothClientProperties,slothRemoteClient);
     }
 
     private void checkClientProperties(SlothClientProperties slothClientProperties) {
