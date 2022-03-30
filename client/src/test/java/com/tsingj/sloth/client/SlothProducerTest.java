@@ -1,12 +1,13 @@
 package com.tsingj.sloth.client;
 
 import com.google.protobuf.ByteString;
-import com.tsingj.sloth.client.producer.SlothProducer;
+import com.tsingj.sloth.client.producer.SlothRemoteProducer;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import com.tsingj.sloth.remoting.message.Remoting;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 
@@ -17,15 +18,14 @@ import java.util.concurrent.atomic.AtomicLong;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SlothProducerTest {
 
+    @Autowired
+    private SlothRemoteProducer slothProducer;
+
     /**
      * 1S 10W server收到
      */
     @Test
     public void sendOneWayTest() throws InterruptedException {
-        SlothClientProperties slothClientProperties = new SlothClientProperties();
-        slothClientProperties.setBrokerUrl("127.0.0.1:9000");
-        SlothProducer slothProducer = new SlothProducer(slothClientProperties);
-        slothProducer.start();
 
         AtomicLong ID = new AtomicLong(1);
         int threadCount = 4;
@@ -69,10 +69,6 @@ public class SlothProducerTest {
      */
     @Test
     public void sendSyncResponseTest() throws InterruptedException {
-        SlothClientProperties slothClientProperties = new SlothClientProperties();
-        slothClientProperties.setBrokerUrl("127.0.0.1:9000");
-        SlothProducer slothProducer = new SlothProducer(slothClientProperties);
-        slothProducer.start();
 
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {

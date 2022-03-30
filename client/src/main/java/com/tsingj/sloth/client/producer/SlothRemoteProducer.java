@@ -2,7 +2,7 @@ package com.tsingj.sloth.client.producer;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tsingj.sloth.client.RemoteCorrelationManager;
-import com.tsingj.sloth.client.SlothClient;
+import com.tsingj.sloth.client.SlothRemoteClient;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import com.tsingj.sloth.remoting.ResponseFuture;
 import com.tsingj.sloth.remoting.message.Remoting;
@@ -14,24 +14,17 @@ import lombok.extern.slf4j.Slf4j;
  * @author yanghao
  */
 @Slf4j
-public class SlothProducer extends SlothClient {
+public class SlothRemoteProducer {
 
+    private final SlothRemoteClient slothRemoteClient;
 
-    public SlothProducer(SlothClientProperties clientProperties) {
+    private final SlothClientProperties clientProperties;
+
+    public SlothRemoteProducer(SlothClientProperties clientProperties, SlothRemoteClient slothRemoteClient) {
         this.clientProperties = clientProperties;
-        this.pollName = "sloth-producer";
+        this.slothRemoteClient = slothRemoteClient;
     }
 
-
-    public void start() {
-        this.initConnect();
-        log.info("sloth producer init done.");
-    }
-
-    public void close() {
-        this.closeConnect();
-        log.info("sloth producer destroy.");
-    }
 
     //----------------------------------------------
 
@@ -44,7 +37,7 @@ public class SlothProducer extends SlothClient {
                 .timestamp(System.currentTimeMillis())
                 .data(message.toByteArray())
                 .build();
-        this.channel.writeAndFlush(dataPackage);
+        slothRemoteClient.getChannel().writeAndFlush(dataPackage);
     }
 
     public Remoting.SendResult send(Remoting.Message message) {
@@ -64,7 +57,7 @@ public class SlothProducer extends SlothClient {
                     .build();
 
             //send data
-            this.channel.writeAndFlush(dataPackage);
+            slothRemoteClient.getChannel().writeAndFlush(dataPackage);
 
             DataPackage responseData = responseFuture.waitResponse();
             if (responseData == null) {

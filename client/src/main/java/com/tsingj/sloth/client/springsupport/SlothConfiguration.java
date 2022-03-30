@@ -1,8 +1,8 @@
 package com.tsingj.sloth.client.springsupport;
 
+import com.tsingj.sloth.client.SlothRemoteClient;
 import com.tsingj.sloth.client.consumer.SlothConsumerManager;
-import com.tsingj.sloth.client.producer.SlothProducer;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.tsingj.sloth.client.producer.SlothRemoteProducer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,21 +16,29 @@ import org.springframework.util.Assert;
 @EnableConfigurationProperties(SlothClientProperties.class)
 public class SlothConfiguration {
 
-    @Autowired
-    private SlothClientProperties slothClientProperties;
+    private final SlothClientProperties slothClientProperties;
 
-    @Bean(initMethod = "start", destroyMethod = "close")
-    public SlothProducer slothProducer() {
+    public SlothConfiguration(SlothClientProperties slothClientProperties) {
+        this.slothClientProperties = slothClientProperties;
+    }
+
+    @Bean(initMethod = "initConnect", destroyMethod = "closeConnect")
+    public SlothRemoteClient slothRemoteClient(){
         this.checkClientProperties(slothClientProperties);
-        SlothProducer slothProducer = new SlothProducer(slothClientProperties);
+        SlothRemoteClient slothRemoteClient = new SlothRemoteClient(slothClientProperties);
+        return slothRemoteClient;
+    }
+
+    @Bean
+    public SlothRemoteProducer slothProducer(SlothRemoteClient slothRemoteClient) {
+        SlothRemoteProducer slothProducer = new SlothRemoteProducer(slothClientProperties,slothRemoteClient);
         return slothProducer;
     }
 
 //    @ConditionalOnProperty
     @Bean(initMethod = "start", destroyMethod = "close")
-    public SlothConsumerManager slothConsumerManager() {
-        this.checkClientProperties(slothClientProperties);
-        SlothConsumerManager slothConsumerManager = new SlothConsumerManager(slothClientProperties);
+    public SlothConsumerManager slothConsumerManager(SlothRemoteClient slothRemoteClient) {
+        SlothConsumerManager slothConsumerManager = new SlothConsumerManager(slothClientProperties,slothRemoteClient);
         return slothConsumerManager;
     }
 

@@ -2,7 +2,7 @@ package com.tsingj.sloth.client.consumer;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tsingj.sloth.client.RemoteCorrelationManager;
-import com.tsingj.sloth.client.SlothClient;
+import com.tsingj.sloth.client.SlothRemoteClient;
 import com.tsingj.sloth.client.springsupport.ConsumerProperties;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import com.tsingj.sloth.remoting.ResponseFuture;
@@ -12,7 +12,6 @@ import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -20,14 +19,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author yanghao
  */
 @Slf4j
-public class SlothConsumer extends SlothClient {
+public class SlothRemoteConsumer {
+
+    /**
+     * The rpc client options.
+     */
+    private final SlothClientProperties clientProperties;
 
     private final ConsumerProperties consumerProperties;
 
-    public SlothConsumer(SlothClientProperties clientProperties, ConsumerProperties consumerProperties) {
+    private final SlothRemoteClient slothRemoteClient;
+
+    public SlothRemoteConsumer(SlothClientProperties clientProperties, ConsumerProperties consumerProperties, SlothRemoteClient slothRemoteClient) {
         this.clientProperties = clientProperties;
         this.consumerProperties = consumerProperties;
-        this.pollName = "sloth-producer";
+        this.slothRemoteClient = slothRemoteClient;
     }
 
     /**
@@ -35,24 +41,17 @@ public class SlothConsumer extends SlothClient {
      */
     private final ConcurrentHashMap<Integer, TopicPartitionConsumer> topicPartitionConsumerMap = new ConcurrentHashMap<>();
 
-    /**
-     * 当前channel clientId
-     */
-    private String clientId;
-
     private String topic;
 
     private String groupName;
 
 
     public void start() {
-        this.initConnect();
-        this.clientId = UUID.randomUUID().toString();
         this.topic = this.consumerProperties.getTopic();
         this.groupName = this.consumerProperties.getGroupName();
         //1.1、立即发送一次heartbeat，并与建立clientId与channel的绑定关系（client - server）。
         //1.2、响应分配好的partition
-        List<Integer> topicPartitions = this.heartbeat(groupName, topic, clientId);
+        List<Integer> topicPartitions = this.heartbeat(groupName, topic, slothRemoteClient.getClientId());
         //2、TopicPartitionConsumerManager
         if (topicPartitions != null && topicPartitions.size() > 0) {
             for (Integer topicPartition : topicPartitions) {
@@ -63,11 +62,10 @@ public class SlothConsumer extends SlothClient {
         }
         //3、启动心跳线程
 
-        log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, clientId, topicPartitions);
+        log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, slothRemoteClient.getClientId(), topicPartitions);
     }
 
     public void close() {
-        this.closeConnect();
         log.info("sloth consumer {} destroy.", this.topic);
     }
 
@@ -95,7 +93,7 @@ public class SlothConsumer extends SlothClient {
                     .build();
 
             //send data
-            this.getChannel().writeAndFlush(dataPackage);
+            slothRemoteClient.getChannel().writeAndFlush(dataPackage);
 
             DataPackage responseData = responseFuture.waitResponse();
             if (responseData == null) {
@@ -154,7 +152,7 @@ public class SlothConsumer extends SlothClient {
                     .build();
 
             //send data
-            this.getChannel().writeAndFlush(dataPackage);
+            slothRemoteClient.getChannel().writeAndFlush(dataPackage);
 
             DataPackage responseData = responseFuture.waitResponse();
             if (responseData == null) {

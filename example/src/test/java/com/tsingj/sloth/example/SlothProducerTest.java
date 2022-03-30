@@ -1,7 +1,7 @@
 package com.tsingj.sloth.example;
 
 import com.google.protobuf.ByteString;
-import com.tsingj.sloth.client.producer.SlothProducer;
+import com.tsingj.sloth.client.producer.SlothRemoteProducer;
 import com.tsingj.sloth.remoting.message.Remoting;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class SlothProducerTest {
 
     @Autowired
-    private SlothProducer slothProducer;
+    private SlothRemoteProducer slothProducer;
 
     /**
      * 1S 10W server收到
@@ -61,7 +61,6 @@ public class SlothProducerTest {
             }).start();
         }
         Thread.sleep(10000);
-        slothProducer.close();
     }
 
     /**
@@ -111,7 +110,6 @@ public class SlothProducerTest {
             }).start();
         }
         countDownLatch.await(10, TimeUnit.SECONDS);
-        slothProducer.close();
 
     }
 

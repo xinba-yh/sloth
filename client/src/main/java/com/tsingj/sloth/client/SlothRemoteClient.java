@@ -13,11 +13,13 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.UUID;
+
 /**
  * @author yanghao
  */
 @Slf4j
-public class SlothClient {
+public class SlothRemoteClient {
 
     /**
      * The rpc client options.
@@ -32,12 +34,19 @@ public class SlothClient {
     /**
      * The Constant CLIENT_T_NAME.
      */
-    protected String pollName;
+    protected String pollName = "sloth";
 
 
     protected Channel channel;
 
-    protected void initConnect() {
+    private String clientId;
+
+
+    public SlothRemoteClient(SlothClientProperties clientProperties) {
+        this.clientProperties = clientProperties;
+    }
+
+    public void initConnect() {
         ConnectProperties connectProperties = clientProperties.getConnect();
         if (connectProperties.getIoEventGroupType() == CommonConstants.EventGroupMode.POLL_EVENT_GROUP) {
             this.workerGroup = new NioEventLoopGroup(connectProperties.getWorkGroupThreadSize(),
@@ -57,13 +66,13 @@ public class SlothClient {
         try {
             String[] brokerUrlArr = clientProperties.getBrokerUrl().split(":");
             this.channel = bootstrap.connect(brokerUrlArr[0], Integer.parseInt(brokerUrlArr[1])).sync().channel();
-            System.out.println("channelId:" + this.channel.id().asLongText());
+            this.clientId = UUID.randomUUID().toString();
         } catch (InterruptedException e) {
             throw new RuntimeException("Init producer client fail!", e);
         }
     }
 
-    protected void closeConnect() {
+    public void closeConnect() {
         if (this.workerGroup != null) {
             this.workerGroup.shutdownGracefully();
         }
@@ -73,7 +82,7 @@ public class SlothClient {
         }
     }
 
-    protected Channel getChannel() {
+    public Channel getChannel() {
         if (!this.channel.isActive()) {
             log.warn("channel unActive! try reconnect!");
             //重连
@@ -81,6 +90,10 @@ public class SlothClient {
             this.initConnect();
         }
         return this.channel;
+    }
+
+    public String getClientId(){
+        return this.clientId;
     }
 
 }

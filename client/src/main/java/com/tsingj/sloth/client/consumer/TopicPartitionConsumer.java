@@ -30,7 +30,7 @@ public class TopicPartitionConsumer implements Runnable {
     public void run() {
         try{
             //1、询问broker，应该从哪里开始消费
-            SlothConsumer slothConsumer = SlothConsumerManager.getSlothConsumer(topic);
+            SlothRemoteConsumer slothConsumer = SlothConsumerManager.getSlothConsumer(topic);
             Assert.notNull(slothConsumer, "topic:" + topic + " consumer is null!");
             Long consumerOffset = slothConsumer.getConsumerOffset(groupName, topic, topicPartition);
             //2、开始消费
