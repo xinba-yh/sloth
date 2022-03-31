@@ -39,6 +39,7 @@ public class SendMessageProcessor implements RemoteRequestProcessor {
 
     @Override
     public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
+        log.info("receive SEND_MESSAGE command.");
         Remoting.Message msg = Remoting.Message.parseFrom(request.getData());
 
         /*

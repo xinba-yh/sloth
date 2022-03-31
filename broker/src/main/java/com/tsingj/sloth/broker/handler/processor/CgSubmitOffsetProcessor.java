@@ -36,6 +36,7 @@ public class CgSubmitOffsetProcessor implements RemoteRequestProcessor {
 
     @Override
     public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
+        log.info("receive SUBMIT_CONSUMER_GROUP_OFFSET command.");
         Remoting.SubmitConsumerOffsetRequest submitConsumerOffsetRequest = Remoting.SubmitConsumerOffsetRequest.parseFrom(request.getData());
 
         /*

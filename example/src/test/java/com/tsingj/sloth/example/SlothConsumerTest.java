@@ -23,7 +23,7 @@ public class SlothConsumerTest {
      */
     @Test
     public void consumerTest() throws InterruptedException {
-        Thread.sleep(5000);
+        Thread.sleep(50000);
     }
 
     @Test

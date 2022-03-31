@@ -42,8 +42,8 @@ public class SlothConsumerManager {
                 Class<MessageListener> messageListenerClass = (Class<MessageListener>) Class.forName(listener);
                 MessageListener messageListener = messageListenerClass.newInstance();
                 slothConsumer.registerListener(messageListener);
-                slothConsumer.start();
                 SLOTH_CONSUMER_MAP.put(entry.getKey(), slothConsumer);
+                slothConsumer.start();
                 log.info("init consumer {} success.", entry.getKey());
             } catch (Throwable e) {
                 log.error("init consumer {} error!", entry.getKey(), e);

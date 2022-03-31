@@ -28,7 +28,7 @@ public class SlothProducerTest {
      */
     @Test
     public void sendOneWayTest() throws InterruptedException {
-        int count = 1000;
+        int count = 10;
         AtomicLong ID = new AtomicLong(1);
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
@@ -75,7 +75,7 @@ public class SlothProducerTest {
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 1000;
+                int count = 10;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();

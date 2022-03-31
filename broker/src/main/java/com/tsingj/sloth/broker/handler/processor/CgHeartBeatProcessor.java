@@ -33,6 +33,7 @@ public class CgHeartBeatProcessor implements RemoteRequestProcessor {
 
     @Override
     public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
+        log.info("receive CONSUMER_GROUP_HEARTBEAT command.");
         Remoting.ConsumerHeartbeatRequest consumerHeartbeatRequest = Remoting.ConsumerHeartbeatRequest.parseFrom(request.getData());
         /*
          * check and set default param

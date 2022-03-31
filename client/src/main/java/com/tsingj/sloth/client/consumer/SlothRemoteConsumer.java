@@ -11,8 +11,11 @@ import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.TimerTask;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -32,6 +35,8 @@ public class SlothRemoteConsumer {
 
     private MessageListener messageListener;
 
+    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
+
 
     public SlothRemoteConsumer(SlothClientProperties clientProperties, ConsumerProperties consumerProperties, SlothRemoteClient slothRemoteClient) {
         this.clientProperties = clientProperties;
@@ -48,7 +53,7 @@ public class SlothRemoteConsumer {
 
     private String groupName;
 
-    public void registerListener(MessageListener messageListener){
+    public void registerListener(MessageListener messageListener) {
         this.messageListener = messageListener;
     }
 
@@ -61,29 +66,78 @@ public class SlothRemoteConsumer {
         this.groupName = this.consumerProperties.getGroupName();
         //1.1、立即发送一次heartbeat，并与建立clientId与channel的绑定关系（client - server）。
         //1.2、响应分配好的partition
-        List<Integer> topicPartitions = this.heartbeat(groupName, topic, slothRemoteClient.getClientId());
+        List<Integer> topicPartitions = this.heartbeat();
         //2、TopicPartitionConsumerManager
         if (topicPartitions != null && topicPartitions.size() > 0) {
             //todo 定义max consumer
             for (Integer topicPartition : topicPartitions) {
                 TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.groupName, this.topic, topicPartition);
-                new Thread(topicPartitionConsumer).start();
+                Thread thread = new Thread(topicPartitionConsumer);
+                thread.setName(this.topic + "-" + topicPartition);
+                thread.start();
                 topicPartitionConsumerMap.put(topicPartition, topicPartitionConsumer);
             }
             log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, slothRemoteClient.getClientId(), topicPartitions);
         }
         //3、启动心跳线程
+        executorService.scheduleAtFixedRate(new HeartBeatTimerTask(this.topic), 3000, 3000, TimeUnit.MILLISECONDS);
+
     }
 
     public void destroy() {
         log.info("sloth consumer {} destroy.", this.topic);
         // TODO: 2022/3/31
+        executorService.shutdown();
     }
 
+    @Slf4j
+    public static class HeartBeatTimerTask extends TimerTask {
+
+        private final String topic;
+
+        public HeartBeatTimerTask(String topic) {
+            this.topic = topic;
+        }
+
+        @Override
+        public void run() {
+            SlothRemoteConsumer slothRemoteConsumer = SlothConsumerManager.get(this.topic);
+            List<Integer> shouldConsumerPartitions = slothRemoteConsumer.heartbeat();
+            List<Integer> currentConsumePartitions = slothRemoteConsumer.getCurrentConsumerPartitions();
+            boolean consistence = slothRemoteConsumer.rebalanceCheck(shouldConsumerPartitions, currentConsumePartitions);
+            if (!consistence) {
+                log.info("topic:{} heartbeat, should consume partitions:{}, current consumer partitions:{} inconsistence!", this.topic, shouldConsumerPartitions, slothRemoteConsumer.topicPartitionConsumerMap);
+                slothRemoteConsumer.rebalance(shouldConsumerPartitions,currentConsumePartitions);
+            }
+        }
+
+    }
+
+    private void rebalance(List<Integer> shouldConsumerPartitions, List<Integer> currentConsumePartitions) {
+        //        List<Integer> topicPartitions = this.topicPartitionReBalanceRequest(this.consumerProperties);
+//        Set<Integer> currentTopicPartitions = topicPartitionConsumerMap.keySet();
+        //1.1、获取已经不需要消费的partition。
+
+        //1.2、停止不需要消费的partition
+
+        //2.1、获取缺少消费者的partition
+
+        //2.2、启动消费者线程
+    }
+
+    private boolean rebalanceCheck(List<Integer> shouldConsumerPartitions, List<Integer> currentConsumePartitions) {
+        List<Integer> a = shouldConsumerPartitions.stream().sorted().collect(Collectors.toList());
+        List<Integer> b = currentConsumePartitions.stream().sorted().collect(Collectors.toList());
+        return a.equals(b);
+    }
+
+    private List<Integer> getCurrentConsumerPartitions() {
+        return new ArrayList<>(this.topicPartitionConsumerMap.keySet());
+    }
 
     //----------------------------------------------
 
-    public List<Integer> heartbeat(String groupName, String topic, String clientId) {
+    public List<Integer> heartbeat() {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
         ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
@@ -92,13 +146,14 @@ public class SlothRemoteConsumer {
             Remoting.ConsumerHeartbeatRequest consumerHeartbeatRequest = Remoting.ConsumerHeartbeatRequest.newBuilder()
                     .setGroupName(groupName)
                     .setTopic(topic)
-                    .setClientId(clientId)
+                    .setClientId(slothRemoteClient.getClientId())
                     .build();
             DataPackage dataPackage = DataPackage.builder()
                     .magicCode(ProtocolConstants.MAGIC_CODE)
                     .version(ProtocolConstants.VERSION)
                     .command(ProtocolConstants.Command.CONSUMER_GROUP_HEARTBEAT)
                     .requestType(ProtocolConstants.RequestType.SYNC)
+                    .correlationId(currentCorrelationId)
                     .timestamp(System.currentTimeMillis())
                     .data(consumerHeartbeatRequest.toByteArray())
                     .build();
@@ -129,18 +184,6 @@ public class SlothRemoteConsumer {
         return null;
     }
 
-    private void reBalanceTopicPartition() {
-//        List<Integer> topicPartitions = this.topicPartitionReBalanceRequest(this.consumerProperties);
-//        Set<Integer> currentTopicPartitions = topicPartitionConsumerMap.keySet();
-        //1.1、获取已经不需要消费的partition。
-
-        //1.2、停止不需要消费的partition
-
-        //2.1、获取缺少消费者的partition
-
-        //2.2、启动消费者线程
-
-    }
 
     public Long getConsumerOffset(String groupName, String topic, int topicPartition) {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
@@ -158,6 +201,7 @@ public class SlothRemoteConsumer {
                     .version(ProtocolConstants.VERSION)
                     .command(ProtocolConstants.Command.GET_CONSUMER_GROUP_OFFSET)
                     .requestType(ProtocolConstants.RequestType.SYNC)
+                    .correlationId(currentCorrelationId)
                     .timestamp(System.currentTimeMillis())
                     .data(consumerHeartbeatRequest.toByteArray())
                     .build();
@@ -203,6 +247,7 @@ public class SlothRemoteConsumer {
                     .version(ProtocolConstants.VERSION)
                     .command(ProtocolConstants.Command.GET_MESSAGE)
                     .requestType(ProtocolConstants.RequestType.SYNC)
+                    .correlationId(currentCorrelationId)
                     .timestamp(System.currentTimeMillis())
                     .data(getMessageRequest.toByteArray())
                     .build();
@@ -244,6 +289,7 @@ public class SlothRemoteConsumer {
                     .version(ProtocolConstants.VERSION)
                     .command(ProtocolConstants.Command.SUBMIT_CONSUMER_GROUP_OFFSET)
                     .requestType(ProtocolConstants.RequestType.SYNC)
+                    .correlationId(currentCorrelationId)
                     .timestamp(System.currentTimeMillis())
                     .data(getMessageRequest.toByteArray())
                     .build();

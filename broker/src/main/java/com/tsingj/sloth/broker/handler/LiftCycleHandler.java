@@ -38,7 +38,7 @@ public class LiftCycleHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        log.info("LiftCycle: channel {} active.", ctx.channel().id().asLongText());
+        log.info("LiftCycle: channel {} active.", ctx.channel().id());
     }
 
     @Override
