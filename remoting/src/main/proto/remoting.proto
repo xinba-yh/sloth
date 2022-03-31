@@ -109,6 +109,35 @@ message SendResult {
     ResultInfo resultInfo = 3;
 }
 
+message GetMessageRequest {
+    string topic = 1;
+    uint32 partition = 2;
+    int64 offset = 3;
+}
+
+message GetMessageResult {
+    enum RetCode {
+        FOUND = 0;
+        NOT_FOUND = 1;
+        //非异常类code
+        ERROR = 2;
+    }
+
+    message Message {
+        string topic = 1;
+        uint32 partition = 2;
+        map<string, string> properties = 3;
+        bytes body = 4;
+        int64 offset = 5;
+        int64 storeTimestamp = 6;
+        uint32 version = 7;
+        int32 crc = 8;
+    }
+    RetCode retCode = 1;
+    string errorInfo = 2;
+    Message message = 3;
+
+}
 
 
 

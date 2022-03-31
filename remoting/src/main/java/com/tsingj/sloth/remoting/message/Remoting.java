@@ -10662,6 +10662,3035 @@ public final class Remoting {
 
   }
 
+  public interface GetMessageRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:GetMessageRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string topic = 1;</code>
+     * @return The topic.
+     */
+    java.lang.String getTopic();
+    /**
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+        getTopicBytes();
+
+    /**
+     * <code>uint32 partition = 2;</code>
+     * @return The partition.
+     */
+    int getPartition();
+
+    /**
+     * <code>int64 offset = 3;</code>
+     * @return The offset.
+     */
+    long getOffset();
+  }
+  /**
+   * Protobuf type {@code GetMessageRequest}
+   */
+  public static final class GetMessageRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:GetMessageRequest)
+      GetMessageRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GetMessageRequest.newBuilder() to construct.
+    private GetMessageRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GetMessageRequest() {
+      topic_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GetMessageRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private GetMessageRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              topic_ = s;
+              break;
+            }
+            case 16: {
+
+              partition_ = input.readUInt32();
+              break;
+            }
+            case 24: {
+
+              offset_ = input.readInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest.class, com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest.Builder.class);
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 1;
+    private volatile java.lang.Object topic_;
+    /**
+     * <code>string topic = 1;</code>
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PARTITION_FIELD_NUMBER = 2;
+    private int partition_;
+    /**
+     * <code>uint32 partition = 2;</code>
+     * @return The partition.
+     */
+    @java.lang.Override
+    public int getPartition() {
+      return partition_;
+    }
+
+    public static final int OFFSET_FIELD_NUMBER = 3;
+    private long offset_;
+    /**
+     * <code>int64 offset = 3;</code>
+     * @return The offset.
+     */
+    @java.lang.Override
+    public long getOffset() {
+      return offset_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+      }
+      if (partition_ != 0) {
+        output.writeUInt32(2, partition_);
+      }
+      if (offset_ != 0L) {
+        output.writeInt64(3, offset_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+      }
+      if (partition_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, partition_);
+      }
+      if (offset_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, offset_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest other = (com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest) obj;
+
+      if (!getTopic()
+          .equals(other.getTopic())) return false;
+      if (getPartition()
+          != other.getPartition()) return false;
+      if (getOffset()
+          != other.getOffset()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getTopic().hashCode();
+      hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+      hash = (53 * hash) + getPartition();
+      hash = (37 * hash) + OFFSET_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getOffset());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code GetMessageRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:GetMessageRequest)
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest.class, com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        topic_ = "";
+
+        partition_ = 0;
+
+        offset_ = 0L;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest build() {
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest result = new com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest(this);
+        result.topic_ = topic_;
+        result.partition_ = partition_;
+        result.offset_ = offset_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest.getDefaultInstance()) return this;
+        if (!other.getTopic().isEmpty()) {
+          topic_ = other.topic_;
+          onChanged();
+        }
+        if (other.getPartition() != 0) {
+          setPartition(other.getPartition());
+        }
+        if (other.getOffset() != 0L) {
+          setOffset(other.getOffset());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object topic_ = "";
+      /**
+       * <code>string topic = 1;</code>
+       * @return The topic.
+       */
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @return The bytes for topic.
+       */
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @param value The topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopic(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTopic() {
+        
+        topic_ = getDefaultInstance().getTopic();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @param value The bytes for topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopicBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int partition_ ;
+      /**
+       * <code>uint32 partition = 2;</code>
+       * @return The partition.
+       */
+      @java.lang.Override
+      public int getPartition() {
+        return partition_;
+      }
+      /**
+       * <code>uint32 partition = 2;</code>
+       * @param value The partition to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPartition(int value) {
+        
+        partition_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 partition = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPartition() {
+        
+        partition_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long offset_ ;
+      /**
+       * <code>int64 offset = 3;</code>
+       * @return The offset.
+       */
+      @java.lang.Override
+      public long getOffset() {
+        return offset_;
+      }
+      /**
+       * <code>int64 offset = 3;</code>
+       * @param value The offset to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOffset(long value) {
+        
+        offset_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 offset = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOffset() {
+        
+        offset_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:GetMessageRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:GetMessageRequest)
+    private static final com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GetMessageRequest>
+        PARSER = new com.google.protobuf.AbstractParser<GetMessageRequest>() {
+      @java.lang.Override
+      public GetMessageRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetMessageRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GetMessageRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetMessageRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.GetMessageRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GetMessageResultOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:GetMessageResult)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.GetMessageResult.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    int getRetCodeValue();
+    /**
+     * <code>.GetMessageResult.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode getRetCode();
+
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    java.lang.String getErrorInfo();
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    com.google.protobuf.ByteString
+        getErrorInfoBytes();
+
+    /**
+     * <code>.GetMessageResult.Message message = 3;</code>
+     * @return Whether the message field is set.
+     */
+    boolean hasMessage();
+    /**
+     * <code>.GetMessageResult.Message message = 3;</code>
+     * @return The message.
+     */
+    com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message getMessage();
+    /**
+     * <code>.GetMessageResult.Message message = 3;</code>
+     */
+    com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.MessageOrBuilder getMessageOrBuilder();
+  }
+  /**
+   * Protobuf type {@code GetMessageResult}
+   */
+  public static final class GetMessageResult extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:GetMessageResult)
+      GetMessageResultOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GetMessageResult.newBuilder() to construct.
+    private GetMessageResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GetMessageResult() {
+      retCode_ = 0;
+      errorInfo_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GetMessageResult();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private GetMessageResult(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              retCode_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              errorInfo_ = s;
+              break;
+            }
+            case 26: {
+              com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.Builder subBuilder = null;
+              if (message_ != null) {
+                subBuilder = message_.toBuilder();
+              }
+              message_ = input.readMessage(com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(message_);
+                message_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.class, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code GetMessageResult.RetCode}
+     */
+    public enum RetCode
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>FOUND = 0;</code>
+       */
+      FOUND(0),
+      /**
+       * <code>NOT_FOUND = 1;</code>
+       */
+      NOT_FOUND(1),
+      /**
+       * <pre>
+       *非异常类code
+       * </pre>
+       *
+       * <code>ERROR = 2;</code>
+       */
+      ERROR(2),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>FOUND = 0;</code>
+       */
+      public static final int FOUND_VALUE = 0;
+      /**
+       * <code>NOT_FOUND = 1;</code>
+       */
+      public static final int NOT_FOUND_VALUE = 1;
+      /**
+       * <pre>
+       *非异常类code
+       * </pre>
+       *
+       * <code>ERROR = 2;</code>
+       */
+      public static final int ERROR_VALUE = 2;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static RetCode valueOf(int value) {
+        return forNumber(value);
+      }
+
+      /**
+       * @param value The numeric wire value of the corresponding enum entry.
+       * @return The enum associated with the given numeric wire value.
+       */
+      public static RetCode forNumber(int value) {
+        switch (value) {
+          case 0: return FOUND;
+          case 1: return NOT_FOUND;
+          case 2: return ERROR;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<RetCode>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          RetCode> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<RetCode>() {
+              public RetCode findValueByNumber(int number) {
+                return RetCode.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalStateException(
+              "Can't get the descriptor of an unrecognized enum value.");
+        }
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final RetCode[] VALUES = values();
+
+      public static RetCode valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private RetCode(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:GetMessageResult.RetCode)
+    }
+
+    public interface MessageOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:GetMessageResult.Message)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>string topic = 1;</code>
+       * @return The topic.
+       */
+      java.lang.String getTopic();
+      /**
+       * <code>string topic = 1;</code>
+       * @return The bytes for topic.
+       */
+      com.google.protobuf.ByteString
+          getTopicBytes();
+
+      /**
+       * <code>uint32 partition = 2;</code>
+       * @return The partition.
+       */
+      int getPartition();
+
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+      int getPropertiesCount();
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+      boolean containsProperties(
+          java.lang.String key);
+      /**
+       * Use {@link #getPropertiesMap()} instead.
+       */
+      @java.lang.Deprecated
+      java.util.Map<java.lang.String, java.lang.String>
+      getProperties();
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+      java.util.Map<java.lang.String, java.lang.String>
+      getPropertiesMap();
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+
+      java.lang.String getPropertiesOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue);
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+
+      java.lang.String getPropertiesOrThrow(
+          java.lang.String key);
+
+      /**
+       * <code>bytes body = 4;</code>
+       * @return The body.
+       */
+      com.google.protobuf.ByteString getBody();
+
+      /**
+       * <code>int64 offset = 5;</code>
+       * @return The offset.
+       */
+      long getOffset();
+
+      /**
+       * <code>int64 storeTimestamp = 6;</code>
+       * @return The storeTimestamp.
+       */
+      long getStoreTimestamp();
+
+      /**
+       * <code>uint32 version = 7;</code>
+       * @return The version.
+       */
+      int getVersion();
+
+      /**
+       * <code>int32 crc = 8;</code>
+       * @return The crc.
+       */
+      int getCrc();
+    }
+    /**
+     * Protobuf type {@code GetMessageResult.Message}
+     */
+    public static final class Message extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:GetMessageResult.Message)
+        MessageOrBuilder {
+    private static final long serialVersionUID = 0L;
+      // Use Message.newBuilder() to construct.
+      private Message(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Message() {
+        topic_ = "";
+        body_ = com.google.protobuf.ByteString.EMPTY;
+      }
+
+      @java.lang.Override
+      @SuppressWarnings({"unused"})
+      protected java.lang.Object newInstance(
+          UnusedPrivateParameter unused) {
+        return new Message();
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return this.unknownFields;
+      }
+      private Message(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+
+                topic_ = s;
+                break;
+              }
+              case 16: {
+
+                partition_ = input.readUInt32();
+                break;
+              }
+              case 26: {
+                if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                  properties_ = com.google.protobuf.MapField.newMapField(
+                      PropertiesDefaultEntryHolder.defaultEntry);
+                  mutable_bitField0_ |= 0x00000001;
+                }
+                com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+                properties__ = input.readMessage(
+                    PropertiesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                properties_.getMutableMap().put(
+                    properties__.getKey(), properties__.getValue());
+                break;
+              }
+              case 34: {
+
+                body_ = input.readBytes();
+                break;
+              }
+              case 40: {
+
+                offset_ = input.readInt64();
+                break;
+              }
+              case 48: {
+
+                storeTimestamp_ = input.readInt64();
+                break;
+              }
+              case 56: {
+
+                version_ = input.readUInt32();
+                break;
+              }
+              case 64: {
+
+                crc_ = input.readInt32();
+                break;
+              }
+              default: {
+                if (!parseUnknownField(
+                    input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_Message_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      @java.lang.Override
+      protected com.google.protobuf.MapField internalGetMapField(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetProperties();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_Message_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.class, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.Builder.class);
+      }
+
+      public static final int TOPIC_FIELD_NUMBER = 1;
+      private volatile java.lang.Object topic_;
+      /**
+       * <code>string topic = 1;</code>
+       * @return The topic.
+       */
+      @java.lang.Override
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        }
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @return The bytes for topic.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int PARTITION_FIELD_NUMBER = 2;
+      private int partition_;
+      /**
+       * <code>uint32 partition = 2;</code>
+       * @return The partition.
+       */
+      @java.lang.Override
+      public int getPartition() {
+        return partition_;
+      }
+
+      public static final int PROPERTIES_FIELD_NUMBER = 3;
+      private static final class PropertiesDefaultEntryHolder {
+        static final com.google.protobuf.MapEntry<
+            java.lang.String, java.lang.String> defaultEntry =
+                com.google.protobuf.MapEntry
+                .<java.lang.String, java.lang.String>newDefaultInstance(
+                    com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_Message_PropertiesEntry_descriptor, 
+                    com.google.protobuf.WireFormat.FieldType.STRING,
+                    "",
+                    com.google.protobuf.WireFormat.FieldType.STRING,
+                    "");
+      }
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> properties_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+      internalGetProperties() {
+        if (properties_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              PropertiesDefaultEntryHolder.defaultEntry);
+        }
+        return properties_;
+      }
+
+      public int getPropertiesCount() {
+        return internalGetProperties().getMap().size();
+      }
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+
+      @java.lang.Override
+      public boolean containsProperties(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetProperties().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getPropertiesMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getProperties() {
+        return getPropertiesMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.util.Map<java.lang.String, java.lang.String> getPropertiesMap() {
+        return internalGetProperties().getMap();
+      }
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getPropertiesOrDefault(
+          java.lang.String key,
+          java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetProperties().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;string, string&gt; properties = 3;</code>
+       */
+      @java.lang.Override
+
+      public java.lang.String getPropertiesOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetProperties().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public static final int BODY_FIELD_NUMBER = 4;
+      private com.google.protobuf.ByteString body_;
+      /**
+       * <code>bytes body = 4;</code>
+       * @return The body.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getBody() {
+        return body_;
+      }
+
+      public static final int OFFSET_FIELD_NUMBER = 5;
+      private long offset_;
+      /**
+       * <code>int64 offset = 5;</code>
+       * @return The offset.
+       */
+      @java.lang.Override
+      public long getOffset() {
+        return offset_;
+      }
+
+      public static final int STORETIMESTAMP_FIELD_NUMBER = 6;
+      private long storeTimestamp_;
+      /**
+       * <code>int64 storeTimestamp = 6;</code>
+       * @return The storeTimestamp.
+       */
+      @java.lang.Override
+      public long getStoreTimestamp() {
+        return storeTimestamp_;
+      }
+
+      public static final int VERSION_FIELD_NUMBER = 7;
+      private int version_;
+      /**
+       * <code>uint32 version = 7;</code>
+       * @return The version.
+       */
+      @java.lang.Override
+      public int getVersion() {
+        return version_;
+      }
+
+      public static final int CRC_FIELD_NUMBER = 8;
+      private int crc_;
+      /**
+       * <code>int32 crc = 8;</code>
+       * @return The crc.
+       */
+      @java.lang.Override
+      public int getCrc() {
+        return crc_;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      @java.lang.Override
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      @java.lang.Override
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+          com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+        }
+        if (partition_ != 0) {
+          output.writeUInt32(2, partition_);
+        }
+        com.google.protobuf.GeneratedMessageV3
+          .serializeStringMapTo(
+            output,
+            internalGetProperties(),
+            PropertiesDefaultEntryHolder.defaultEntry,
+            3);
+        if (!body_.isEmpty()) {
+          output.writeBytes(4, body_);
+        }
+        if (offset_ != 0L) {
+          output.writeInt64(5, offset_);
+        }
+        if (storeTimestamp_ != 0L) {
+          output.writeInt64(6, storeTimestamp_);
+        }
+        if (version_ != 0) {
+          output.writeUInt32(7, version_);
+        }
+        if (crc_ != 0) {
+          output.writeInt32(8, crc_);
+        }
+        unknownFields.writeTo(output);
+      }
+
+      @java.lang.Override
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+          size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+        }
+        if (partition_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(2, partition_);
+        }
+        for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+             : internalGetProperties().getMap().entrySet()) {
+          com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+          properties__ = PropertiesDefaultEntryHolder.defaultEntry.newBuilderForType()
+              .setKey(entry.getKey())
+              .setValue(entry.getValue())
+              .build();
+          size += com.google.protobuf.CodedOutputStream
+              .computeMessageSize(3, properties__);
+        }
+        if (!body_.isEmpty()) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(4, body_);
+        }
+        if (offset_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(5, offset_);
+        }
+        if (storeTimestamp_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(6, storeTimestamp_);
+        }
+        if (version_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeUInt32Size(7, version_);
+        }
+        if (crc_ != 0) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(8, crc_);
+        }
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
+        return size;
+      }
+
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message)) {
+          return super.equals(obj);
+        }
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message other = (com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message) obj;
+
+        if (!getTopic()
+            .equals(other.getTopic())) return false;
+        if (getPartition()
+            != other.getPartition()) return false;
+        if (!internalGetProperties().equals(
+            other.internalGetProperties())) return false;
+        if (!getBody()
+            .equals(other.getBody())) return false;
+        if (getOffset()
+            != other.getOffset()) return false;
+        if (getStoreTimestamp()
+            != other.getStoreTimestamp()) return false;
+        if (getVersion()
+            != other.getVersion()) return false;
+        if (getCrc()
+            != other.getCrc()) return false;
+        if (!unknownFields.equals(other.unknownFields)) return false;
+        return true;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+        hash = (53 * hash) + getTopic().hashCode();
+        hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+        hash = (53 * hash) + getPartition();
+        if (!internalGetProperties().getMap().isEmpty()) {
+          hash = (37 * hash) + PROPERTIES_FIELD_NUMBER;
+          hash = (53 * hash) + internalGetProperties().hashCode();
+        }
+        hash = (37 * hash) + BODY_FIELD_NUMBER;
+        hash = (53 * hash) + getBody().hashCode();
+        hash = (37 * hash) + OFFSET_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getOffset());
+        hash = (37 * hash) + STORETIMESTAMP_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getStoreTimestamp());
+        hash = (37 * hash) + VERSION_FIELD_NUMBER;
+        hash = (53 * hash) + getVersion();
+        hash = (37 * hash) + CRC_FIELD_NUMBER;
+        hash = (53 * hash) + getCrc();
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      @java.lang.Override
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      @java.lang.Override
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code GetMessageResult.Message}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:GetMessageResult.Message)
+          com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.MessageOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_Message_descriptor;
+        }
+
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMapField(
+            int number) {
+          switch (number) {
+            case 3:
+              return internalGetProperties();
+            default:
+              throw new RuntimeException(
+                  "Invalid map field number: " + number);
+          }
+        }
+        @SuppressWarnings({"rawtypes"})
+        protected com.google.protobuf.MapField internalGetMutableMapField(
+            int number) {
+          switch (number) {
+            case 3:
+              return internalGetMutableProperties();
+            default:
+              throw new RuntimeException(
+                  "Invalid map field number: " + number);
+          }
+        }
+        @java.lang.Override
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_Message_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.class, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.Builder.class);
+        }
+
+        // Construct using com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        @java.lang.Override
+        public Builder clear() {
+          super.clear();
+          topic_ = "";
+
+          partition_ = 0;
+
+          internalGetMutableProperties().clear();
+          body_ = com.google.protobuf.ByteString.EMPTY;
+
+          offset_ = 0L;
+
+          storeTimestamp_ = 0L;
+
+          version_ = 0;
+
+          crc_ = 0;
+
+          return this;
+        }
+
+        @java.lang.Override
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_Message_descriptor;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message getDefaultInstanceForType() {
+          return com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.getDefaultInstance();
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message build() {
+          com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        @java.lang.Override
+        public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message buildPartial() {
+          com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message result = new com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message(this);
+          int from_bitField0_ = bitField0_;
+          result.topic_ = topic_;
+          result.partition_ = partition_;
+          result.properties_ = internalGetProperties();
+          result.properties_.makeImmutable();
+          result.body_ = body_;
+          result.offset_ = offset_;
+          result.storeTimestamp_ = storeTimestamp_;
+          result.version_ = version_;
+          result.crc_ = crc_;
+          onBuilt();
+          return result;
+        }
+
+        @java.lang.Override
+        public Builder clone() {
+          return super.clone();
+        }
+        @java.lang.Override
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.setField(field, value);
+        }
+        @java.lang.Override
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return super.clearField(field);
+        }
+        @java.lang.Override
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return super.clearOneof(oneof);
+        }
+        @java.lang.Override
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, java.lang.Object value) {
+          return super.setRepeatedField(field, index, value);
+        }
+        @java.lang.Override
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            java.lang.Object value) {
+          return super.addRepeatedField(field, value);
+        }
+        @java.lang.Override
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message) {
+            return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message other) {
+          if (other == com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.getDefaultInstance()) return this;
+          if (!other.getTopic().isEmpty()) {
+            topic_ = other.topic_;
+            onChanged();
+          }
+          if (other.getPartition() != 0) {
+            setPartition(other.getPartition());
+          }
+          internalGetMutableProperties().mergeFrom(
+              other.internalGetProperties());
+          if (other.getBody() != com.google.protobuf.ByteString.EMPTY) {
+            setBody(other.getBody());
+          }
+          if (other.getOffset() != 0L) {
+            setOffset(other.getOffset());
+          }
+          if (other.getStoreTimestamp() != 0L) {
+            setStoreTimestamp(other.getStoreTimestamp());
+          }
+          if (other.getVersion() != 0) {
+            setVersion(other.getVersion());
+          }
+          if (other.getCrc() != 0) {
+            setCrc(other.getCrc());
+          }
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
+          return this;
+        }
+
+        @java.lang.Override
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        @java.lang.Override
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        private java.lang.Object topic_ = "";
+        /**
+         * <code>string topic = 1;</code>
+         * @return The topic.
+         */
+        public java.lang.String getTopic() {
+          java.lang.Object ref = topic_;
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            topic_ = s;
+            return s;
+          } else {
+            return (java.lang.String) ref;
+          }
+        }
+        /**
+         * <code>string topic = 1;</code>
+         * @return The bytes for topic.
+         */
+        public com.google.protobuf.ByteString
+            getTopicBytes() {
+          java.lang.Object ref = topic_;
+          if (ref instanceof String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            topic_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+        /**
+         * <code>string topic = 1;</code>
+         * @param value The topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopic(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          topic_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string topic = 1;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearTopic() {
+          
+          topic_ = getDefaultInstance().getTopic();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>string topic = 1;</code>
+         * @param value The bytes for topic to set.
+         * @return This builder for chaining.
+         */
+        public Builder setTopicBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+          
+          topic_ = value;
+          onChanged();
+          return this;
+        }
+
+        private int partition_ ;
+        /**
+         * <code>uint32 partition = 2;</code>
+         * @return The partition.
+         */
+        @java.lang.Override
+        public int getPartition() {
+          return partition_;
+        }
+        /**
+         * <code>uint32 partition = 2;</code>
+         * @param value The partition to set.
+         * @return This builder for chaining.
+         */
+        public Builder setPartition(int value) {
+          
+          partition_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>uint32 partition = 2;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearPartition() {
+          
+          partition_ = 0;
+          onChanged();
+          return this;
+        }
+
+        private com.google.protobuf.MapField<
+            java.lang.String, java.lang.String> properties_;
+        private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+        internalGetProperties() {
+          if (properties_ == null) {
+            return com.google.protobuf.MapField.emptyMapField(
+                PropertiesDefaultEntryHolder.defaultEntry);
+          }
+          return properties_;
+        }
+        private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+        internalGetMutableProperties() {
+          onChanged();;
+          if (properties_ == null) {
+            properties_ = com.google.protobuf.MapField.newMapField(
+                PropertiesDefaultEntryHolder.defaultEntry);
+          }
+          if (!properties_.isMutable()) {
+            properties_ = properties_.copy();
+          }
+          return properties_;
+        }
+
+        public int getPropertiesCount() {
+          return internalGetProperties().getMap().size();
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 3;</code>
+         */
+
+        @java.lang.Override
+        public boolean containsProperties(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          return internalGetProperties().getMap().containsKey(key);
+        }
+        /**
+         * Use {@link #getPropertiesMap()} instead.
+         */
+        @java.lang.Override
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, java.lang.String> getProperties() {
+          return getPropertiesMap();
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 3;</code>
+         */
+        @java.lang.Override
+
+        public java.util.Map<java.lang.String, java.lang.String> getPropertiesMap() {
+          return internalGetProperties().getMap();
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 3;</code>
+         */
+        @java.lang.Override
+
+        public java.lang.String getPropertiesOrDefault(
+            java.lang.String key,
+            java.lang.String defaultValue) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          java.util.Map<java.lang.String, java.lang.String> map =
+              internalGetProperties().getMap();
+          return map.containsKey(key) ? map.get(key) : defaultValue;
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 3;</code>
+         */
+        @java.lang.Override
+
+        public java.lang.String getPropertiesOrThrow(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          java.util.Map<java.lang.String, java.lang.String> map =
+              internalGetProperties().getMap();
+          if (!map.containsKey(key)) {
+            throw new java.lang.IllegalArgumentException();
+          }
+          return map.get(key);
+        }
+
+        public Builder clearProperties() {
+          internalGetMutableProperties().getMutableMap()
+              .clear();
+          return this;
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 3;</code>
+         */
+
+        public Builder removeProperties(
+            java.lang.String key) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          internalGetMutableProperties().getMutableMap()
+              .remove(key);
+          return this;
+        }
+        /**
+         * Use alternate mutation accessors instead.
+         */
+        @java.lang.Deprecated
+        public java.util.Map<java.lang.String, java.lang.String>
+        getMutableProperties() {
+          return internalGetMutableProperties().getMutableMap();
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 3;</code>
+         */
+        public Builder putProperties(
+            java.lang.String key,
+            java.lang.String value) {
+          if (key == null) { throw new NullPointerException("map key"); }
+          if (value == null) {
+  throw new NullPointerException("map value");
+}
+
+          internalGetMutableProperties().getMutableMap()
+              .put(key, value);
+          return this;
+        }
+        /**
+         * <code>map&lt;string, string&gt; properties = 3;</code>
+         */
+
+        public Builder putAllProperties(
+            java.util.Map<java.lang.String, java.lang.String> values) {
+          internalGetMutableProperties().getMutableMap()
+              .putAll(values);
+          return this;
+        }
+
+        private com.google.protobuf.ByteString body_ = com.google.protobuf.ByteString.EMPTY;
+        /**
+         * <code>bytes body = 4;</code>
+         * @return The body.
+         */
+        @java.lang.Override
+        public com.google.protobuf.ByteString getBody() {
+          return body_;
+        }
+        /**
+         * <code>bytes body = 4;</code>
+         * @param value The body to set.
+         * @return This builder for chaining.
+         */
+        public Builder setBody(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  
+          body_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>bytes body = 4;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearBody() {
+          
+          body_ = getDefaultInstance().getBody();
+          onChanged();
+          return this;
+        }
+
+        private long offset_ ;
+        /**
+         * <code>int64 offset = 5;</code>
+         * @return The offset.
+         */
+        @java.lang.Override
+        public long getOffset() {
+          return offset_;
+        }
+        /**
+         * <code>int64 offset = 5;</code>
+         * @param value The offset to set.
+         * @return This builder for chaining.
+         */
+        public Builder setOffset(long value) {
+          
+          offset_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int64 offset = 5;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearOffset() {
+          
+          offset_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private long storeTimestamp_ ;
+        /**
+         * <code>int64 storeTimestamp = 6;</code>
+         * @return The storeTimestamp.
+         */
+        @java.lang.Override
+        public long getStoreTimestamp() {
+          return storeTimestamp_;
+        }
+        /**
+         * <code>int64 storeTimestamp = 6;</code>
+         * @param value The storeTimestamp to set.
+         * @return This builder for chaining.
+         */
+        public Builder setStoreTimestamp(long value) {
+          
+          storeTimestamp_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int64 storeTimestamp = 6;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearStoreTimestamp() {
+          
+          storeTimestamp_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private int version_ ;
+        /**
+         * <code>uint32 version = 7;</code>
+         * @return The version.
+         */
+        @java.lang.Override
+        public int getVersion() {
+          return version_;
+        }
+        /**
+         * <code>uint32 version = 7;</code>
+         * @param value The version to set.
+         * @return This builder for chaining.
+         */
+        public Builder setVersion(int value) {
+          
+          version_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>uint32 version = 7;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearVersion() {
+          
+          version_ = 0;
+          onChanged();
+          return this;
+        }
+
+        private int crc_ ;
+        /**
+         * <code>int32 crc = 8;</code>
+         * @return The crc.
+         */
+        @java.lang.Override
+        public int getCrc() {
+          return crc_;
+        }
+        /**
+         * <code>int32 crc = 8;</code>
+         * @param value The crc to set.
+         * @return This builder for chaining.
+         */
+        public Builder setCrc(int value) {
+          
+          crc_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>int32 crc = 8;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearCrc() {
+          
+          crc_ = 0;
+          onChanged();
+          return this;
+        }
+        @java.lang.Override
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.setUnknownFields(unknownFields);
+        }
+
+        @java.lang.Override
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return super.mergeUnknownFields(unknownFields);
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:GetMessageResult.Message)
+      }
+
+      // @@protoc_insertion_point(class_scope:GetMessageResult.Message)
+      private static final com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message();
+      }
+
+      public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Message>
+          PARSER = new com.google.protobuf.AbstractParser<Message>() {
+        @java.lang.Override
+        public Message parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Message(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<Message> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Message> getParserForType() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    public static final int RETCODE_FIELD_NUMBER = 1;
+    private int retCode_;
+    /**
+     * <code>.GetMessageResult.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    @java.lang.Override public int getRetCodeValue() {
+      return retCode_;
+    }
+    /**
+     * <code>.GetMessageResult.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    @java.lang.Override public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode getRetCode() {
+      @SuppressWarnings("deprecation")
+      com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode result = com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode.valueOf(retCode_);
+      return result == null ? com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode.UNRECOGNIZED : result;
+    }
+
+    public static final int ERRORINFO_FIELD_NUMBER = 2;
+    private volatile java.lang.Object errorInfo_;
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    @java.lang.Override
+    public java.lang.String getErrorInfo() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        errorInfo_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getErrorInfoBytes() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorInfo_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 3;
+    private com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message message_;
+    /**
+     * <code>.GetMessageResult.Message message = 3;</code>
+     * @return Whether the message field is set.
+     */
+    @java.lang.Override
+    public boolean hasMessage() {
+      return message_ != null;
+    }
+    /**
+     * <code>.GetMessageResult.Message message = 3;</code>
+     * @return The message.
+     */
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message getMessage() {
+      return message_ == null ? com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.getDefaultInstance() : message_;
+    }
+    /**
+     * <code>.GetMessageResult.Message message = 3;</code>
+     */
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.MessageOrBuilder getMessageOrBuilder() {
+      return getMessage();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode.FOUND.getNumber()) {
+        output.writeEnum(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, errorInfo_);
+      }
+      if (message_ != null) {
+        output.writeMessage(3, getMessage());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode.FOUND.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, errorInfo_);
+      }
+      if (message_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getMessage());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.GetMessageResult)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.GetMessageResult other = (com.tsingj.sloth.remoting.message.Remoting.GetMessageResult) obj;
+
+      if (retCode_ != other.retCode_) return false;
+      if (!getErrorInfo()
+          .equals(other.getErrorInfo())) return false;
+      if (hasMessage() != other.hasMessage()) return false;
+      if (hasMessage()) {
+        if (!getMessage()
+            .equals(other.getMessage())) return false;
+      }
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RETCODE_FIELD_NUMBER;
+      hash = (53 * hash) + retCode_;
+      hash = (37 * hash) + ERRORINFO_FIELD_NUMBER;
+      hash = (53 * hash) + getErrorInfo().hashCode();
+      if (hasMessage()) {
+        hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+        hash = (53 * hash) + getMessage().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.GetMessageResult prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code GetMessageResult}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:GetMessageResult)
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageResultOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.class, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        retCode_ = 0;
+
+        errorInfo_ = "";
+
+        if (messageBuilder_ == null) {
+          message_ = null;
+        } else {
+          message_ = null;
+          messageBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetMessageResult_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult build() {
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageResult result = new com.tsingj.sloth.remoting.message.Remoting.GetMessageResult(this);
+        result.retCode_ = retCode_;
+        result.errorInfo_ = errorInfo_;
+        if (messageBuilder_ == null) {
+          result.message_ = message_;
+        } else {
+          result.message_ = messageBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.GetMessageResult) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.GetMessageResult)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.GetMessageResult other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.getDefaultInstance()) return this;
+        if (other.retCode_ != 0) {
+          setRetCodeValue(other.getRetCodeValue());
+        }
+        if (!other.getErrorInfo().isEmpty()) {
+          errorInfo_ = other.errorInfo_;
+          onChanged();
+        }
+        if (other.hasMessage()) {
+          mergeMessage(other.getMessage());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageResult parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.GetMessageResult) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int retCode_ = 0;
+      /**
+       * <code>.GetMessageResult.RetCode retCode = 1;</code>
+       * @return The enum numeric value on the wire for retCode.
+       */
+      @java.lang.Override public int getRetCodeValue() {
+        return retCode_;
+      }
+      /**
+       * <code>.GetMessageResult.RetCode retCode = 1;</code>
+       * @param value The enum numeric value on the wire for retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCodeValue(int value) {
+        
+        retCode_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.GetMessageResult.RetCode retCode = 1;</code>
+       * @return The retCode.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode getRetCode() {
+        @SuppressWarnings("deprecation")
+        com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode result = com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode.valueOf(retCode_);
+        return result == null ? com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.GetMessageResult.RetCode retCode = 1;</code>
+       * @param value The retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCode(com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.RetCode value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        retCode_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.GetMessageResult.RetCode retCode = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRetCode() {
+        
+        retCode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object errorInfo_ = "";
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The errorInfo.
+       */
+      public java.lang.String getErrorInfo() {
+        java.lang.Object ref = errorInfo_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          errorInfo_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The bytes for errorInfo.
+       */
+      public com.google.protobuf.ByteString
+          getErrorInfoBytes() {
+        java.lang.Object ref = errorInfo_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errorInfo_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfo(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearErrorInfo() {
+        
+        errorInfo_ = getDefaultInstance().getErrorInfo();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The bytes for errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfoBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message message_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.Builder, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.MessageOrBuilder> messageBuilder_;
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       * @return Whether the message field is set.
+       */
+      public boolean hasMessage() {
+        return messageBuilder_ != null || message_ != null;
+      }
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       * @return The message.
+       */
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message getMessage() {
+        if (messageBuilder_ == null) {
+          return message_ == null ? com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.getDefaultInstance() : message_;
+        } else {
+          return messageBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       */
+      public Builder setMessage(com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message value) {
+        if (messageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          message_ = value;
+          onChanged();
+        } else {
+          messageBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       */
+      public Builder setMessage(
+          com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.Builder builderForValue) {
+        if (messageBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          messageBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       */
+      public Builder mergeMessage(com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message value) {
+        if (messageBuilder_ == null) {
+          if (message_ != null) {
+            message_ =
+              com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.newBuilder(message_).mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          messageBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       */
+      public Builder clearMessage() {
+        if (messageBuilder_ == null) {
+          message_ = null;
+          onChanged();
+        } else {
+          message_ = null;
+          messageBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       */
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.Builder getMessageBuilder() {
+        
+        onChanged();
+        return getMessageFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       */
+      public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.MessageOrBuilder getMessageOrBuilder() {
+        if (messageBuilder_ != null) {
+          return messageBuilder_.getMessageOrBuilder();
+        } else {
+          return message_ == null ?
+              com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.getDefaultInstance() : message_;
+        }
+      }
+      /**
+       * <code>.GetMessageResult.Message message = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.Builder, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.MessageOrBuilder> 
+          getMessageFieldBuilder() {
+        if (messageBuilder_ == null) {
+          messageBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.Message.Builder, com.tsingj.sloth.remoting.message.Remoting.GetMessageResult.MessageOrBuilder>(
+                  getMessage(),
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        return messageBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:GetMessageResult)
+    }
+
+    // @@protoc_insertion_point(class_scope:GetMessageResult)
+    private static final com.tsingj.sloth.remoting.message.Remoting.GetMessageResult DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.GetMessageResult();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetMessageResult getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GetMessageResult>
+        PARSER = new com.google.protobuf.AbstractParser<GetMessageResult>() {
+      @java.lang.Override
+      public GetMessageResult parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetMessageResult(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GetMessageResult> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetMessageResult> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.GetMessageResult getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Notify_descriptor;
   private static final 
@@ -10727,6 +13756,26 @@ public final class Remoting {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_SendResult_ResultInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetMessageRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetMessageRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetMessageResult_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetMessageResult_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetMessageResult_Message_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetMessageResult_Message_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetMessageResult_Message_PropertiesEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetMessageResult_Message_PropertiesEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -10768,9 +13817,21 @@ public final class Remoting {
       "\026.SendResult.ResultInfo\032>\n\nResultInfo\022\r\n" +
       "\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r\022\016\n\006offse" +
       "t\030\003 \001(\003\".\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n\005ERROR" +
-      "\020\001\022\013\n\007TIMEOUT\020\002*!\n\007RetCode\022\013\n\007SUCCESS\020\000\022" +
-      "\t\n\005ERROR\020\001B#\n!com.tsingj.sloth.remoting." +
-      "messageb\006proto3"
+      "\020\001\022\013\n\007TIMEOUT\020\002\"E\n\021GetMessageRequest\022\r\n\005" +
+      "topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r\022\016\n\006offset" +
+      "\030\003 \001(\003\"\241\003\n\020GetMessageResult\022*\n\007retCode\030\001" +
+      " \001(\0162\031.GetMessageResult.RetCode\022\021\n\terror" +
+      "Info\030\002 \001(\t\022*\n\007message\030\003 \001(\0132\031.GetMessage" +
+      "Result.Message\032\361\001\n\007Message\022\r\n\005topic\030\001 \001(" +
+      "\t\022\021\n\tpartition\030\002 \001(\r\022=\n\nproperties\030\003 \003(\013" +
+      "2).GetMessageResult.Message.PropertiesEn" +
+      "try\022\014\n\004body\030\004 \001(\014\022\016\n\006offset\030\005 \001(\003\022\026\n\016sto" +
+      "reTimestamp\030\006 \001(\003\022\017\n\007version\030\007 \001(\r\022\013\n\003cr" +
+      "c\030\010 \001(\005\0321\n\017PropertiesEntry\022\013\n\003key\030\001 \001(\t\022" +
+      "\r\n\005value\030\002 \001(\t:\0028\001\".\n\007RetCode\022\t\n\005FOUND\020\000" +
+      "\022\r\n\tNOT_FOUND\020\001\022\t\n\005ERROR\020\002*!\n\007RetCode\022\013\n" +
+      "\007SUCCESS\020\000\022\t\n\005ERROR\020\001B#\n!com.tsingj.slot" +
+      "h.remoting.messageb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10854,6 +13915,30 @@ public final class Remoting {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_SendResult_ResultInfo_descriptor,
         new java.lang.String[] { "Topic", "Partition", "Offset", });
+    internal_static_GetMessageRequest_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_GetMessageRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetMessageRequest_descriptor,
+        new java.lang.String[] { "Topic", "Partition", "Offset", });
+    internal_static_GetMessageResult_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_GetMessageResult_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetMessageResult_descriptor,
+        new java.lang.String[] { "RetCode", "ErrorInfo", "Message", });
+    internal_static_GetMessageResult_Message_descriptor =
+      internal_static_GetMessageResult_descriptor.getNestedTypes().get(0);
+    internal_static_GetMessageResult_Message_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetMessageResult_Message_descriptor,
+        new java.lang.String[] { "Topic", "Partition", "Properties", "Body", "Offset", "StoreTimestamp", "Version", "Crc", });
+    internal_static_GetMessageResult_Message_PropertiesEntry_descriptor =
+      internal_static_GetMessageResult_Message_descriptor.getNestedTypes().get(0);
+    internal_static_GetMessageResult_Message_PropertiesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetMessageResult_Message_PropertiesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

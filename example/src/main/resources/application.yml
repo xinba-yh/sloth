@@ -11,6 +11,7 @@ spring:
         topic: test-topic
         tag: aaa
         groupName: test-topic-group
+        listener: com.tsingj.sloth.example.listener.MessageOrderedListener
 logging:
   level:
     com.tsingj.sloth: info

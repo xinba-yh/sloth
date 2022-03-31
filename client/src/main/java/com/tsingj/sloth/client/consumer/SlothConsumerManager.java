@@ -4,6 +4,8 @@ import com.tsingj.sloth.client.SlothRemoteClient;
 import com.tsingj.sloth.client.springsupport.ConsumerProperties;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.ReflectUtils;
+import org.springframework.util.ReflectionUtils;
 
 
 import java.util.Map;
@@ -34,8 +36,13 @@ public class SlothConsumerManager {
         for (Map.Entry<String, ConsumerProperties> entry : consumerMap.entrySet()) {
             log.info("prepare init consumer {}.", entry.getKey());
             try {
-                SlothRemoteConsumer slothConsumer = new SlothRemoteConsumer(slothClientProperties, entry.getValue(), slothRemoteClient);
-                slothConsumer.init();
+                ConsumerProperties consumerProperties = entry.getValue();
+                SlothRemoteConsumer slothConsumer = new SlothRemoteConsumer(slothClientProperties, consumerProperties, slothRemoteClient);
+                String listener = consumerProperties.getListener();
+                Class<MessageListener> messageListenerClass = (Class<MessageListener>) Class.forName(listener);
+                MessageListener messageListener = messageListenerClass.newInstance();
+                slothConsumer.registerListener(messageListener);
+                slothConsumer.start();
                 SLOTH_CONSUMER_MAP.put(entry.getKey(), slothConsumer);
                 log.info("init consumer {} success.", entry.getKey());
             } catch (Throwable e) {
@@ -51,7 +58,7 @@ public class SlothConsumerManager {
         }
     }
 
-    public static SlothRemoteConsumer getSlothConsumer(String topic) {
+    public static SlothRemoteConsumer get(String topic) {
         return SLOTH_CONSUMER_MAP.get(topic);
     }
 

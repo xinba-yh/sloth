@@ -24,7 +24,11 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
                     break;
 
                 case ProtocolConstants.Command.SEND_MESSAGE:
-                    this.processMessage(ctx, msg);
+                    this.processSendMessage(ctx, msg);
+                    break;
+
+                case ProtocolConstants.Command.GET_MESSAGE:
+                    this.processGetMessage(ctx, msg);
                     break;
 
                 case ProtocolConstants.Command.CONSUMER_GROUP_HEARTBEAT:
@@ -60,8 +64,7 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
         }
     }
 
-
-    private void processMessage(ChannelHandlerContext ctx, DataPackage request) throws Exception {
+    private void processSendMessage(ChannelHandlerContext ctx, DataPackage request) throws Exception {
         DataPackage response;
         if (request.getRequestType() == ProtocolConstants.RequestType.ONE_WAY) {
             Remoting.Message message = Remoting.Message.parseFrom(request.getData());
@@ -78,6 +81,11 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
             response = RemoteRequestProcessorSelector.select(ProtocolConstants.Command.SEND_MESSAGE).process(request, ctx);
             ctx.channel().writeAndFlush(response);
         }
+    }
+
+    private void processGetMessage(ChannelHandlerContext ctx, DataPackage request) throws Exception {
+        DataPackage response = RemoteRequestProcessorSelector.select(ProtocolConstants.Command.GET_MESSAGE).process(request, ctx);
+        ctx.channel().writeAndFlush(response);
     }
 
 

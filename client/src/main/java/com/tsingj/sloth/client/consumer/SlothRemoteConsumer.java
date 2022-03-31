@@ -30,6 +30,9 @@ public class SlothRemoteConsumer {
 
     private final SlothRemoteClient slothRemoteClient;
 
+    private MessageListener messageListener;
+
+
     public SlothRemoteConsumer(SlothClientProperties clientProperties, ConsumerProperties consumerProperties, SlothRemoteClient slothRemoteClient) {
         this.clientProperties = clientProperties;
         this.consumerProperties = consumerProperties;
@@ -45,8 +48,15 @@ public class SlothRemoteConsumer {
 
     private String groupName;
 
+    public void registerListener(MessageListener messageListener){
+        this.messageListener = messageListener;
+    }
 
-    public void init() {
+    public MessageListener getMessageListener() {
+        return messageListener;
+    }
+
+    public void start() {
         this.topic = this.consumerProperties.getTopic();
         this.groupName = this.consumerProperties.getGroupName();
         //1.1、立即发送一次heartbeat，并与建立clientId与channel的绑定关系（client - server）。
@@ -54,19 +64,20 @@ public class SlothRemoteConsumer {
         List<Integer> topicPartitions = this.heartbeat(groupName, topic, slothRemoteClient.getClientId());
         //2、TopicPartitionConsumerManager
         if (topicPartitions != null && topicPartitions.size() > 0) {
+            //todo 定义max consumer
             for (Integer topicPartition : topicPartitions) {
                 TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.groupName, this.topic, topicPartition);
                 new Thread(topicPartitionConsumer).start();
                 topicPartitionConsumerMap.put(topicPartition, topicPartitionConsumer);
             }
+            log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, slothRemoteClient.getClientId(), topicPartitions);
         }
         //3、启动心跳线程
-
-        log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, slothRemoteClient.getClientId(), topicPartitions);
     }
 
     public void destroy() {
         log.info("sloth consumer {} destroy.", this.topic);
+        // TODO: 2022/3/31
     }
 
 
@@ -176,12 +187,88 @@ public class SlothRemoteConsumer {
         return null;
     }
 
-    public void consumerMessage(String groupName, String topic, long offset) {
+    public Remoting.GetMessageResult fetchMessage(String topic, int partition, long offset) {
+        long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        //add 关联关系，handler或者超时的定时任务将会清理。
+        RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
+        try {
+            Remoting.GetMessageRequest getMessageRequest = Remoting.GetMessageRequest.newBuilder()
+                    .setTopic(topic)
+                    .setPartition(partition)
+                    .setOffset(offset)
+                    .build();
+            DataPackage dataPackage = DataPackage.builder()
+                    .magicCode(ProtocolConstants.MAGIC_CODE)
+                    .version(ProtocolConstants.VERSION)
+                    .command(ProtocolConstants.Command.GET_MESSAGE)
+                    .requestType(ProtocolConstants.RequestType.SYNC)
+                    .timestamp(System.currentTimeMillis())
+                    .data(getMessageRequest.toByteArray())
+                    .build();
 
+            //send data
+            slothRemoteClient.getChannel().writeAndFlush(dataPackage);
+
+            DataPackage responseData = responseFuture.waitResponse();
+            if (responseData == null) {
+                log.warn("correlationId {} GET_MESSAGE wait response null!", currentCorrelationId);
+                return null;
+            }
+            byte[] data = responseData.getData();
+            return Remoting.GetMessageResult.parseFrom(data);
+        } catch (InterruptedException e) {
+            log.warn("GET_MESSAGE interrupted exception!" + e.getMessage());
+        } catch (InvalidProtocolBufferException e) {
+            log.warn("GET_MESSAGE protobuf parse error!" + e.getMessage());
+        } finally {
+            RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.remove(currentCorrelationId);
+        }
+        return null;
     }
 
-    public void submitOffset(String groupName, String topic, long offset) {
+    public Remoting.SubmitConsumerOffsetResult submitOffset(String groupName, String topic, Integer partition, long offset) {
+        long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        //add 关联关系，handler或者超时的定时任务将会清理。
+        RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
+        try {
+            Remoting.SubmitConsumerOffsetRequest getMessageRequest = Remoting.SubmitConsumerOffsetRequest.newBuilder()
+                    .setGroupName(groupName)
+                    .setTopic(topic)
+                    .setPartition(partition)
+                    .setOffset(offset)
+                    .build();
+            DataPackage dataPackage = DataPackage.builder()
+                    .magicCode(ProtocolConstants.MAGIC_CODE)
+                    .version(ProtocolConstants.VERSION)
+                    .command(ProtocolConstants.Command.SUBMIT_CONSUMER_GROUP_OFFSET)
+                    .requestType(ProtocolConstants.RequestType.SYNC)
+                    .timestamp(System.currentTimeMillis())
+                    .data(getMessageRequest.toByteArray())
+                    .build();
 
+            //send data
+            slothRemoteClient.getChannel().writeAndFlush(dataPackage);
+
+            DataPackage responseData = responseFuture.waitResponse();
+            if (responseData == null) {
+                log.warn("correlationId {} GET_MESSAGE wait response null!", currentCorrelationId);
+                return null;
+            }
+            byte[] data = responseData.getData();
+            return Remoting.SubmitConsumerOffsetResult.parseFrom(data);
+        } catch (InterruptedException e) {
+            log.warn("GET_MESSAGE interrupted exception!" + e.getMessage());
+        } catch (InvalidProtocolBufferException e) {
+            log.warn("GET_MESSAGE protobuf parse error!" + e.getMessage());
+        } finally {
+            RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.remove(currentCorrelationId);
+        }
+        return null;
     }
 
+    public void removeTopicPartitionConsumerMapping(Integer partition) {
+        this.topicPartitionConsumerMap.remove(partition);
+    }
 }

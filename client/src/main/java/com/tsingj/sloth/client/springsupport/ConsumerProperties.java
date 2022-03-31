@@ -18,4 +18,6 @@ public class ConsumerProperties {
 
     private String groupName;
 
+    private String listener;
+
 }
