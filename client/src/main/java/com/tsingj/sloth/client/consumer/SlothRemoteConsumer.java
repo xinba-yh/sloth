@@ -5,6 +5,7 @@ import com.tsingj.sloth.client.RemoteCorrelationManager;
 import com.tsingj.sloth.client.SlothRemoteClient;
 import com.tsingj.sloth.client.springsupport.ConsumerProperties;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
+import com.tsingj.sloth.common.threadpool.TaskThreadFactory;
 import com.tsingj.sloth.remoting.ResponseFuture;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
@@ -35,7 +36,7 @@ public class SlothRemoteConsumer {
 
     private MessageListener messageListener;
 
-    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
+    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1, new TaskThreadFactory("consumer-hb-"));
 
 
     public SlothRemoteConsumer(SlothClientProperties clientProperties, ConsumerProperties consumerProperties, SlothRemoteClient slothRemoteClient) {
@@ -107,7 +108,7 @@ public class SlothRemoteConsumer {
             boolean consistence = slothRemoteConsumer.rebalanceCheck(shouldConsumerPartitions, currentConsumePartitions);
             if (!consistence) {
                 log.info("topic:{} heartbeat, should consume partitions:{}, current consumer partitions:{} inconsistence!", this.topic, shouldConsumerPartitions, slothRemoteConsumer.topicPartitionConsumerMap);
-                slothRemoteConsumer.rebalance(shouldConsumerPartitions,currentConsumePartitions);
+                slothRemoteConsumer.rebalance(shouldConsumerPartitions, currentConsumePartitions);
             }
         }
 
