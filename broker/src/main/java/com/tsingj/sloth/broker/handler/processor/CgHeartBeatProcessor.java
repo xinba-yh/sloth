@@ -1,11 +1,11 @@
 package com.tsingj.sloth.broker.handler.processor;
 
 import com.tsingj.sloth.broker.service.ConsumerGroupManager;
+import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
-import com.tsingj.sloth.store.pojo.Result;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class CgHeartBeatProcessor implements RemoteRequestProcessor {
 
     @Override
     public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
-        log.info("receive CONSUMER_GROUP_HEARTBEAT command.");
+        log.debug("receive CONSUMER_GROUP_HEARTBEAT command.");
         Remoting.ConsumerHeartbeatRequest consumerHeartbeatRequest = Remoting.ConsumerHeartbeatRequest.parseFrom(request.getData());
         /*
          * check and set default param

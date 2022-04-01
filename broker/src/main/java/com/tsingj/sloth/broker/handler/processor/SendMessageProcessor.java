@@ -1,6 +1,7 @@
 package com.tsingj.sloth.broker.handler.processor;
 
 import com.google.protobuf.ByteString;
+import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
@@ -39,7 +40,7 @@ public class SendMessageProcessor implements RemoteRequestProcessor {
 
     @Override
     public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
-        log.info("receive SEND_MESSAGE command.");
+        log.debug("receive SEND_MESSAGE command.");
         Remoting.Message msg = Remoting.Message.parseFrom(request.getData());
 
         /*

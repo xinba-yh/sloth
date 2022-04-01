@@ -43,12 +43,12 @@ public class TopicPartitionConsumer implements Runnable {
             return;
         }
         try {
-            long currentOffset = consumerOffset + 1;
+            this.currentOffset = consumerOffset + 1;
             //2、开始消费
             while (running) {
                 try {
                     //1、获取消息
-                    Remoting.GetMessageResult getMessageResult = slothConsumer.fetchMessage(topic, partition, currentOffset);
+                    Remoting.GetMessageResult getMessageResult = slothConsumer.fetchMessage(this.topic, this.partition, this.currentOffset);
                     if (getMessageResult == null || getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.ERROR) {
                         log.error("fetch message fail! may timeout or exception! {}", getMessageResult != null ? getMessageResult.getErrorInfo() : "");
                         this.waitMills(1000);
@@ -56,8 +56,8 @@ public class TopicPartitionConsumer implements Runnable {
                     }
                     //1.2、根据消息状态判断，如果没有可以消费的消息则休眠一段时间
                     if (getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.NOT_FOUND) {
-                        log.warn("fetch message topic:{} partition:{} offset:{}, got not found()!", this.topic, this.partition, currentOffset);
-                        this.waitMills(500);
+                        log.debug("fetch message topic:{} partition:{} offset:{}, got not found()!", this.topic, this.partition, this.currentOffset);
+                        this.waitMills(100);
                         continue;
                     }
 
@@ -67,16 +67,16 @@ public class TopicPartitionConsumer implements Runnable {
                         ConsumerStatus consumerStatus = slothConsumer.getMessageListener().consumeMessage(message);
                         if (consumerStatus == ConsumerStatus.SUCCESS) {
                             //3.1、消费状态成功，提交消息Offset
-                            Remoting.SubmitConsumerOffsetResult submitConsumerOffsetResult = slothConsumer.submitOffset(this.groupName, this.topic, this.partition, currentOffset);
+                            Remoting.SubmitConsumerOffsetResult submitConsumerOffsetResult = slothConsumer.submitOffset(this.groupName, this.topic, this.partition, this.currentOffset);
                             if (submitConsumerOffsetResult == null) {
-                                log.warn("topic:{} partition:{} submit offset:{}  may timeout or exception!", this.topic, this.partition, currentOffset);
+                                log.warn("topic:{} partition:{} submit offset:{}  may timeout or exception!", this.topic, this.partition, this.currentOffset);
                                 this.waitMills(1000);
                             } else if (submitConsumerOffsetResult.getRetCode() == Remoting.RetCode.SUCCESS) {
+                                log.info("topic:{} partition:{} submit offset:{} success!", this.topic, this.partition, this.currentOffset);
                                 this.currentOffset = this.currentOffset + 1;
-                                log.info("topic:{} partition:{} submit offset:{} success!", this.topic, this.partition, currentOffset);
                             } else {
-                                log.error("topic:{} partition:{} submit offset:{} fail! {}", this.topic, this.partition, currentOffset, submitConsumerOffsetResult.getErrorInfo());
-                                this.waitMills(1000);
+                                log.error("topic:{} partition:{} submit offset:{} fail! {}", this.topic, this.partition, this.currentOffset, submitConsumerOffsetResult.getErrorInfo());
+                                this.waitMills(100);
                             }
                         }
                     } else {

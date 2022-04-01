@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store.pojo;
+package com.tsingj.sloth.common.result;
 
 
 import java.io.Serializable;

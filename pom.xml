@@ -41,6 +41,7 @@
         <module>example</module>
         <module>remoting</module>
         <module>client</module>
+        <module>common</module>
     </modules>
 
     <dependencies>

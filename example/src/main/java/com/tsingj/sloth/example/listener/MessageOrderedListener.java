@@ -14,7 +14,7 @@ public class MessageOrderedListener implements MessageListener {
 
     @Override
     public ConsumerStatus consumeMessage(Remoting.GetMessageResult.Message msg) {
-        log.info("Thread:{} topic:{} partition:{}", Thread.currentThread().getId(), msg.getTopic(), msg.getPartition());
+        log.info("Thread:{} topic:{} partition:{} offset:{}", Thread.currentThread().getId(), msg.getTopic(), msg.getPartition(), msg.getOffset());
         return ConsumerStatus.SUCCESS;
     }
 

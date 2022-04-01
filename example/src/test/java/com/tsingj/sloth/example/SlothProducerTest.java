@@ -75,7 +75,7 @@ public class SlothProducerTest {
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 10;
+                int count = 16;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();
@@ -110,7 +110,7 @@ public class SlothProducerTest {
             }).start();
         }
         countDownLatch.await(10, TimeUnit.SECONDS);
-
+        Thread.sleep(20000);
     }
 
 }

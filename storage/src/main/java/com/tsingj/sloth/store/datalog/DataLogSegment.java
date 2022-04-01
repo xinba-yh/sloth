@@ -1,11 +1,11 @@
 package com.tsingj.sloth.store.datalog;
 
+import com.tsingj.sloth.common.result.Result;
+import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.datalog.lock.LogLock;
 import com.tsingj.sloth.store.datalog.lock.LogReentrantLock;
-import com.tsingj.sloth.store.pojo.Result;
-import com.tsingj.sloth.store.pojo.Results;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;

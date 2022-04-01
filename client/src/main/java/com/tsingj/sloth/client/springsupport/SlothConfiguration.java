@@ -6,6 +6,7 @@ import com.tsingj.sloth.client.producer.SlothRemoteProducer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.util.Assert;
 
 
@@ -22,10 +23,12 @@ public class SlothConfiguration {
         this.slothClientProperties = slothClientProperties;
     }
 
-    @Bean(initMethod = "initConnect", destroyMethod = "closeConnect")
+    @Bean(destroyMethod = "closeConnect")
     public SlothRemoteClient slothRemoteClient(){
         this.checkClientProperties(slothClientProperties);
-        return new SlothRemoteClient(slothClientProperties);
+        SlothRemoteClient slothRemoteClient = new SlothRemoteClient(slothClientProperties);
+        slothRemoteClient.initConnect();
+        return slothRemoteClient;
     }
 
     @Bean

@@ -1,12 +1,12 @@
 package com.tsingj.sloth.broker.service;
 
+import com.tsingj.sloth.common.result.Result;
+import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.store.datajson.topic.TopicConfig;
 import com.tsingj.sloth.store.datajson.topic.TopicManager;
-import com.tsingj.sloth.store.pojo.Result;
-import com.tsingj.sloth.store.pojo.Results;
 import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

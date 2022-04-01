@@ -2,9 +2,9 @@ package com.tsingj.sloth.store.datajson.topic;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.tsingj.sloth.common.result.Result;
+import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.store.datajson.AbstractCachePersistence;
-import com.tsingj.sloth.store.pojo.Result;
-import com.tsingj.sloth.store.pojo.Results;
 import com.tsingj.sloth.store.utils.StoragePathHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

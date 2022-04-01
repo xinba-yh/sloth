@@ -1,5 +1,6 @@
 package com.tsingj.sloth.broker.handler.processor;
 
+import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
@@ -7,7 +8,6 @@ import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.store.datajson.offset.ConsumerGroupOffsetManager;
 import com.tsingj.sloth.store.datajson.topic.TopicConfig;
 import com.tsingj.sloth.store.datajson.topic.TopicManager;
-import com.tsingj.sloth.store.pojo.Result;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -36,7 +36,7 @@ public class CgGetOffsetProcessor implements RemoteRequestProcessor {
 
     @Override
     public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
-        log.info("receive GET_CONSUMER_GROUP_OFFSET command.");
+        log.debug("receive GET_CONSUMER_GROUP_OFFSET command.");
         Remoting.GetConsumerOffsetRequest getConsumerOffsetRequest = Remoting.GetConsumerOffsetRequest.parseFrom(request.getData());
 
         /*

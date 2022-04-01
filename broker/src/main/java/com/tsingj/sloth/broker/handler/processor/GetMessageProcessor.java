@@ -32,7 +32,7 @@ public class GetMessageProcessor implements RemoteRequestProcessor {
 
     @Override
     public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
-        log.info("receive GET_MESSAGE command.");
+        log.debug("receive GET_MESSAGE command.");
         Remoting.GetMessageRequest getMessageRequest = Remoting.GetMessageRequest.parseFrom(request.getData());
 
         /*

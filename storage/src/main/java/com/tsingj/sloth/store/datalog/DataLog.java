@@ -1,5 +1,7 @@
 package com.tsingj.sloth.store.datalog;
 
+import com.tsingj.sloth.common.result.Result;
+import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.datalog.lock.LogLock;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Component;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author yanghao

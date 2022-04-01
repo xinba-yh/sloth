@@ -3,7 +3,6 @@ package com.tsingj.sloth.store;
 import com.tsingj.sloth.store.pojo.GetMessageResult;
 import com.tsingj.sloth.store.pojo.Message;
 import com.tsingj.sloth.store.pojo.PutMessageResult;
-import com.tsingj.sloth.store.pojo.Result;
 
 /**
  * @author yanghao

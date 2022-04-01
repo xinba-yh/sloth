@@ -4,9 +4,7 @@ import com.tsingj.sloth.client.springsupport.CommonConstants;
 import com.tsingj.sloth.client.springsupport.ConnectProperties;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -14,6 +12,7 @@ import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yanghao
@@ -41,6 +40,8 @@ public class SlothRemoteClient {
 
     private String clientId;
 
+    private final int retryInterval = 1000;
+
 
     public SlothRemoteClient(SlothClientProperties clientProperties) {
         this.clientProperties = clientProperties;
@@ -65,10 +66,19 @@ public class SlothRemoteClient {
                 .handler(new RemoteClientChannelInitializer(connectProperties.getMaxSize()));
         try {
             String[] brokerUrlArr = clientProperties.getBrokerUrl().split(":");
-            this.channel = bootstrap.connect(brokerUrlArr[0], Integer.parseInt(brokerUrlArr[1])).sync().channel();
+            ChannelFuture channelFuture = bootstrap.connect(brokerUrlArr[0], Integer.parseInt(brokerUrlArr[1])).addListener((ChannelFuture futureListener) -> {
+                final EventLoop eventLoop = futureListener.channel().eventLoop();
+                if (!futureListener.isSuccess()) {
+                    log.warn("client lost connection! will retry connect after {} mills!", retryInterval);
+                    eventLoop.schedule(this::initConnect, retryInterval, TimeUnit.MILLISECONDS);
+                } else {
+                    log.info("client connect success.");
+                }
+            });
+            this.channel = channelFuture.sync().channel();
             this.clientId = UUID.randomUUID().toString();
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Init producer client fail!", e);
+        } catch (Throwable e) {
+            log.warn("Init sloth client fail!");
         }
     }
 
@@ -92,7 +102,7 @@ public class SlothRemoteClient {
         return this.channel;
     }
 
-    public String getClientId(){
+    public String getClientId() {
         return this.clientId;
     }
 

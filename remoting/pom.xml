@@ -24,11 +24,16 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.tsingj.sloth</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.48.Final</version>
         </dependency>
-
 
 
         <dependency>
