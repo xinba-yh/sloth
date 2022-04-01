@@ -17,7 +17,7 @@
  *
  */
 
-package com.tsingj.sloth.client.springsupport;
+package com.tsingj.sloth.common;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
+/**
+ * @author yanghao
+ */
 @Service
 @Lazy(false)
 public class SpringContextHolder implements ApplicationContextAware, DisposableBean {

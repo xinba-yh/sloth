@@ -40,8 +40,6 @@ public class TopicManagerTest {
             int assignPartition = topicManager.autoAssignPartition(topicConfig);
             log.info("time:{} assign partition:{}", i + 1, assignPartition);
         }
-
-
     }
 
 }
