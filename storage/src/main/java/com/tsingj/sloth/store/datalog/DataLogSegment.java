@@ -249,9 +249,9 @@ public class DataLogSegment implements DataRecovery {
         }
     }
 
-//    public long getCurrentOffset() {
-//        return this.currentOffset;
-//    }
+    public long getCurrentOffset() {
+        return this.currentOffset;
+    }
 
     //----------------------------------------------------------private方法--------------------------------------------------------------------
 

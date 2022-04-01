@@ -31,26 +31,27 @@ public class TopicPartitionConsumer implements Runnable {
 
     @Override
     public void run() {
-        Long consumerOffset;
+        log.info("start consumer topic:{} partition:{} .", this.topic, this.partition);
         //1、询问broker，应该从哪里开始消费
         SlothRemoteConsumer slothConsumer = SlothConsumerManager.get(topic);
         Assert.notNull(slothConsumer, "topic:" + topic + " consumer is null!");
-        consumerOffset = slothConsumer.getConsumerOffset(groupName, topic, partition);
+        Long consumerOffset = slothConsumer.getConsumerOffset(this.groupName, this.topic, this.partition);
         if (consumerOffset == null) {
             //定时心跳会check并再次拉起。
             slothConsumer.removeTopicPartitionConsumerMapping(this.partition);
-            log.error("get topic:{} consumerOffset fail!", topic);
+            log.error("get topic:{} partition:{} consumerOffset fail!", this.topic, this.partition);
             return;
         }
+        this.currentOffset = consumerOffset + 1;
+
+        //2、开始消费
         try {
-            this.currentOffset = consumerOffset + 1;
-            //2、开始消费
             while (running) {
                 try {
                     //1、获取消息
                     Remoting.GetMessageResult getMessageResult = slothConsumer.fetchMessage(this.topic, this.partition, this.currentOffset);
                     if (getMessageResult == null || getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.ERROR) {
-                        log.error("fetch message fail! may timeout or exception! {}", getMessageResult != null ? getMessageResult.getErrorInfo() : "");
+//                        log.error("fetch message fail! may timeout or exception! {}", getMessageResult != null ? getMessageResult.getErrorInfo() : "");
                         this.waitMills(1000);
                         continue;
                     }
@@ -96,6 +97,7 @@ public class TopicPartitionConsumer implements Runnable {
 
     public void stop() {
         this.running = false;
+        this.weekUp();
     }
 
     public void weekUp() {

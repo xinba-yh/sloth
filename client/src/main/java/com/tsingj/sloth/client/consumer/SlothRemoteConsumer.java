@@ -13,9 +13,7 @@ import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +65,7 @@ public class SlothRemoteConsumer {
         this.topic = this.consumerProperties.getTopic();
         this.groupName = this.consumerProperties.getGroupName();
         //1.1、立即发送一次heartbeat，并与建立clientId与channel的绑定关系（client - server）。
-        //1.2、响应分配好的partition
+        //1.2、响应分配好的partition（可能被截断）
         List<Integer> topicPartitions = this.heartbeat();
         //2、TopicPartitionConsumerManager
         if (topicPartitions != null && topicPartitions.size() > 0) {
@@ -81,8 +79,8 @@ public class SlothRemoteConsumer {
             }
             log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, slothRemoteClient.getClientId(), topicPartitions);
         }
-        //3、启动心跳线程
-        executorService.scheduleAtFixedRate(new HeartBeatTimerTask(this.topic), 3000, 3000, TimeUnit.MILLISECONDS);
+        //3、启动心跳和重平衡检查定时任务
+        executorService.scheduleAtFixedRate(new HeartBeatAndReBalanceCheckTimerTask(this.topic), 3000, 3000, TimeUnit.MILLISECONDS);
 
     }
 
@@ -92,56 +90,97 @@ public class SlothRemoteConsumer {
         executorService.shutdown();
     }
 
+    /**
+     * 1、定时心跳
+     * 2、重平衡检查
+     */
     @Slf4j
-    public static class HeartBeatTimerTask extends TimerTask {
+    public static class HeartBeatAndReBalanceCheckTimerTask extends TimerTask {
 
         private final String topic;
 
-        public HeartBeatTimerTask(String topic) {
+        public HeartBeatAndReBalanceCheckTimerTask(String topic) {
             this.topic = topic;
         }
 
         @Override
         public void run() {
+            log.debug("run heartbeat timer task.");
             SlothRemoteConsumer slothRemoteConsumer = SlothConsumerManager.get(this.topic);
-            List<Integer> shouldConsumerPartitions = slothRemoteConsumer.heartbeat();
-            List<Integer> currentConsumePartitions = slothRemoteConsumer.getCurrentConsumerPartitions();
-            boolean consistence = slothRemoteConsumer.rebalanceCheck(shouldConsumerPartitions, currentConsumePartitions);
-            if (!consistence) {
-                log.info("topic:{} heartbeat, should consume partitions:{}, current consumer partitions:{} inconsistence!", this.topic, shouldConsumerPartitions, slothRemoteConsumer.topicPartitionConsumerMap);
-                slothRemoteConsumer.rebalance(shouldConsumerPartitions, currentConsumePartitions);
-            }
+            slothRemoteConsumer.heartBeatAndReBalanceCheck();
+            log.debug("run heartbeat timer task done.");
         }
 
     }
 
-    private void rebalance(List<Integer> shouldConsumerPartitions, List<Integer> currentConsumePartitions) {
-        //        List<Integer> topicPartitions = this.topicPartitionReBalanceRequest(this.consumerProperties);
-//        Set<Integer> currentTopicPartitions = topicPartitionConsumerMap.keySet();
-        //1.1、获取已经不需要消费的partition。
+    public void heartBeatAndReBalanceCheck() {
+        List<Integer> shouldConsumerPartitions = this.heartbeat();
+        if (shouldConsumerPartitions == null) {
+            return;
+        }
+        this.reBalanceCheck(shouldConsumerPartitions);
+    }
 
-        //1.2、停止不需要消费的partition
+    public void reBalanceCheck(List<Integer> shouldConsumerPartitions) {
+        List<Integer> currentConsumePartitions = this.getCurrentConsumerPartitions();
+        boolean consistence = shouldConsumerPartitions.equals(currentConsumePartitions);
+        if (!consistence) {
+            log.info("topic:{} reBalanceCheck, should consume partitions:{}, current consumer partitions:{} inconsistencies!", this.topic, shouldConsumerPartitions, currentConsumePartitions);
+            this.reBalance(shouldConsumerPartitions, currentConsumePartitions);
+        }
+    }
+
+    public void reBalance(List<Integer> shouldConsumerPartitions, List<Integer> currentConsumePartitions) {
+        //1.1、获取已经不需要消费的partition。
+        for (Integer currentConsumePartition : currentConsumePartitions) {
+            //1.2、停止不需要消费的partition，当前消费的partition不在应该消费的partitions中，则停止消费。
+            if (!shouldConsumerPartitions.contains(currentConsumePartition)) {
+                TopicPartitionConsumer topicPartitionConsumer = this.topicPartitionConsumerMap.get(currentConsumePartition);
+                if (topicPartitionConsumer == null) {
+                    log.warn("try stop topic:{} partition:{} consumer,but now not exist!", this.topic, currentConsumePartition);
+                    continue;
+                }
+                topicPartitionConsumer.stop();
+                topicPartitionConsumer.weekUp();
+                this.topicPartitionConsumerMap.remove(currentConsumePartition);
+            }
+        }
 
         //2.1、获取缺少消费者的partition
-
-        //2.2、启动消费者线程
+        for (Integer shouldConsumerPartition : shouldConsumerPartitions) {
+            //2.2、新增缺少消费者的partition消费者线程
+            if (!currentConsumePartitions.contains(shouldConsumerPartition)) {
+                TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.groupName, this.topic, shouldConsumerPartition);
+                Thread thread = new Thread(topicPartitionConsumer);
+                thread.setName(this.topic + "-" + shouldConsumerPartition);
+                thread.start();
+                topicPartitionConsumerMap.put(shouldConsumerPartition, topicPartitionConsumer);
+            }
+        }
+        log.info("topic:{} reBalance done", this.topic);
     }
 
-    private boolean rebalanceCheck(List<Integer> shouldConsumerPartitions, List<Integer> currentConsumePartitions) {
-        List<Integer> a = shouldConsumerPartitions.stream().sorted().collect(Collectors.toList());
-        List<Integer> b = currentConsumePartitions.stream().sorted().collect(Collectors.toList());
-        return a.equals(b);
+    public List<Integer> getCurrentConsumerPartitions() {
+        //解决hash无序导致的partition乱序问题
+        List<Integer> currentConsumerPartitions = new ArrayList<>(this.topicPartitionConsumerMap.keySet());
+        return currentConsumerPartitions.parallelStream().sorted().collect(Collectors.toList());
     }
 
-    private List<Integer> getCurrentConsumerPartitions() {
-        return new ArrayList<>(this.topicPartitionConsumerMap.keySet());
+    public TopicPartitionConsumer getTopicPartitionConsumer(Integer partition) {
+        return this.topicPartitionConsumerMap.get(partition);
+    }
+
+
+    public void removeTopicPartitionConsumerMapping(Integer partition) {
+        this.topicPartitionConsumerMap.remove(partition);
     }
 
     //----------------------------------------------
 
     public List<Integer> heartbeat() {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        log.debug("prepare heartbeat currentCorrelationId:{}.", currentCorrelationId);
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, 2000);
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {
@@ -175,13 +214,20 @@ public class SlothRemoteConsumer {
                 return null;
             }
 
-            return consumerHeartbeatResult.getPartitionsList();
+            List<Integer> topicPartitions = consumerHeartbeatResult.getPartitionsList();
+            //根据配置的maxConsumePartitions截断broker分配的partitions
+            Integer maxConsumePartitions = this.consumerProperties.getMaxConsumePartitions();
+            if (topicPartitions.size() > maxConsumePartitions) {
+                topicPartitions = topicPartitions.parallelStream().limit(maxConsumePartitions).collect(Collectors.toList());
+            }
+            return topicPartitions;
         } catch (InterruptedException e) {
             log.warn("CONSUMER_GROUP_HEARTBEAT interrupted exception!" + e.getMessage());
         } catch (InvalidProtocolBufferException e) {
             log.warn("CONSUMER_GROUP_HEARTBEAT protobuf parse error!" + e.getMessage());
         } finally {
             RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.remove(currentCorrelationId);
+            log.debug("send heartbeat done currentCorrelationId:{}.", currentCorrelationId);
         }
         return null;
     }
@@ -316,7 +362,4 @@ public class SlothRemoteConsumer {
         return null;
     }
 
-    public void removeTopicPartitionConsumerMapping(Integer partition) {
-        this.topicPartitionConsumerMap.remove(partition);
-    }
 }

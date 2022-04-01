@@ -20,4 +20,9 @@ public class ConsumerProperties {
 
     private String listener;
 
+    /**
+     * 最大消费partition数量
+     */
+    private Integer maxConsumePartitions = 8;
+
 }

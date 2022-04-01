@@ -34,7 +34,7 @@ public class CgHeartBeatProcessor implements RemoteRequestProcessor {
 
     @Override
     public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
-        log.debug("receive CONSUMER_GROUP_HEARTBEAT command.");
+        log.debug("receive CONSUMER_GROUP_HEARTBEAT command，correlationId:{}",request.getCorrelationId());
         Remoting.ConsumerHeartbeatRequest consumerHeartbeatRequest = Remoting.ConsumerHeartbeatRequest.parseFrom(request.getData());
         /*
          * check and set default param
@@ -52,8 +52,10 @@ public class CgHeartBeatProcessor implements RemoteRequestProcessor {
             return this.respError(request, "IllegalArgument groupName is empty!");
         }
 
-        Result<List<Integer>> heartbeatResult = consumerGroupManager.heartbeat(clientId, groupName, topic,ctx.channel());
-        return heartbeatResult.success() ? this.respSuccess(request, heartbeatResult.getData()) : this.respError(request, heartbeatResult.getMsg());
+        Result<List<Integer>> heartbeatResult = consumerGroupManager.heartbeat(clientId, groupName, topic, ctx.channel());
+        DataPackage dataPackage = heartbeatResult.success() ? this.respSuccess(request, heartbeatResult.getData()) : this.respError(request, heartbeatResult.getMsg());
+        log.info("CONSUMER_GROUP_HEARTBEAT command done，correlationId:{}",request.getCorrelationId());
+        return dataPackage;
 
     }
 

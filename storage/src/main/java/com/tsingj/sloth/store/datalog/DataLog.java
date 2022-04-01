@@ -102,7 +102,7 @@ public class DataLog {
         } finally {
             lock.unlock();
         }
-        return new PutMessageResult(PutMessageStatus.OK,topic,partition, offset);
+        return new PutMessageResult(PutMessageStatus.OK, topic, partition, offset);
     }
 
 
@@ -120,6 +120,9 @@ public class DataLog {
             return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }
         try {
+            if (offset > dataLogSegment.getCurrentOffset()) {
+                return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, "consume offset > store offset!");
+            }
             Result<ByteBuffer> getMessageResult = dataLogSegment.getMessage(offset);
             if (getMessageResult.failure()) {
                 return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, getMessageResult.getMsg());

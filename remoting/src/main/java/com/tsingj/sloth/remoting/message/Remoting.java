@@ -1232,6 +1232,23 @@ public final class Remoting {
        */
       com.google.protobuf.ByteString
           getTopicBytes();
+
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @return A list containing the partitions.
+       */
+      java.util.List<java.lang.Integer> getPartitionsList();
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @return The count of partitions.
+       */
+      int getPartitionsCount();
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @param index The index of the element to return.
+       * @return The partitions at the given index.
+       */
+      int getPartitions(int index);
     }
     /**
      * <pre>
@@ -1252,6 +1269,7 @@ public final class Remoting {
       private TopicConsumer() {
         group_ = "";
         topic_ = "";
+        partitions_ = emptyIntList();
       }
 
       @java.lang.Override
@@ -1274,6 +1292,7 @@ public final class Remoting {
         if (extensionRegistry == null) {
           throw new java.lang.NullPointerException();
         }
+        int mutable_bitField0_ = 0;
         com.google.protobuf.UnknownFieldSet.Builder unknownFields =
             com.google.protobuf.UnknownFieldSet.newBuilder();
         try {
@@ -1296,6 +1315,27 @@ public final class Remoting {
                 topic_ = s;
                 break;
               }
+              case 24: {
+                if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                  partitions_ = newIntList();
+                  mutable_bitField0_ |= 0x00000001;
+                }
+                partitions_.addInt(input.readInt32());
+                break;
+              }
+              case 26: {
+                int length = input.readRawVarint32();
+                int limit = input.pushLimit(length);
+                if (!((mutable_bitField0_ & 0x00000001) != 0) && input.getBytesUntilLimit() > 0) {
+                  partitions_ = newIntList();
+                  mutable_bitField0_ |= 0x00000001;
+                }
+                while (input.getBytesUntilLimit() > 0) {
+                  partitions_.addInt(input.readInt32());
+                }
+                input.popLimit(limit);
+                break;
+              }
               default: {
                 if (!parseUnknownField(
                     input, unknownFields, extensionRegistry, tag)) {
@@ -1311,6 +1351,9 @@ public final class Remoting {
           throw new com.google.protobuf.InvalidProtocolBufferException(
               e).setUnfinishedMessage(this);
         } finally {
+          if (((mutable_bitField0_ & 0x00000001) != 0)) {
+            partitions_.makeImmutable(); // C
+          }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
         }
@@ -1404,6 +1447,34 @@ public final class Remoting {
         }
       }
 
+      public static final int PARTITIONS_FIELD_NUMBER = 3;
+      private com.google.protobuf.Internal.IntList partitions_;
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @return A list containing the partitions.
+       */
+      @java.lang.Override
+      public java.util.List<java.lang.Integer>
+          getPartitionsList() {
+        return partitions_;
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @return The count of partitions.
+       */
+      public int getPartitionsCount() {
+        return partitions_.size();
+      }
+      /**
+       * <code>repeated int32 partitions = 3;</code>
+       * @param index The index of the element to return.
+       * @return The partitions at the given index.
+       */
+      public int getPartitions(int index) {
+        return partitions_.getInt(index);
+      }
+      private int partitionsMemoizedSerializedSize = -1;
+
       private byte memoizedIsInitialized = -1;
       @java.lang.Override
       public final boolean isInitialized() {
@@ -1418,11 +1489,19 @@ public final class Remoting {
       @java.lang.Override
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
+        getSerializedSize();
         if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(group_)) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 1, group_);
         }
         if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
           com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topic_);
+        }
+        if (getPartitionsList().size() > 0) {
+          output.writeUInt32NoTag(26);
+          output.writeUInt32NoTag(partitionsMemoizedSerializedSize);
+        }
+        for (int i = 0; i < partitions_.size(); i++) {
+          output.writeInt32NoTag(partitions_.getInt(i));
         }
         unknownFields.writeTo(output);
       }
@@ -1438,6 +1517,20 @@ public final class Remoting {
         }
         if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
           size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, topic_);
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < partitions_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(partitions_.getInt(i));
+          }
+          size += dataSize;
+          if (!getPartitionsList().isEmpty()) {
+            size += 1;
+            size += com.google.protobuf.CodedOutputStream
+                .computeInt32SizeNoTag(dataSize);
+          }
+          partitionsMemoizedSerializedSize = dataSize;
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -1458,6 +1551,8 @@ public final class Remoting {
             .equals(other.getGroup())) return false;
         if (!getTopic()
             .equals(other.getTopic())) return false;
+        if (!getPartitionsList()
+            .equals(other.getPartitionsList())) return false;
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
       }
@@ -1473,6 +1568,10 @@ public final class Remoting {
         hash = (53 * hash) + getGroup().hashCode();
         hash = (37 * hash) + TOPIC_FIELD_NUMBER;
         hash = (53 * hash) + getTopic().hashCode();
+        if (getPartitionsCount() > 0) {
+          hash = (37 * hash) + PARTITIONS_FIELD_NUMBER;
+          hash = (53 * hash) + getPartitionsList().hashCode();
+        }
         hash = (29 * hash) + unknownFields.hashCode();
         memoizedHashCode = hash;
         return hash;
@@ -1614,6 +1713,8 @@ public final class Remoting {
 
           topic_ = "";
 
+          partitions_ = emptyIntList();
+          bitField0_ = (bitField0_ & ~0x00000001);
           return this;
         }
 
@@ -1640,8 +1741,14 @@ public final class Remoting {
         @java.lang.Override
         public com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer buildPartial() {
           com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer result = new com.tsingj.sloth.remoting.message.Remoting.Notify.TopicConsumer(this);
+          int from_bitField0_ = bitField0_;
           result.group_ = group_;
           result.topic_ = topic_;
+          if (((bitField0_ & 0x00000001) != 0)) {
+            partitions_.makeImmutable();
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.partitions_ = partitions_;
           onBuilt();
           return result;
         }
@@ -1698,6 +1805,16 @@ public final class Remoting {
             topic_ = other.topic_;
             onChanged();
           }
+          if (!other.partitions_.isEmpty()) {
+            if (partitions_.isEmpty()) {
+              partitions_ = other.partitions_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensurePartitionsIsMutable();
+              partitions_.addAll(other.partitions_);
+            }
+            onChanged();
+          }
           this.mergeUnknownFields(other.unknownFields);
           onChanged();
           return this;
@@ -1726,6 +1843,7 @@ public final class Remoting {
           }
           return this;
         }
+        private int bitField0_;
 
         private java.lang.Object group_ = "";
         /**
@@ -1875,6 +1993,85 @@ public final class Remoting {
   checkByteStringIsUtf8(value);
           
           topic_ = value;
+          onChanged();
+          return this;
+        }
+
+        private com.google.protobuf.Internal.IntList partitions_ = emptyIntList();
+        private void ensurePartitionsIsMutable() {
+          if (!((bitField0_ & 0x00000001) != 0)) {
+            partitions_ = mutableCopy(partitions_);
+            bitField0_ |= 0x00000001;
+           }
+        }
+        /**
+         * <code>repeated int32 partitions = 3;</code>
+         * @return A list containing the partitions.
+         */
+        public java.util.List<java.lang.Integer>
+            getPartitionsList() {
+          return ((bitField0_ & 0x00000001) != 0) ?
+                   java.util.Collections.unmodifiableList(partitions_) : partitions_;
+        }
+        /**
+         * <code>repeated int32 partitions = 3;</code>
+         * @return The count of partitions.
+         */
+        public int getPartitionsCount() {
+          return partitions_.size();
+        }
+        /**
+         * <code>repeated int32 partitions = 3;</code>
+         * @param index The index of the element to return.
+         * @return The partitions at the given index.
+         */
+        public int getPartitions(int index) {
+          return partitions_.getInt(index);
+        }
+        /**
+         * <code>repeated int32 partitions = 3;</code>
+         * @param index The index to set the value at.
+         * @param value The partitions to set.
+         * @return This builder for chaining.
+         */
+        public Builder setPartitions(
+            int index, int value) {
+          ensurePartitionsIsMutable();
+          partitions_.setInt(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated int32 partitions = 3;</code>
+         * @param value The partitions to add.
+         * @return This builder for chaining.
+         */
+        public Builder addPartitions(int value) {
+          ensurePartitionsIsMutable();
+          partitions_.addInt(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated int32 partitions = 3;</code>
+         * @param values The partitions to add.
+         * @return This builder for chaining.
+         */
+        public Builder addAllPartitions(
+            java.lang.Iterable<? extends java.lang.Integer> values) {
+          ensurePartitionsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, partitions_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated int32 partitions = 3;</code>
+         * @return This builder for chaining.
+         */
+        public Builder clearPartitions() {
+          partitions_ = emptyIntList();
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
           return this;
         }
@@ -13785,53 +13982,54 @@ public final class Remoting {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016remoting.proto\"\323\002\n\006Notify\022\034\n\005event\030\001 \001" +
+      "\n\016remoting.proto\"\347\002\n\006Notify\022\034\n\005event\030\001 \001" +
       "(\0162\r.Notify.Event\022.\n\rtopicConsumer\030\002 \001(\013" +
       "2\025.Notify.TopicConsumerH\000\022@\n\026topicConsum" +
       "erPartition\030\003 \001(\0132\036.Notify.TopicConsumer" +
       "PartitionH\000\032I\n\026TopicConsumerPartition\022\r\n" +
       "\005group\030\001 \001(\t\022\r\n\005topic\030\002 \001(\t\022\021\n\tpartition" +
-      "\030\003 \001(\005\032-\n\rTopicConsumer\022\r\n\005group\030\001 \001(\t\022\r" +
-      "\n\005topic\030\002 \001(\t\"7\n\005Event\022\030\n\024RE_BALANCE_BRO" +
-      "ADCAST\020\000\022\024\n\020CONSUMER_WEEK_UP\020\001B\006\n\004data\"N" +
-      "\n\030ConsumerHeartbeatRequest\022\020\n\010clientId\030\001" +
-      " \001(\t\022\021\n\tgroupName\030\002 \001(\t\022\r\n\005topic\030\003 \001(\t\"[" +
-      "\n\027ConsumerHeartbeatResult\022\031\n\007retCode\030\001 \001" +
-      "(\0162\010.RetCode\022\021\n\terrorInfo\030\002 \001(\t\022\022\n\nparti" +
-      "tions\030\003 \003(\005\"O\n\030GetConsumerOffsetRequest\022" +
-      "\021\n\tgroupName\030\001 \001(\t\022\r\n\005topic\030\002 \001(\t\022\021\n\tpar" +
-      "tition\030\003 \001(\005\"W\n\027GetConsumerOffsetResult\022" +
-      "\031\n\007retCode\030\001 \001(\0162\010.RetCode\022\021\n\terrorInfo\030" +
-      "\002 \001(\t\022\016\n\006offset\030\003 \001(\003\"b\n\033SubmitConsumerO" +
-      "ffsetRequest\022\021\n\tgroupName\030\001 \001(\t\022\r\n\005topic" +
-      "\030\002 \001(\t\022\021\n\tpartition\030\003 \001(\005\022\016\n\006offset\030\004 \001(" +
-      "\003\"J\n\032SubmitConsumerOffsetResult\022\031\n\007retCo" +
-      "de\030\001 \001(\0162\010.RetCode\022\021\n\terrorInfo\030\002 \001(\t\"\273\001" +
-      "\n\007Message\022\r\n\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 " +
-      "\001(\r\022\022\n\nrequest_id\030\003 \001(\t\022,\n\nproperties\030\004 " +
-      "\003(\0132\030.Message.PropertiesEntry\022\014\n\004body\030\005 " +
-      "\001(\014\022\013\n\003ack\030\006 \001(\010\0321\n\017PropertiesEntry\022\013\n\003k" +
-      "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\341\001\n\nSendResu" +
-      "lt\022$\n\007retCode\030\001 \001(\0162\023.SendResult.RetCode" +
-      "\022\021\n\terrorInfo\030\002 \001(\t\022*\n\nresultInfo\030\003 \001(\0132" +
-      "\026.SendResult.ResultInfo\032>\n\nResultInfo\022\r\n" +
-      "\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r\022\016\n\006offse" +
-      "t\030\003 \001(\003\".\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n\005ERROR" +
-      "\020\001\022\013\n\007TIMEOUT\020\002\"E\n\021GetMessageRequest\022\r\n\005" +
-      "topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r\022\016\n\006offset" +
-      "\030\003 \001(\003\"\241\003\n\020GetMessageResult\022*\n\007retCode\030\001" +
-      " \001(\0162\031.GetMessageResult.RetCode\022\021\n\terror" +
-      "Info\030\002 \001(\t\022*\n\007message\030\003 \001(\0132\031.GetMessage" +
-      "Result.Message\032\361\001\n\007Message\022\r\n\005topic\030\001 \001(" +
-      "\t\022\021\n\tpartition\030\002 \001(\r\022=\n\nproperties\030\003 \003(\013" +
-      "2).GetMessageResult.Message.PropertiesEn" +
-      "try\022\014\n\004body\030\004 \001(\014\022\016\n\006offset\030\005 \001(\003\022\026\n\016sto" +
-      "reTimestamp\030\006 \001(\003\022\017\n\007version\030\007 \001(\r\022\013\n\003cr" +
-      "c\030\010 \001(\005\0321\n\017PropertiesEntry\022\013\n\003key\030\001 \001(\t\022" +
-      "\r\n\005value\030\002 \001(\t:\0028\001\".\n\007RetCode\022\t\n\005FOUND\020\000" +
-      "\022\r\n\tNOT_FOUND\020\001\022\t\n\005ERROR\020\002*!\n\007RetCode\022\013\n" +
-      "\007SUCCESS\020\000\022\t\n\005ERROR\020\001B#\n!com.tsingj.slot" +
-      "h.remoting.messageb\006proto3"
+      "\030\003 \001(\005\032A\n\rTopicConsumer\022\r\n\005group\030\001 \001(\t\022\r" +
+      "\n\005topic\030\002 \001(\t\022\022\n\npartitions\030\003 \003(\005\"7\n\005Eve" +
+      "nt\022\030\n\024RE_BALANCE_BROADCAST\020\000\022\024\n\020CONSUMER" +
+      "_WEEK_UP\020\001B\006\n\004data\"N\n\030ConsumerHeartbeatR" +
+      "equest\022\020\n\010clientId\030\001 \001(\t\022\021\n\tgroupName\030\002 " +
+      "\001(\t\022\r\n\005topic\030\003 \001(\t\"[\n\027ConsumerHeartbeatR" +
+      "esult\022\031\n\007retCode\030\001 \001(\0162\010.RetCode\022\021\n\terro" +
+      "rInfo\030\002 \001(\t\022\022\n\npartitions\030\003 \003(\005\"O\n\030GetCo" +
+      "nsumerOffsetRequest\022\021\n\tgroupName\030\001 \001(\t\022\r" +
+      "\n\005topic\030\002 \001(\t\022\021\n\tpartition\030\003 \001(\005\"W\n\027GetC" +
+      "onsumerOffsetResult\022\031\n\007retCode\030\001 \001(\0162\010.R" +
+      "etCode\022\021\n\terrorInfo\030\002 \001(\t\022\016\n\006offset\030\003 \001(" +
+      "\003\"b\n\033SubmitConsumerOffsetRequest\022\021\n\tgrou" +
+      "pName\030\001 \001(\t\022\r\n\005topic\030\002 \001(\t\022\021\n\tpartition\030" +
+      "\003 \001(\005\022\016\n\006offset\030\004 \001(\003\"J\n\032SubmitConsumerO" +
+      "ffsetResult\022\031\n\007retCode\030\001 \001(\0162\010.RetCode\022\021" +
+      "\n\terrorInfo\030\002 \001(\t\"\273\001\n\007Message\022\r\n\005topic\030\001" +
+      " \001(\t\022\021\n\tpartition\030\002 \001(\r\022\022\n\nrequest_id\030\003 " +
+      "\001(\t\022,\n\nproperties\030\004 \003(\0132\030.Message.Proper" +
+      "tiesEntry\022\014\n\004body\030\005 \001(\014\022\013\n\003ack\030\006 \001(\010\0321\n\017" +
+      "PropertiesEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 " +
+      "\001(\t:\0028\001\"\341\001\n\nSendResult\022$\n\007retCode\030\001 \001(\0162" +
+      "\023.SendResult.RetCode\022\021\n\terrorInfo\030\002 \001(\t\022" +
+      "*\n\nresultInfo\030\003 \001(\0132\026.SendResult.ResultI" +
+      "nfo\032>\n\nResultInfo\022\r\n\005topic\030\001 \001(\t\022\021\n\tpart" +
+      "ition\030\002 \001(\r\022\016\n\006offset\030\003 \001(\003\".\n\007RetCode\022\013" +
+      "\n\007SUCCESS\020\000\022\t\n\005ERROR\020\001\022\013\n\007TIMEOUT\020\002\"E\n\021G" +
+      "etMessageRequest\022\r\n\005topic\030\001 \001(\t\022\021\n\tparti" +
+      "tion\030\002 \001(\r\022\016\n\006offset\030\003 \001(\003\"\241\003\n\020GetMessag" +
+      "eResult\022*\n\007retCode\030\001 \001(\0162\031.GetMessageRes" +
+      "ult.RetCode\022\021\n\terrorInfo\030\002 \001(\t\022*\n\007messag" +
+      "e\030\003 \001(\0132\031.GetMessageResult.Message\032\361\001\n\007M" +
+      "essage\022\r\n\005topic\030\001 \001(\t\022\021\n\tpartition\030\002 \001(\r" +
+      "\022=\n\nproperties\030\003 \003(\0132).GetMessageResult." +
+      "Message.PropertiesEntry\022\014\n\004body\030\004 \001(\014\022\016\n" +
+      "\006offset\030\005 \001(\003\022\026\n\016storeTimestamp\030\006 \001(\003\022\017\n" +
+      "\007version\030\007 \001(\r\022\013\n\003crc\030\010 \001(\005\0321\n\017Propertie" +
+      "sEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"." +
+      "\n\007RetCode\022\t\n\005FOUND\020\000\022\r\n\tNOT_FOUND\020\001\022\t\n\005E" +
+      "RROR\020\002*!\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n\005ERROR\020" +
+      "\001B#\n!com.tsingj.sloth.remoting.messageb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -13854,7 +14052,7 @@ public final class Remoting {
     internal_static_Notify_TopicConsumer_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Notify_TopicConsumer_descriptor,
-        new java.lang.String[] { "Group", "Topic", });
+        new java.lang.String[] { "Group", "Topic", "Partitions", });
     internal_static_ConsumerHeartbeatRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_ConsumerHeartbeatRequest_fieldAccessorTable = new

@@ -35,7 +35,21 @@ public class SlothConsumerTest {
 
         messageListener.consumeMessage(Remoting.GetMessageResult.Message.newBuilder().setTopic("123").build());
 
+    }
 
+    @Test
+    public void reBalanceTest1() throws InterruptedException {
+        Thread.sleep(3000);
+    }
+
+    @Test
+    public void reBalanceTest2() throws InterruptedException {
+        Thread.sleep(3000);
+    }
+
+    @Test
+    public void reBalanceTest3() throws InterruptedException {
+        Thread.sleep(30000);
     }
 
 }

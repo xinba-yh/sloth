@@ -1,11 +1,12 @@
 package com.tsingj.sloth.example;
 
-import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
 
+/**
+ * @author yanghao
+ */
 @SpringBootApplication
 public class Application {
 

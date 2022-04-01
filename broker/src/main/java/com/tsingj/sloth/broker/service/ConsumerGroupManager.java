@@ -1,16 +1,26 @@
 package com.tsingj.sloth.broker.service;
 
+import com.tsingj.sloth.broker.properties.BrokerProperties;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
+import com.tsingj.sloth.remoting.utils.CommonUtils;
 import com.tsingj.sloth.store.datajson.topic.TopicConfig;
 import com.tsingj.sloth.store.datajson.topic.TopicManager;
+import com.tsingj.sloth.store.utils.CommonUtil;
 import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.config.IntervalTask;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -24,13 +34,15 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-public class ConsumerGroupManager {
+public class ConsumerGroupManager implements SchedulingConfigurer {
 
+    private final BrokerProperties brokerProperties;
 
     private final TopicManager topicManager;
 
-    public ConsumerGroupManager(TopicManager topicManager) {
+    public ConsumerGroupManager(TopicManager topicManager, BrokerProperties brokerProperties) {
         this.topicManager = topicManager;
+        this.brokerProperties = brokerProperties;
     }
 
     private static final String TOPIC_GROUP_SEPARATOR = "@";
@@ -64,7 +76,7 @@ public class ConsumerGroupManager {
             this.notifyConsumerReBalanceEvent(groupName, topic, clientId);
         } else {
             //刷新心跳时间
-            consumerChannel.setTimestamp(SystemClock.now());
+            consumerChannel.setHbTimestamp(SystemClock.now());
         }
         return Results.success(consumerChannel.getPartitions());
     }
@@ -84,16 +96,17 @@ public class ConsumerGroupManager {
             }
             ConsumerChannel consumerChannel = entry.getValue();
             List<Integer> partitions = consumerChannel.getPartitions();
-            log.info("clientId:{} consumer:{}.", clientId, partitions);
-            DataPackage dataPackage = this.buildNotify(groupName,topic);
+            log.info("notify consumer clientId:{} reBalance partitions:{}.", clientId, partitions);
+            DataPackage dataPackage = this.buildNotify(groupName, topic, partitions);
             consumerChannel.getChannel().writeAndFlush(dataPackage);
         }
     }
 
-    private DataPackage buildNotify(String groupName, String topic) {
+    private DataPackage buildNotify(String groupName, String topic, List<Integer> partitions) {
         Remoting.Notify.TopicConsumer topicConsumer = Remoting.Notify.TopicConsumer.newBuilder()
                 .setGroup(groupName)
                 .setTopic(topic)
+                .addAllPartitions(partitions)
                 .build();
 
         Remoting.Notify notify = Remoting.Notify.newBuilder()
@@ -114,8 +127,8 @@ public class ConsumerGroupManager {
     private synchronized void roundRibbonAssignPartitions(String groupName, String topic, List<Integer> allPartitions) {
         ConcurrentHashMap<String, ConsumerChannel> consumerChannelMap = TOPIC_GROUP_CONSUMER_CHANNEL_MAP.get(this.key(groupName, topic));
 
-        //sorted on clientId
-        List<ConsumerChannel> consumerChannels = consumerChannelMap.values().stream().sorted(Comparator.comparing(ConsumerChannel::getClientId)).collect(Collectors.toList());
+        //sorted on connect timestamp
+        List<ConsumerChannel> consumerChannels = consumerChannelMap.values().stream().sorted(Comparator.comparing(ConsumerChannel::getTimestamp)).collect(Collectors.toList());
 
         //assign
         Map<String, List<Integer>> clientIdPartitions = new HashMap<>(consumerChannels.size());
@@ -140,16 +153,54 @@ public class ConsumerGroupManager {
         return groupName + TOPIC_GROUP_SEPARATOR + topic;
     }
 
+
     @Data
     public static class ConsumerChannel {
         private String clientId;
         private Channel channel;
         private long timestamp = SystemClock.now();
+        private long hbTimestamp = SystemClock.now();
         private volatile List<Integer> partitions = new ArrayList<>();
 
         public ConsumerChannel(String clientId, Channel channel) {
             this.clientId = clientId;
             this.channel = channel;
+        }
+    }
+
+
+    //--------------------定时检查-----------------------
+
+    @Bean
+    public TaskScheduler cgScheduledEs() {
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(1);
+        scheduler.setThreadNamePrefix("cgScheduledEs-thread-");
+        return scheduler;
+    }
+
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        IntervalTask checkCgHeartBeatTask = new IntervalTask(this::checkCgHeartBeat, 3000, 3000);
+        taskRegistrar.addFixedDelayTask(checkCgHeartBeatTask);
+    }
+
+    private void checkCgHeartBeat() {
+        for (Map.Entry<String, ConcurrentHashMap<String, ConsumerChannel>> entry : TOPIC_GROUP_CONSUMER_CHANNEL_MAP.entrySet()) {
+            ConcurrentHashMap<String, ConsumerChannel> consumerChannelMap = entry.getValue();
+            if (consumerChannelMap == null || consumerChannelMap.size() == 0) {
+                continue;
+            }
+            for (Map.Entry<String, ConsumerChannel> consumerChannelEntry : consumerChannelMap.entrySet()) {
+                ConsumerChannel consumerChannel = consumerChannelEntry.getValue();
+                if (consumerChannel == null) {
+                    continue;
+                }
+                if ((SystemClock.now() - consumerChannel.getHbTimestamp()) > brokerProperties.getLoseConsumerHbMaxMills()) {
+                    CommonUtils.closeChannel(consumerChannel.getChannel(), "client:" + consumerChannel.getClientId() + " lose heartbeat!");
+                    consumerChannelMap.remove(consumerChannelEntry.getKey());
+                }
+            }
         }
     }
 

@@ -29,6 +29,7 @@ message Notify {
     message TopicConsumer {
         string group = 1;
         string topic = 2;
+        repeated int32 partitions = 3;
     }
 
     Event event = 1;
