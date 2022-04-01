@@ -5,6 +5,7 @@ import com.tsingj.sloth.client.RemoteCorrelationManager;
 import com.tsingj.sloth.client.SlothRemoteClient;
 import com.tsingj.sloth.client.springsupport.ConsumerProperties;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.threadpool.TaskThreadFactory;
 import com.tsingj.sloth.remoting.ResponseFuture;
 import com.tsingj.sloth.remoting.message.Remoting;
@@ -155,7 +156,7 @@ public class SlothRemoteConsumer {
                     .command(ProtocolConstants.Command.CONSUMER_GROUP_HEARTBEAT)
                     .requestType(ProtocolConstants.RequestType.SYNC)
                     .correlationId(currentCorrelationId)
-                    .timestamp(System.currentTimeMillis())
+                    .timestamp(SystemClock.now())
                     .data(consumerHeartbeatRequest.toByteArray())
                     .build();
 
@@ -203,7 +204,7 @@ public class SlothRemoteConsumer {
                     .command(ProtocolConstants.Command.GET_CONSUMER_GROUP_OFFSET)
                     .requestType(ProtocolConstants.RequestType.SYNC)
                     .correlationId(currentCorrelationId)
-                    .timestamp(System.currentTimeMillis())
+                    .timestamp(SystemClock.now())
                     .data(consumerHeartbeatRequest.toByteArray())
                     .build();
 
@@ -249,7 +250,7 @@ public class SlothRemoteConsumer {
                     .command(ProtocolConstants.Command.GET_MESSAGE)
                     .requestType(ProtocolConstants.RequestType.SYNC)
                     .correlationId(currentCorrelationId)
-                    .timestamp(System.currentTimeMillis())
+                    .timestamp(SystemClock.now())
                     .data(getMessageRequest.toByteArray())
                     .build();
 
@@ -291,7 +292,7 @@ public class SlothRemoteConsumer {
                     .command(ProtocolConstants.Command.SUBMIT_CONSUMER_GROUP_OFFSET)
                     .requestType(ProtocolConstants.RequestType.SYNC)
                     .correlationId(currentCorrelationId)
-                    .timestamp(System.currentTimeMillis())
+                    .timestamp(SystemClock.now())
                     .data(getMessageRequest.toByteArray())
                     .build();
 

@@ -1,5 +1,6 @@
 package com.tsingj.sloth.store;
 
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.datalog.DataLog;
 import com.tsingj.sloth.store.pojo.*;
@@ -43,9 +44,9 @@ public class StorageEngine implements Storage {
             return new PutMessageResult(PutMessageStatus.MESSAGE_ILLEGAL, errorMsg);
         }
 
-        long beginTime = System.currentTimeMillis();
+        long beginTime = SystemClock.now();
         PutMessageResult result = dataLog.putMessage(message);
-        long costTime = System.currentTimeMillis() - beginTime;
+        long costTime = SystemClock.now() - beginTime;
         if (costTime > CommonConstants.DATA_LOG_STORE_WAIN_TIME) {
             logger.warn("putMessage cost time(ms)={}, bodyLength={}", costTime, message.getBody().length);
         }
@@ -59,9 +60,9 @@ public class StorageEngine implements Storage {
             logger.warn(errorMsg);
             return new GetMessageResult(GetMessageStatus.TOPIC_ILLEGAL, errorMsg);
         }
-        long beginTime = System.currentTimeMillis();
+        long beginTime = SystemClock.now();
         GetMessageResult getMessageResult = dataLog.getMessage(topic, partition, offset);
-        long costTime = System.currentTimeMillis() - beginTime;
+        long costTime = SystemClock.now() - beginTime;
         if (costTime > CommonConstants.DATA_LOG_FIND_WAIN_TIME) {
             logger.warn("getMessage cost time(ms)={}", costTime);
         }

@@ -1,6 +1,7 @@
 package com.tsingj.sloth.broker.handler.processor;
 
 import com.google.protobuf.ByteString;
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
@@ -77,7 +78,7 @@ public class GetMessageProcessor implements RemoteRequestProcessor {
                 .setMessage(respMessage)
                 .build();
         DataPackage response = request;
-        response.setTimestamp(System.currentTimeMillis());
+        response.setTimestamp(SystemClock.now());
         response.setData(sendResult.toByteArray());
         return response;
     }
@@ -89,7 +90,7 @@ public class GetMessageProcessor implements RemoteRequestProcessor {
                 .setErrorInfo(errMsg)
                 .build();
         DataPackage response = request;
-        response.setTimestamp(System.currentTimeMillis());
+        response.setTimestamp(SystemClock.now());
         response.setData(sendResult.toByteArray());
         return response;
     }
@@ -100,7 +101,7 @@ public class GetMessageProcessor implements RemoteRequestProcessor {
                 .setErrorInfo(errorMsg != null ? errorMsg : "")
                 .build();
         DataPackage response = request;
-        response.setTimestamp(System.currentTimeMillis());
+        response.setTimestamp(SystemClock.now());
         response.setData(sendResult.toByteArray());
         return response;
     }

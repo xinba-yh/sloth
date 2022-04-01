@@ -1,5 +1,6 @@
 package com.tsingj.sloth.broker.handler.processor;
 
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
@@ -70,7 +71,7 @@ public class CgSubmitOffsetProcessor implements RemoteRequestProcessor {
                 .setErrorInfo(errMsg)
                 .build();
         DataPackage response = request;
-        response.setTimestamp(System.currentTimeMillis());
+        response.setTimestamp(SystemClock.now());
         response.setData(result.toByteArray());
         return response;
     }
@@ -80,7 +81,7 @@ public class CgSubmitOffsetProcessor implements RemoteRequestProcessor {
                 .setRetCode(Remoting.RetCode.SUCCESS)
                 .build();
         DataPackage response = request;
-        response.setTimestamp(System.currentTimeMillis());
+        response.setTimestamp(SystemClock.now());
         response.setData(result.toByteArray());
         return response;
     }

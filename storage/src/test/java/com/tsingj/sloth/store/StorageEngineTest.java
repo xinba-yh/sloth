@@ -38,7 +38,7 @@ public class StorageEngineTest {
 //    public void putMessageTest() {
 //        ExecutorService partitionPool = Executors.newFixedThreadPool(8);
 //        final ExecutorService partitionAppendPool = Executors.newFixedThreadPool(1);
-//        long startTime = System.currentTimeMillis();
+//        long startTime = SystemClock.now()();
 //        final CountDownLatch partitionCountDownLatch = new CountDownLatch(threadNum);
 //        for (int i = 0; i < threadNum; i++) {
 //            int finalI = i;
@@ -81,7 +81,7 @@ public class StorageEngineTest {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-//        System.out.println("put count:" + count * threadNum + ", all cost:" + (System.currentTimeMillis() - startTime) + "ms");
+//        System.out.println("put count:" + count * threadNum + ", all cost:" + (SystemClock.now()() - startTime) + "ms");
 //
 //    }
 //

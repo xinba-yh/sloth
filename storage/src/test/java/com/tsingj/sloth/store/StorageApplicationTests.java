@@ -37,14 +37,14 @@
 //
 //    @Test
 //    void bufferedWriterTest() {
-//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
+//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(SystemClock.now()()).build()).getBytes(StandardCharsets.UTF_8));
 //        String topicPartitionDirPath = "data" + File.separator + topic + File.separator + partition;
 //        File dir = new File(topicPartitionDirPath);
 //        if (!dir.exists()) {
 //            dir.mkdirs();
 //        }
 //        File file = new File(topicPartitionDirPath + File.separator + "segment_" + 0 + ".data");
-//        long startTime = System.currentTimeMillis();
+//        long startTime = SystemClock.now()();
 //        BufferedWriter bufferedWriter = null;
 //        for (int i = 0; i < 100000; i++) {
 //            try {
@@ -62,20 +62,20 @@
 //                }
 //            }
 //        }
-//        System.out.println(System.currentTimeMillis() - startTime);
+//        System.out.println(SystemClock.now()() - startTime);
 //    }
 //
 //
 //    @Test
 //    void commonIoFileWriterTest() {
-//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
+//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(SystemClock.now()()).build()).getBytes(StandardCharsets.UTF_8));
 //        String topicPartitionDirPath = "data" + File.separator + topic + File.separator + partition;
 //        File dir = new File(topicPartitionDirPath);
 //        if (!dir.exists()) {
 //            dir.mkdirs();
 //        }
 //        File file = new File(topicPartitionDirPath + File.separator + "segment_" + 0 + ".data");
-//        long startTime = System.currentTimeMillis();
+//        long startTime = SystemClock.now()();
 //        for (int i = 0; i < 100000; i++) {
 //            try {
 //                FileUtils.write(file, message, Charset.defaultCharset(), true);
@@ -85,7 +85,7 @@
 //
 //            }
 //        }
-//        System.out.println(System.currentTimeMillis() - startTime);
+//        System.out.println(SystemClock.now()() - startTime);
 //    }
 //
 //    /**
@@ -95,16 +95,16 @@
 //     */
 //    @Test
 //    void bufferedOutPutStreamTest() throws IOException {
-//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
+//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(SystemClock.now()()).build()).getBytes(StandardCharsets.UTF_8));
 //        BufferedOutputStream bouput = new BufferedOutputStream(
 //                new FileOutputStream("temp4.data", true));
-//        long start2 = System.currentTimeMillis();
+//        long start2 = SystemClock.now()();
 //        for (int i = 0; i < 10000000; i++) {
 //            bouput.write((i + "," + message + "\n").getBytes(StandardCharsets.UTF_8));
 //            bouput.flush();
 //        }
 //        bouput.close();
-//        long stop2 = System.currentTimeMillis();
+//        long stop2 = SystemClock.now()();
 //        long time2 = stop2 - start2;
 //        System.out.println("BufferedWriter的时间差为：" + time2 + " 毫秒");
 //    }
@@ -117,16 +117,16 @@
 //     */
 //    @Test
 //    void bufferedOutPutStreamEndFlushTest() throws IOException {
-//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
+//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(SystemClock.now()()).build()).getBytes(StandardCharsets.UTF_8));
 //        BufferedOutputStream bouput = new BufferedOutputStream(
 //                new FileOutputStream("temp5.data", true));
-//        long start2 = System.currentTimeMillis();
+//        long start2 = SystemClock.now()();
 //        for (int i = 0; i < 10000000; i++) {
 //            bouput.write((i + "," + message + "\n").getBytes(StandardCharsets.UTF_8));
 //        }
 //        bouput.flush();
 //        bouput.close();
-//        long stop2 = System.currentTimeMillis();
+//        long stop2 = SystemClock.now()();
 //        long time2 = stop2 - start2;
 //        System.out.println("BufferedWriter的时间差为：" + time2 + " 毫秒");
 //    }
@@ -138,25 +138,25 @@
 //         * write process
 //         * 800W 4S
 //         */
-//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
+//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(SystemClock.now()()).build()).getBytes(StandardCharsets.UTF_8));
 //        File file = new File("temp6.data");
 //        if (file.exists()) {
 //            file.delete();
 //        }
 //        BufferedOutputStream bouput = new BufferedOutputStream(
 //                new FileOutputStream(file, true));
-//        long start2 = System.currentTimeMillis();
-//        long flushTime = System.currentTimeMillis();
+//        long start2 = SystemClock.now()();
+//        long flushTime = SystemClock.now()();
 //        int offset = 0;
 //        int selectOffset = 0;
 //        int selectBytes = 0;
 //        for (int i = 0; i < 8000000; i++) {
 //            byte[] data = (i + "@" + message).getBytes(StandardCharsets.UTF_8);
 //            bouput.write(data);
-//            if (System.currentTimeMillis() - flushTime > 200) {
+//            if (SystemClock.now()() - flushTime > 200) {
 //                //内存 -> 磁盘 刷盘
 //                bouput.flush();
-//                flushTime = System.currentTimeMillis();
+//                flushTime = SystemClock.now()();
 //            }
 //            offset = offset + data.length;
 //            if (i == 7000001) {
@@ -165,7 +165,7 @@
 //            }
 //        }
 //        bouput.close();
-//        long stop2 = System.currentTimeMillis();
+//        long stop2 = SystemClock.now()();
 //        long time2 = stop2 - start2;
 //        System.out.println("BufferedWriter的时间差为：" + time2 + " 毫秒");
 //
@@ -201,7 +201,7 @@
 //         * write process
 //         * 800W 4S
 //         */
-//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(System.currentTimeMillis()).build()).getBytes(StandardCharsets.UTF_8));
+//        String message = CompressUtil.GZIP.compressWithBytes(JSON.toJSONString(Message.builder().id(1L).data(simple_data).createTime(SystemClock.now()()).build()).getBytes(StandardCharsets.UTF_8));
 //        File file = new File("temp7.data");
 //        if (file.exists()) {
 //            file.delete();
@@ -209,18 +209,18 @@
 //        FileChannel fileChannel = new RandomAccessFile(file, "rw").getChannel();
 //        //1G
 //        MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, 1024 * 1024 * 1024);
-//        long start2 = System.currentTimeMillis();
-//        long flushTime = System.currentTimeMillis();
+//        long start2 = SystemClock.now()();
+//        long flushTime = SystemClock.now()();
 //        int offset = 0;
 //        int selectOffset = 0;
 //        int selectBytes = 0;
 //        for (int i = 0; i < 8000000; i++) {
 //            byte[] data = (i + "@" + message).getBytes(StandardCharsets.UTF_8);
 //            mappedByteBuffer.put(data);
-//            if (System.currentTimeMillis() - flushTime > 200) {
+//            if (SystemClock.now()() - flushTime > 200) {
 //                //内存-> 磁盘 刷盘
 //                mappedByteBuffer.force();
-//                flushTime = System.currentTimeMillis();
+//                flushTime = SystemClock.now()();
 //            }
 //            offset = offset + data.length;
 //            if (i == 7000001) {
@@ -230,7 +230,7 @@
 //        }
 //        //内存-> 磁盘 刷盘
 //        mappedByteBuffer.force();
-//        long stop2 = System.currentTimeMillis();
+//        long stop2 = SystemClock.now()();
 //        long time2 = stop2 - start2;
 //        System.out.println("mappedByteBufferTest的时间差为：" + time2 + " 毫秒");
 //

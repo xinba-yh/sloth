@@ -1,5 +1,6 @@
 package com.tsingj.sloth.store.mock;
 
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.store.StorageEngine;
 import com.tsingj.sloth.store.pojo.Message;
 import com.tsingj.sloth.store.pojo.PutMessageResult;
@@ -34,7 +35,7 @@ public class ProducerClient {
         CountDownLatch countDownLatch = new CountDownLatch(partitionCount);
         ExecutorService executorService = Executors.newFixedThreadPool(8);
 
-        long producerStartTime = System.currentTimeMillis();
+        long producerStartTime = SystemClock.now();
         for (int i = 0; i < partitionCount; i++) {
             int partition = i + 1;
             String helloWorld = "hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hellhello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello world.hello wor";
@@ -60,7 +61,7 @@ public class ProducerClient {
 
         try {
             countDownLatch.await(10, TimeUnit.SECONDS);
-            LOGGER.info("producer count:{} cost:{}", partitionMessageCount * 9, System.currentTimeMillis() - producerStartTime);
+            LOGGER.info("producer count:{} cost:{}", partitionMessageCount * 9, SystemClock.now() - producerStartTime);
             executorService.shutdown();
         } catch (InterruptedException ignored) {
         }

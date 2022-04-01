@@ -1,5 +1,6 @@
 package com.tsingj.sloth.store.datalog;
 
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.store.constants.CommonConstants;
@@ -46,7 +47,7 @@ public class DataLog {
         //------------------补充并获取存储信息------------------
 
         //set 存储时间
-        message.setStoreTimestamp(System.currentTimeMillis());
+        message.setStoreTimestamp(SystemClock.now());
         //set crc
         message.setCrc(CrcUtil.crc32(message.getBody()));
         //set version  1-127

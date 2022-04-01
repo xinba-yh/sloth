@@ -4,6 +4,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.tsingj.sloth.client.RemoteCorrelationManager;
 import com.tsingj.sloth.client.SlothRemoteClient;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.remoting.ResponseFuture;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
@@ -34,7 +35,7 @@ public class SlothRemoteProducer {
                 .version(ProtocolConstants.VERSION)
                 .command(ProtocolConstants.Command.SEND_MESSAGE)
                 .requestType(ProtocolConstants.RequestType.ONE_WAY)
-                .timestamp(System.currentTimeMillis())
+                .timestamp(SystemClock.now())
                 .data(message.toByteArray())
                 .build();
         slothRemoteClient.getChannel().writeAndFlush(dataPackage);
@@ -52,7 +53,7 @@ public class SlothRemoteProducer {
                     .command(ProtocolConstants.Command.SEND_MESSAGE)
                     .requestType(ProtocolConstants.RequestType.SYNC)
                     .correlationId(currentCorrelationId)
-                    .timestamp(System.currentTimeMillis())
+                    .timestamp(SystemClock.now())
                     .data(message.toByteArray())
                     .build();
 

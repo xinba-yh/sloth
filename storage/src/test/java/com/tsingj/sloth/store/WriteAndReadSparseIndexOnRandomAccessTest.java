@@ -63,7 +63,7 @@
 //
 //                //写timeindex timestamp -> offset
 //                ByteBuffer timeIndexByteBuffer = ByteBuffer.allocate(16);
-//                timeIndexByteBuffer.putLong(System.currentTimeMillis());
+//                timeIndexByteBuffer.putLong(SystemClock.now()());
 //                timeIndexByteBuffer.putLong(offset);
 //                timeIndexWriter.write(timeIndexByteBuffer.array());
 //            }

@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.*;
 
 /**
- * Created by yanghao on 2017/8/29.
+ *
+ * @author yanghao
+ * @date 2017/8/29
  */
 public class FixedThreadPoolExecutor extends ThreadPoolExecutor {
 

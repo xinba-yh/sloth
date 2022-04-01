@@ -16,6 +16,7 @@
  */
 package com.tsingj.sloth.remoting;
 
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
 
 import java.util.concurrent.CountDownLatch;
@@ -41,11 +42,11 @@ public class ResponseFuture {
     public ResponseFuture(long correlationId, long timeoutMillis) {
         this.correlationId = correlationId;
         this.timeoutMillis = timeoutMillis;
-        this.startTimestamp = System.currentTimeMillis();
+        this.startTimestamp = SystemClock.now();
     }
 
     public boolean isTimeout() {
-        return System.currentTimeMillis() - this.startTimestamp > this.timeoutMillis;
+        return SystemClock.now() - this.startTimestamp > this.timeoutMillis;
     }
 
     public DataPackage waitResponse() throws InterruptedException {

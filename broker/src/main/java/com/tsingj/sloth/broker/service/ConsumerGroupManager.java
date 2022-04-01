@@ -1,5 +1,6 @@
 package com.tsingj.sloth.broker.service;
 
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.remoting.message.Remoting;
@@ -63,7 +64,7 @@ public class ConsumerGroupManager {
             this.notifyConsumerReBalanceEvent(groupName, topic, clientId);
         } else {
             //刷新心跳时间
-            consumerChannel.setTimestamp(System.currentTimeMillis());
+            consumerChannel.setTimestamp(SystemClock.now());
         }
         return Results.success(consumerChannel.getPartitions());
     }
@@ -105,7 +106,7 @@ public class ConsumerGroupManager {
                 .version(ProtocolConstants.VERSION)
                 .command(ProtocolConstants.Command.BROKER_NOTIFY)
                 .requestType(ProtocolConstants.RequestType.ONE_WAY)
-                .timestamp(System.currentTimeMillis())
+                .timestamp(SystemClock.now())
                 .data(notify.toByteArray())
                 .build();
     }
@@ -129,7 +130,8 @@ public class ConsumerGroupManager {
         for (ConsumerChannel consumerChannel : consumerChannels) {
             List<Integer> partitions = clientIdPartitions.get(consumerChannel.getClientId());
             if (partitions != null && partitions.size() > 0) {
-                consumerChannel.setPartitions(partitions);
+                List<Integer> sortedPartitions = partitions.stream().sorted().collect(Collectors.toList());
+                consumerChannel.setPartitions(sortedPartitions);
             }
         }
     }
@@ -142,7 +144,7 @@ public class ConsumerGroupManager {
     public static class ConsumerChannel {
         private String clientId;
         private Channel channel;
-        private long timestamp = System.currentTimeMillis();
+        private long timestamp = SystemClock.now();
         private volatile List<Integer> partitions = new ArrayList<>();
 
         public ConsumerChannel(String clientId, Channel channel) {

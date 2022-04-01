@@ -84,7 +84,7 @@
 //        StreamObserver<NotificationOuterClass.SendRequest> requestObserver = notificationStub.send(responseObserver);
 //        try {
 //            for (int i = 0; i < this.producerMessageCount; i++) {
-//                long startTime = System.currentTimeMillis();
+//                long startTime = SystemClock.now()();
 //                String body = "hello world! " + i;
 //                NotificationOuterClass.SendRequest request = NotificationOuterClass.SendRequest.newBuilder()
 //                        .setRequestType(NotificationOuterClass.SendRequest.SendRequestType.MESSAGE)
@@ -103,7 +103,7 @@
 //                if (i % 10000 == 0) {
 //                    System.out.println("----------------send " + i + "---------------");
 //                }
-//                long takeTime = System.currentTimeMillis() - startTime;
+//                long takeTime = SystemClock.now()() - startTime;
 //                if (takeTime > 100) {
 //                    System.out.println("send slow!" + takeTime + " ms");
 //                }

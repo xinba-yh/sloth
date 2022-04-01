@@ -1,5 +1,6 @@
 package com.tsingj.sloth.store.mock;
 
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.store.StorageEngine;
 import com.tsingj.sloth.store.pojo.*;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ public class ConsumerClient {
 
     public void start() {
         final CountDownLatch countDownLatch = new CountDownLatch(partitionCount);
-        long consumerStartTime = System.currentTimeMillis();
+        long consumerStartTime = SystemClock.now();
         AtomicLong success = new AtomicLong(0);
         for (int i = 0; i < partitionCount; i++) {
             int partition = i + 1;
@@ -79,7 +80,7 @@ public class ConsumerClient {
         }
         try {
             countDownLatch.await(20, TimeUnit.SECONDS);
-            LOGGER.info("consumer cost:{}", System.currentTimeMillis() - consumerStartTime);
+            LOGGER.info("consumer cost:{}", SystemClock.now() - consumerStartTime);
             LOGGER.info("success count {}.", success.get());
         } catch (InterruptedException ignored) {
         }

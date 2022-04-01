@@ -1,6 +1,7 @@
 package com.tsingj.sloth.broker.handler;
 
 import com.tsingj.sloth.broker.handler.processor.RemoteRequestProcessorSelector;
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
@@ -52,7 +53,7 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
             log.error("process command:{} exception", msg.getCommand(), e);
             if (msg.getRequestType() == ProtocolConstants.RequestType.SYNC) {
                 DataPackage responseDataPackage = msg;
-                responseDataPackage.setTimestamp(System.currentTimeMillis());
+                responseDataPackage.setTimestamp(SystemClock.now());
                 responseDataPackage.setData(
                         Remoting.SendResult.newBuilder()
                                 .setRetCode(Remoting.SendResult.RetCode.ERROR)

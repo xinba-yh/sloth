@@ -81,7 +81,7 @@
 //    @Test
 //    public void producerMessageTest() {
 ////        for (int j = 0; j < 200; j++) {
-//            long startTime = System.currentTimeMillis();
+//            long startTime = SystemClock.now()();
 //            int defaultProducerCount = 4;
 //            CountDownLatch countDownLatch = new CountDownLatch(defaultProducerCount);
 //            int producerMessageCount = 50000;
@@ -91,7 +91,7 @@
 //            }
 //            try {
 //                countDownLatch.await(60, TimeUnit.SECONDS);
-//                log.info("sendAndReceive:{},cost:{} ms", defaultProducerCount * producerMessageCount, System.currentTimeMillis() - startTime);
+//                log.info("sendAndReceive:{},cost:{} ms", defaultProducerCount * producerMessageCount, SystemClock.now()() - startTime);
 //            } catch (InterruptedException e) {
 //                log.warn("wait producer timeout!");
 //            }
