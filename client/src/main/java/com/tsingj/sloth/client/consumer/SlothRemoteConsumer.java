@@ -71,7 +71,7 @@ public class SlothRemoteConsumer {
         if (topicPartitions != null && topicPartitions.size() > 0) {
             //todo 定义max consumer
             for (Integer topicPartition : topicPartitions) {
-                TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.groupName, this.topic, topicPartition);
+                TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.consumerProperties, topicPartition);
                 Thread thread = new Thread(topicPartitionConsumer);
                 thread.setName(this.topic + "-" + topicPartition);
                 thread.start();
@@ -105,10 +105,10 @@ public class SlothRemoteConsumer {
 
         @Override
         public void run() {
-            log.debug("run heartbeat timer task.");
+            log.trace("run heartbeat timer task.");
             SlothRemoteConsumer slothRemoteConsumer = SlothConsumerManager.get(this.topic);
             slothRemoteConsumer.heartBeatAndReBalanceCheck();
-            log.debug("run heartbeat timer task done.");
+            log.trace("run heartbeat timer task done.");
         }
 
     }
@@ -150,14 +150,13 @@ public class SlothRemoteConsumer {
         for (Integer shouldConsumerPartition : shouldConsumerPartitions) {
             //2.2、新增缺少消费者的partition消费者线程
             if (!currentConsumePartitions.contains(shouldConsumerPartition)) {
-                TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.groupName, this.topic, shouldConsumerPartition);
+                TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.consumerProperties, shouldConsumerPartition);
                 Thread thread = new Thread(topicPartitionConsumer);
                 thread.setName(this.topic + "-" + shouldConsumerPartition);
                 thread.start();
                 topicPartitionConsumerMap.put(shouldConsumerPartition, topicPartitionConsumer);
             }
         }
-        log.info("topic:{} reBalance done", this.topic);
     }
 
     public List<Integer> getCurrentConsumerPartitions() {
