@@ -46,7 +46,7 @@ public class SlothConfiguration {
         String brokerUrl = slothClientProperties.getBrokerUrl();
         Assert.notNull(brokerUrl, "Please check your properties , brokerUrl is null!");
         String[] brokerUrlArr = brokerUrl.split(":");
-        Assert.isTrue(brokerUrlArr.length == 2, "please check your brokerUrl! not expect [host:port] !¬");
+        Assert.isTrue(brokerUrlArr.length == 2, "please check your brokerUrl! not expect [host:port] !");
     }
 
 }

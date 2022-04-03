@@ -147,6 +147,15 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
         }
     }
 
+    public DataLogSegment getFirstLogSegmentFile(String topic, int partition) {
+        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
+            return null;
+        } else {
+            return logSegmentsSkipListMap.firstEntry().getValue();
+        }
+    }
+
     public DataLogSegment newLogSegmentFile(String topic, int partition, long startOffset) {
         //创建文件
         String topicPartitionDirPath = storagePathHelper.getLogDir() + File.separator + topic + File.separator + partition;

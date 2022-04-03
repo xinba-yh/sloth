@@ -21,4 +21,21 @@ public interface Storage {
     GetMessageResult getMessage(String topic, int partitionId, long offset);
 
 
+    /**
+     * 获取topic-partition最大offset
+     * @param topic
+     * @param partitionId
+     * @return
+     */
+    long getMaxOffset(String topic, int partitionId);
+
+    /**
+     * 获取topic-partition最小offset
+     * @param topic
+     * @param partitionId
+     * @return
+     */
+    long getMinOffset(String topic, int partitionId);
+
+
 }

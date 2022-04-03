@@ -21,11 +21,12 @@ public class TopicPartitionConsumer implements Runnable {
 
     private final Object lock = new Object();
 
+    private final String consumeFromWhere;
+
     /**
-     * 只需要保证线程可见行
      * 当前消费offset
      */
-    private volatile long consumeOffset;
+    private AtomicLong consumeOffset;
 
     private volatile boolean running = true;
 
@@ -65,6 +66,7 @@ public class TopicPartitionConsumer implements Runnable {
         this.groupName = consumerProperties.getGroupName();
         this.topic = consumerProperties.getTopic();
         this.partition = partition;
+        this.consumeFromWhere = consumerProperties.getConsumeFromWhere();
         this.consumeWhenNoMessageInterval = consumerProperties.getConsumeWhenNoMessageInterval();
         this.consumeWhenErrorSleepTimeDefault = consumerProperties.getConsumeWhenErrorSleepTimeDefault();
         this.consumeWhenErrorSleepTimeMax = consumerProperties.getConsumeWhenErrorSleepTimeMax();
@@ -74,25 +76,23 @@ public class TopicPartitionConsumer implements Runnable {
 
     @Override
     public void run() {
-        log.info("start consumer topic:{} partition:{} .", this.topic, this.partition);
         //1、询问broker，应该从哪里开始消费
         SlothRemoteConsumer slothConsumer = SlothConsumerManager.get(topic);
         Assert.notNull(slothConsumer, "topic:" + topic + " consumer is null!");
-        Long consumerOffset = slothConsumer.getConsumerOffset(this.groupName, this.topic, this.partition);
-        if (consumerOffset == null) {
-            //定时心跳会check并再次拉起。
+        //注意：如果resetConsumeOffset失败，定时心跳会check并再次拉起。
+        boolean success = this.resetConsumeOffset(slothConsumer);
+        if (!success) {
             slothConsumer.removeTopicPartitionConsumerMapping(this.partition);
-            log.error("get topic:{} partition:{} consumerOffset fail!", this.topic, this.partition);
+            log.error("reset topic:{} partition:{} consumeOffset fail!", this.topic, this.partition);
             return;
         }
-        this.consumeOffset = consumerOffset + 1;
-
+        log.info("start consumer topic:{} partition:{} offset {}.", this.topic, this.partition, this.consumeOffset);
         //2、开始消费
         try {
             while (running) {
                 try {
                     //1、获取消息
-                    Remoting.GetMessageResult getMessageResult = slothConsumer.fetchMessage(this.topic, this.partition, this.consumeOffset);
+                    Remoting.GetMessageResult getMessageResult = slothConsumer.fetchMessage(this.topic, this.partition, this.consumeOffset.get());
                     if (getMessageResult == null || getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.ERROR) {
                         this.errorSleep();
                     } else {
@@ -101,14 +101,14 @@ public class TopicPartitionConsumer implements Runnable {
                         }
                         //1.2、根据消息状态判断，如果没有可以消费的消息则休眠一段时间
                         if (getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.NOT_FOUND) {
-                            log.debug("fetch message topic:{} partition:{} offset:{}, got NOT_FOUND!", this.topic, this.partition, this.consumeOffset);
+                            log.debug("fetch message topic:{} partition:{} offset:{}, got NOT_FOUND!", this.topic, this.partition, this.consumeOffset.get());
                             this.waitMills(this.consumeWhenNoMessageInterval);
                         }//2、获取到消息，触发回调
                         else if (getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.FOUND) {
                             Remoting.GetMessageResult.Message message = getMessageResult.getMessage();
-                            ConsumerStatus consumerStatus = slothConsumer.getMessageListener().consumeMessage(message);
+                            ConsumeStatus consumeStatus = slothConsumer.getMessageListener().consumeMessage(message);
                             //2.1、用户消费成功,提交offset
-                            if (consumerStatus == ConsumerStatus.SUCCESS) {
+                            if (consumeStatus == ConsumeStatus.SUCCESS) {
                                 if (this.consumeFailTimes.get() != 0) {
                                     this.consumeFailTimes.set(0);
                                 }
@@ -117,8 +117,8 @@ public class TopicPartitionConsumer implements Runnable {
                                 //2.2、用户消费失败，重试maxTimes后，提交offset，skip当前message，未来支持死信队列。
                                 long currConsumeFailTimes = this.consumeFailTimes.incrementAndGet();
                                 if (currConsumeFailTimes > this.consumeWhenListenerErrorMaxTimes) {
-                                    log.warn("topic:{} partition:{} consume offset:{} fail maxTimes:{}, skip this offset!", this.topic, this.partition, this.consumeOffset, this.consumeWhenListenerErrorMaxTimes);
-                                    this.incrementConsumeOffset();
+                                    log.warn("topic:{} partition:{} consume offset:{} fail maxTimes:{}, skip this offset!", this.topic, this.partition, this.consumeOffset.get(), this.consumeWhenListenerErrorMaxTimes);
+                                    this.consumeOffset.incrementAndGet();
                                 }
                                 this.userConsumeFailSleep(currConsumeFailTimes);
                             }
@@ -138,17 +138,54 @@ public class TopicPartitionConsumer implements Runnable {
         }
     }
 
+    private boolean resetConsumeOffset(SlothRemoteConsumer slothConsumer) {
+        try {
+            Long consumerOffset = slothConsumer.getConsumerOffset(this.groupName, this.topic, this.partition);
+            if (consumerOffset == null) {
+                return false;
+            }
+            //1、-1为没有提交过consume offset，EARLIEST获取minOffset，LATEST获取maxOffset。
+            if (consumerOffset == -1) {
+                //why EARLIEST需要获取最小的offset，而不是从0开始？ 因为可能已经超过了配置保留天数,minOffset不再是0。
+                if (ConsumeFromWhere.EARLIEST.equals(this.consumeFromWhere)) {
+                    Long minOffset = slothConsumer.getMinOffset(this.topic, this.partition);
+                    if (minOffset == null) {
+                        return false;
+                    }
+                    this.consumeOffset = new AtomicLong(minOffset);
+                } else if (ConsumeFromWhere.LATEST.equals(this.consumeFromWhere)) {
+                    Long maxOffset = slothConsumer.getMaxOffset(this.topic, this.partition);
+                    if (maxOffset == null) {
+                        return false;
+                    }
+                    this.consumeOffset = new AtomicLong(maxOffset + 1);
+                } else {
+                    log.error("unsupported consumeFromWhere:{}!", this.consumeFromWhere);
+                    return false;
+                }
+            }
+            //2、提交过consume offset,则从提交的consumerOffset+1开始
+            else {
+                this.consumeOffset = new AtomicLong(consumerOffset + 1);
+            }
+            return true;
+        } catch (Throwable e) {
+            log.error("reset consume offset fail!", e);
+            return false;
+        }
+    }
+
 
     private void submitOffset(SlothRemoteConsumer slothConsumer) {
-        Remoting.SubmitConsumerOffsetResult submitConsumerOffsetResult = slothConsumer.submitOffset(this.groupName, this.topic, this.partition, this.consumeOffset);
+        Remoting.SubmitConsumerOffsetResult submitConsumerOffsetResult = slothConsumer.submitOffset(this.groupName, this.topic, this.partition, this.consumeOffset.get());
         if (submitConsumerOffsetResult == null) {
-            log.warn("topic:{} partition:{} submit offset:{} may timeout or exception!", this.topic, this.partition, this.consumeOffset);
+            log.warn("topic:{} partition:{} submit offset:{} may timeout or exception!", this.topic, this.partition, this.consumeOffset.get());
             this.errorSleep();
         } else if (submitConsumerOffsetResult.getRetCode() == Remoting.RetCode.SUCCESS) {
-            log.debug("topic:{} partition:{} submit offset:{} success!", this.topic, this.partition, this.consumeOffset);
-            this.incrementConsumeOffset();
+            log.debug("topic:{} partition:{} submit offset:{} success!", this.topic, this.partition, this.consumeOffset.get());
+            this.consumeOffset.incrementAndGet();
         } else {
-            log.warn("topic:{} partition:{} submit offset:{} fail! {}", this.topic, this.partition, this.consumeOffset, submitConsumerOffsetResult.getErrorInfo());
+            log.warn("topic:{} partition:{} submit offset:{} fail! {}", this.topic, this.partition, this.consumeOffset.get(), submitConsumerOffsetResult.getErrorInfo());
             this.errorSleep();
         }
     }
@@ -196,13 +233,8 @@ public class TopicPartitionConsumer implements Runnable {
         }
     }
 
-    public long getConsumeOffset() {
-        return this.consumeOffset;
+    public long getCurrentConsumeOffset() {
+        return this.consumeOffset.get();
     }
-
-    private void incrementConsumeOffset() {
-        this.consumeOffset++;
-    }
-
 
 }

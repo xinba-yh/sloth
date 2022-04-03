@@ -69,5 +69,15 @@ public class StorageEngine implements Storage {
         return getMessageResult;
     }
 
+    @Override
+    public long getMaxOffset(String topic, int partitionId) {
+        return dataLog.getMaxOffset(topic,partitionId);
+    }
+
+    @Override
+    public long getMinOffset(String topic, int partitionId) {
+        return dataLog.getMinOffset(topic,partitionId);
+    }
+
 
 }

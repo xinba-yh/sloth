@@ -1,6 +1,6 @@
 package com.tsingj.sloth.example.listener;
 
-import com.tsingj.sloth.client.consumer.ConsumerStatus;
+import com.tsingj.sloth.client.consumer.ConsumeStatus;
 import com.tsingj.sloth.client.consumer.MessageListener;
 import com.tsingj.sloth.remoting.message.Remoting;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageOrderedListener implements MessageListener {
 
     @Override
-    public ConsumerStatus consumeMessage(Remoting.GetMessageResult.Message msg) {
+    public ConsumeStatus consumeMessage(Remoting.GetMessageResult.Message msg) {
         log.info("Thread:{} topic:{} partition:{} offset:{}", Thread.currentThread().getId(), msg.getTopic(), msg.getPartition(), msg.getOffset());
-        return ConsumerStatus.SUCCESS;
+        return ConsumeStatus.SUCCESS;
     }
 
 }

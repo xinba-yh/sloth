@@ -8,6 +8,6 @@ import com.tsingj.sloth.remoting.message.Remoting;
  */
 public interface MessageListener {
 
-    ConsumerStatus consumeMessage(final Remoting.GetMessageResult.Message msg);
+    ConsumeStatus consumeMessage(final Remoting.GetMessageResult.Message msg);
 
 }

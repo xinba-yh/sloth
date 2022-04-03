@@ -3,7 +3,7 @@ package com.tsingj.sloth.client.consumer;
 /**
  * @author yanghao
  */
-public enum ConsumerStatus {
+public enum ConsumeStatus {
 
     /**
      * 消费成功

@@ -139,6 +139,22 @@ public class DataLog {
 
     }
 
+    public long getMaxOffset(String topic, int partition) {
+        DataLogSegment latestDataLogSegment = dataLogSegmentManager.getLatestLogSegmentFile(topic, partition);
+        if (latestDataLogSegment == null) {
+            return -1;
+        }
+        return latestDataLogSegment.getCurrentOffset();
+    }
+
+    public long getMinOffset(String topic, int partition) {
+        DataLogSegment firstLogSegmentFile = dataLogSegmentManager.getFirstLogSegmentFile(topic, partition);
+        if (firstLogSegmentFile == null) {
+            return 0;
+        }
+        return firstLogSegmentFile.getFileFromOffset();
+    }
+
 
     public static class StoreEncoder {
 

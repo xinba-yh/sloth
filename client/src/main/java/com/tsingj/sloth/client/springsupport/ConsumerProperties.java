@@ -1,5 +1,6 @@
 package com.tsingj.sloth.client.springsupport;
 
+import com.tsingj.sloth.client.consumer.ConsumeFromWhere;
 import lombok.Data;
 
 import java.util.Map;
@@ -19,6 +20,8 @@ public class ConsumerProperties {
     private String groupName;
 
     private String listener;
+
+    private String consumeFromWhere = ConsumeFromWhere.EARLIEST;
 
     /**
      * 最大消费partition数量

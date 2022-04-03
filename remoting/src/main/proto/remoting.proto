@@ -140,5 +140,15 @@ message GetMessageResult {
 
 }
 
+message GetOffsetRequest {
+    string topic = 1;
+    uint32 partition = 2;
+}
+
+message GetOffsetResult {
+    RetCode retCode = 1;
+    string errorInfo = 2;
+    int64 offset = 3;
+}
 
 

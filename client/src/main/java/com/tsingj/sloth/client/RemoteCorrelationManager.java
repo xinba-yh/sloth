@@ -13,6 +13,7 @@ public class RemoteCorrelationManager {
 
     /**
      * The correlation id.
+     * 并发问题，可使用jdk8 LongAdder替代。
      */
     public static final AtomicLong CORRELATION_ID = new AtomicLong(1);
 

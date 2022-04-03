@@ -13888,6 +13888,1390 @@ public final class Remoting {
 
   }
 
+  public interface GetOffsetRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:GetOffsetRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string topic = 1;</code>
+     * @return The topic.
+     */
+    java.lang.String getTopic();
+    /**
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
+     */
+    com.google.protobuf.ByteString
+        getTopicBytes();
+
+    /**
+     * <code>uint32 partition = 2;</code>
+     * @return The partition.
+     */
+    int getPartition();
+  }
+  /**
+   * Protobuf type {@code GetOffsetRequest}
+   */
+  public static final class GetOffsetRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:GetOffsetRequest)
+      GetOffsetRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GetOffsetRequest.newBuilder() to construct.
+    private GetOffsetRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GetOffsetRequest() {
+      topic_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GetOffsetRequest();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private GetOffsetRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              topic_ = s;
+              break;
+            }
+            case 16: {
+
+              partition_ = input.readUInt32();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest.class, com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest.Builder.class);
+    }
+
+    public static final int TOPIC_FIELD_NUMBER = 1;
+    private volatile java.lang.Object topic_;
+    /**
+     * <code>string topic = 1;</code>
+     * @return The topic.
+     */
+    @java.lang.Override
+    public java.lang.String getTopic() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        topic_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string topic = 1;</code>
+     * @return The bytes for topic.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTopicBytes() {
+      java.lang.Object ref = topic_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        topic_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PARTITION_FIELD_NUMBER = 2;
+    private int partition_;
+    /**
+     * <code>uint32 partition = 2;</code>
+     * @return The partition.
+     */
+    @java.lang.Override
+    public int getPartition() {
+      return partition_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, topic_);
+      }
+      if (partition_ != 0) {
+        output.writeUInt32(2, partition_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, topic_);
+      }
+      if (partition_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, partition_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest other = (com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest) obj;
+
+      if (!getTopic()
+          .equals(other.getTopic())) return false;
+      if (getPartition()
+          != other.getPartition()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TOPIC_FIELD_NUMBER;
+      hash = (53 * hash) + getTopic().hashCode();
+      hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+      hash = (53 * hash) + getPartition();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code GetOffsetRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:GetOffsetRequest)
+        com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest.class, com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        topic_ = "";
+
+        partition_ = 0;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest build() {
+        com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest result = new com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest(this);
+        result.topic_ = topic_;
+        result.partition_ = partition_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest.getDefaultInstance()) return this;
+        if (!other.getTopic().isEmpty()) {
+          topic_ = other.topic_;
+          onChanged();
+        }
+        if (other.getPartition() != 0) {
+          setPartition(other.getPartition());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private java.lang.Object topic_ = "";
+      /**
+       * <code>string topic = 1;</code>
+       * @return The topic.
+       */
+      public java.lang.String getTopic() {
+        java.lang.Object ref = topic_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          topic_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @return The bytes for topic.
+       */
+      public com.google.protobuf.ByteString
+          getTopicBytes() {
+        java.lang.Object ref = topic_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          topic_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @param value The topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopic(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTopic() {
+        
+        topic_ = getDefaultInstance().getTopic();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string topic = 1;</code>
+       * @param value The bytes for topic to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTopicBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        topic_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int partition_ ;
+      /**
+       * <code>uint32 partition = 2;</code>
+       * @return The partition.
+       */
+      @java.lang.Override
+      public int getPartition() {
+        return partition_;
+      }
+      /**
+       * <code>uint32 partition = 2;</code>
+       * @param value The partition to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPartition(int value) {
+        
+        partition_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 partition = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPartition() {
+        
+        partition_ = 0;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:GetOffsetRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:GetOffsetRequest)
+    private static final com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GetOffsetRequest>
+        PARSER = new com.google.protobuf.AbstractParser<GetOffsetRequest>() {
+      @java.lang.Override
+      public GetOffsetRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetOffsetRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GetOffsetRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetOffsetRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.GetOffsetRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GetOffsetResultOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:GetOffsetResult)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    int getRetCodeValue();
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode();
+
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    java.lang.String getErrorInfo();
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    com.google.protobuf.ByteString
+        getErrorInfoBytes();
+
+    /**
+     * <code>int64 offset = 3;</code>
+     * @return The offset.
+     */
+    long getOffset();
+  }
+  /**
+   * Protobuf type {@code GetOffsetResult}
+   */
+  public static final class GetOffsetResult extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:GetOffsetResult)
+      GetOffsetResultOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GetOffsetResult.newBuilder() to construct.
+    private GetOffsetResult(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GetOffsetResult() {
+      retCode_ = 0;
+      errorInfo_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new GetOffsetResult();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private GetOffsetResult(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 8: {
+              int rawValue = input.readEnum();
+
+              retCode_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              errorInfo_ = s;
+              break;
+            }
+            case 24: {
+
+              offset_ = input.readInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetResult_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetResult_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult.class, com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult.Builder.class);
+    }
+
+    public static final int RETCODE_FIELD_NUMBER = 1;
+    private int retCode_;
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The enum numeric value on the wire for retCode.
+     */
+    @java.lang.Override public int getRetCodeValue() {
+      return retCode_;
+    }
+    /**
+     * <code>.RetCode retCode = 1;</code>
+     * @return The retCode.
+     */
+    @java.lang.Override public com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode() {
+      @SuppressWarnings("deprecation")
+      com.tsingj.sloth.remoting.message.Remoting.RetCode result = com.tsingj.sloth.remoting.message.Remoting.RetCode.valueOf(retCode_);
+      return result == null ? com.tsingj.sloth.remoting.message.Remoting.RetCode.UNRECOGNIZED : result;
+    }
+
+    public static final int ERRORINFO_FIELD_NUMBER = 2;
+    private volatile java.lang.Object errorInfo_;
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The errorInfo.
+     */
+    @java.lang.Override
+    public java.lang.String getErrorInfo() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        errorInfo_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string errorInfo = 2;</code>
+     * @return The bytes for errorInfo.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getErrorInfoBytes() {
+      java.lang.Object ref = errorInfo_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorInfo_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int OFFSET_FIELD_NUMBER = 3;
+    private long offset_;
+    /**
+     * <code>int64 offset = 3;</code>
+     * @return The offset.
+     */
+    @java.lang.Override
+    public long getOffset() {
+      return offset_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.RetCode.SUCCESS.getNumber()) {
+        output.writeEnum(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, errorInfo_);
+      }
+      if (offset_ != 0L) {
+        output.writeInt64(3, offset_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (retCode_ != com.tsingj.sloth.remoting.message.Remoting.RetCode.SUCCESS.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(1, retCode_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorInfo_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, errorInfo_);
+      }
+      if (offset_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, offset_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult)) {
+        return super.equals(obj);
+      }
+      com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult other = (com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult) obj;
+
+      if (retCode_ != other.retCode_) return false;
+      if (!getErrorInfo()
+          .equals(other.getErrorInfo())) return false;
+      if (getOffset()
+          != other.getOffset()) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RETCODE_FIELD_NUMBER;
+      hash = (53 * hash) + retCode_;
+      hash = (37 * hash) + ERRORINFO_FIELD_NUMBER;
+      hash = (53 * hash) + getErrorInfo().hashCode();
+      hash = (37 * hash) + OFFSET_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getOffset());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code GetOffsetResult}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:GetOffsetResult)
+        com.tsingj.sloth.remoting.message.Remoting.GetOffsetResultOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetResult_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetResult_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult.class, com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult.Builder.class);
+      }
+
+      // Construct using com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        retCode_ = 0;
+
+        errorInfo_ = "";
+
+        offset_ = 0L;
+
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.internal_static_GetOffsetResult_descriptor;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult getDefaultInstanceForType() {
+        return com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult build() {
+        com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult buildPartial() {
+        com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult result = new com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult(this);
+        result.retCode_ = retCode_;
+        result.errorInfo_ = errorInfo_;
+        result.offset_ = offset_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult) {
+          return mergeFrom((com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult other) {
+        if (other == com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult.getDefaultInstance()) return this;
+        if (other.retCode_ != 0) {
+          setRetCodeValue(other.getRetCodeValue());
+        }
+        if (!other.getErrorInfo().isEmpty()) {
+          errorInfo_ = other.errorInfo_;
+          onChanged();
+        }
+        if (other.getOffset() != 0L) {
+          setOffset(other.getOffset());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private int retCode_ = 0;
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return The enum numeric value on the wire for retCode.
+       */
+      @java.lang.Override public int getRetCodeValue() {
+        return retCode_;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @param value The enum numeric value on the wire for retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCodeValue(int value) {
+        
+        retCode_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return The retCode.
+       */
+      @java.lang.Override
+      public com.tsingj.sloth.remoting.message.Remoting.RetCode getRetCode() {
+        @SuppressWarnings("deprecation")
+        com.tsingj.sloth.remoting.message.Remoting.RetCode result = com.tsingj.sloth.remoting.message.Remoting.RetCode.valueOf(retCode_);
+        return result == null ? com.tsingj.sloth.remoting.message.Remoting.RetCode.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @param value The retCode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRetCode(com.tsingj.sloth.remoting.message.Remoting.RetCode value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        retCode_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.RetCode retCode = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRetCode() {
+        
+        retCode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object errorInfo_ = "";
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The errorInfo.
+       */
+      public java.lang.String getErrorInfo() {
+        java.lang.Object ref = errorInfo_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          errorInfo_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return The bytes for errorInfo.
+       */
+      public com.google.protobuf.ByteString
+          getErrorInfoBytes() {
+        java.lang.Object ref = errorInfo_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errorInfo_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfo(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearErrorInfo() {
+        
+        errorInfo_ = getDefaultInstance().getErrorInfo();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string errorInfo = 2;</code>
+       * @param value The bytes for errorInfo to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorInfoBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        errorInfo_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long offset_ ;
+      /**
+       * <code>int64 offset = 3;</code>
+       * @return The offset.
+       */
+      @java.lang.Override
+      public long getOffset() {
+        return offset_;
+      }
+      /**
+       * <code>int64 offset = 3;</code>
+       * @param value The offset to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOffset(long value) {
+        
+        offset_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 offset = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOffset() {
+        
+        offset_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:GetOffsetResult)
+    }
+
+    // @@protoc_insertion_point(class_scope:GetOffsetResult)
+    private static final com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult();
+    }
+
+    public static com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GetOffsetResult>
+        PARSER = new com.google.protobuf.AbstractParser<GetOffsetResult>() {
+      @java.lang.Override
+      public GetOffsetResult parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetOffsetResult(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GetOffsetResult> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetOffsetResult> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.tsingj.sloth.remoting.message.Remoting.GetOffsetResult getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Notify_descriptor;
   private static final 
@@ -13973,6 +15357,16 @@ public final class Remoting {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_GetMessageResult_Message_PropertiesEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetOffsetRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetOffsetRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_GetOffsetResult_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_GetOffsetResult_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -14027,9 +15421,12 @@ public final class Remoting {
       "\007version\030\007 \001(\r\022\013\n\003crc\030\010 \001(\005\0321\n\017Propertie" +
       "sEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"." +
       "\n\007RetCode\022\t\n\005FOUND\020\000\022\r\n\tNOT_FOUND\020\001\022\t\n\005E" +
-      "RROR\020\002*!\n\007RetCode\022\013\n\007SUCCESS\020\000\022\t\n\005ERROR\020" +
-      "\001B#\n!com.tsingj.sloth.remoting.messageb\006" +
-      "proto3"
+      "RROR\020\002\"4\n\020GetOffsetRequest\022\r\n\005topic\030\001 \001(" +
+      "\t\022\021\n\tpartition\030\002 \001(\r\"O\n\017GetOffsetResult\022" +
+      "\031\n\007retCode\030\001 \001(\0162\010.RetCode\022\021\n\terrorInfo\030" +
+      "\002 \001(\t\022\016\n\006offset\030\003 \001(\003*!\n\007RetCode\022\013\n\007SUCC" +
+      "ESS\020\000\022\t\n\005ERROR\020\001B#\n!com.tsingj.sloth.rem" +
+      "oting.messageb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -14137,6 +15534,18 @@ public final class Remoting {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_GetMessageResult_Message_PropertiesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
+    internal_static_GetOffsetRequest_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_GetOffsetRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetOffsetRequest_descriptor,
+        new java.lang.String[] { "Topic", "Partition", });
+    internal_static_GetOffsetResult_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_GetOffsetResult_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_GetOffsetResult_descriptor,
+        new java.lang.String[] { "RetCode", "ErrorInfo", "Offset", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
