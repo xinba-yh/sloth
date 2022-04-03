@@ -196,6 +196,7 @@ public class TopicPartitionConsumer implements Runnable {
     }
 
     public void weekUp() {
+        // TODO: 2022/4/4  add AtomicBoolean hasNotified = new AtomicBoolean(false); check.
         synchronized (this.lock) {
             this.lock.notify();
         }
