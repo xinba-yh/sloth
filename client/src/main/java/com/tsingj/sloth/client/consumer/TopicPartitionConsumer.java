@@ -23,8 +23,9 @@ public class TopicPartitionConsumer implements Runnable {
 
     /**
      * 只需要保证线程可见行
+     * 当前消费offset
      */
-    private volatile long currentOffset;
+    private volatile long consumeOffset;
 
     private volatile boolean running = true;
 
@@ -84,14 +85,14 @@ public class TopicPartitionConsumer implements Runnable {
             log.error("get topic:{} partition:{} consumerOffset fail!", this.topic, this.partition);
             return;
         }
-        this.currentOffset = consumerOffset + 1;
+        this.consumeOffset = consumerOffset + 1;
 
         //2、开始消费
         try {
             while (running) {
                 try {
                     //1、获取消息
-                    Remoting.GetMessageResult getMessageResult = slothConsumer.fetchMessage(this.topic, this.partition, this.currentOffset);
+                    Remoting.GetMessageResult getMessageResult = slothConsumer.fetchMessage(this.topic, this.partition, this.consumeOffset);
                     if (getMessageResult == null || getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.ERROR) {
                         this.errorSleep();
                     } else {
@@ -100,7 +101,7 @@ public class TopicPartitionConsumer implements Runnable {
                         }
                         //1.2、根据消息状态判断，如果没有可以消费的消息则休眠一段时间
                         if (getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.NOT_FOUND) {
-                            log.debug("fetch message topic:{} partition:{} offset:{}, got NOT_FOUND!", this.topic, this.partition, this.currentOffset);
+                            log.debug("fetch message topic:{} partition:{} offset:{}, got NOT_FOUND!", this.topic, this.partition, this.consumeOffset);
                             this.waitMills(this.consumeWhenNoMessageInterval);
                         }//2、获取到消息，触发回调
                         else if (getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.FOUND) {
@@ -116,8 +117,8 @@ public class TopicPartitionConsumer implements Runnable {
                                 //2.2、用户消费失败，重试maxTimes后，提交offset，skip当前message，未来支持死信队列。
                                 long currConsumeFailTimes = this.consumeFailTimes.incrementAndGet();
                                 if (currConsumeFailTimes > this.consumeWhenListenerErrorMaxTimes) {
-                                    log.warn("topic:{} partition:{} consume offset:{} fail maxTimes:{}, skip this offset!", this.topic, this.partition, this.currentOffset, this.consumeWhenListenerErrorMaxTimes);
-                                    this.submitOffset(slothConsumer);
+                                    log.warn("topic:{} partition:{} consume offset:{} fail maxTimes:{}, skip this offset!", this.topic, this.partition, this.consumeOffset, this.consumeWhenListenerErrorMaxTimes);
+                                    this.incrementConsumeOffset();
                                 }
                                 this.userConsumeFailSleep(currConsumeFailTimes);
                             }
@@ -137,16 +138,17 @@ public class TopicPartitionConsumer implements Runnable {
         }
     }
 
+
     private void submitOffset(SlothRemoteConsumer slothConsumer) {
-        Remoting.SubmitConsumerOffsetResult submitConsumerOffsetResult = slothConsumer.submitOffset(this.groupName, this.topic, this.partition, this.currentOffset);
+        Remoting.SubmitConsumerOffsetResult submitConsumerOffsetResult = slothConsumer.submitOffset(this.groupName, this.topic, this.partition, this.consumeOffset);
         if (submitConsumerOffsetResult == null) {
-            log.warn("topic:{} partition:{} submit offset:{} may timeout or exception!", this.topic, this.partition, this.currentOffset);
+            log.warn("topic:{} partition:{} submit offset:{} may timeout or exception!", this.topic, this.partition, this.consumeOffset);
             this.errorSleep();
         } else if (submitConsumerOffsetResult.getRetCode() == Remoting.RetCode.SUCCESS) {
-            log.debug("topic:{} partition:{} submit offset:{} success!", this.topic, this.partition, this.currentOffset);
-            this.currentOffset = this.currentOffset + 1;
+            log.debug("topic:{} partition:{} submit offset:{} success!", this.topic, this.partition, this.consumeOffset);
+            this.incrementConsumeOffset();
         } else {
-            log.warn("topic:{} partition:{} submit offset:{} fail! {}", this.topic, this.partition, this.currentOffset, submitConsumerOffsetResult.getErrorInfo());
+            log.warn("topic:{} partition:{} submit offset:{} fail! {}", this.topic, this.partition, this.consumeOffset, submitConsumerOffsetResult.getErrorInfo());
             this.errorSleep();
         }
     }
@@ -194,8 +196,13 @@ public class TopicPartitionConsumer implements Runnable {
         }
     }
 
-    public long getCurrentOffset() {
-        return this.currentOffset;
+    public long getConsumeOffset() {
+        return this.consumeOffset;
     }
+
+    private void incrementConsumeOffset() {
+        this.consumeOffset++;
+    }
+
 
 }

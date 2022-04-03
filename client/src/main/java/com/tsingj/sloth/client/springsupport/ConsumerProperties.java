@@ -27,8 +27,9 @@ public class ConsumerProperties {
 
     /**
      * partition消费时，无消息可以消费状态拉取间隔
+     * if fetch interval has new message , broker will notify weekUp message
      */
-    private Integer consumeWhenNoMessageInterval = 200;
+    private Integer consumeWhenNoMessageInterval = 1000;
 
     /**
      * partition消费时，默认错误休眠时间，default 200ms

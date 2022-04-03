@@ -39,7 +39,7 @@ public class RemoteClientHandler extends SimpleChannelInboundHandler<DataPackage
             }
             responseFuture.putResponse(dataPackage);
             //broker主动消息，client需要回复
-            // TODO: 2022/4/1 暂无。
+            // TODO: 2022/4/1 暂无此类消息。
         } else {
             if (dataPackage.getCommand() == ProtocolConstants.Command.BROKER_NOTIFY) {
                 log.info("receive BROKER_NOTIFY.");

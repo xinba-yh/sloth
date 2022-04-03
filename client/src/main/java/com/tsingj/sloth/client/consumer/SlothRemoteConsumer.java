@@ -7,6 +7,7 @@ import com.tsingj.sloth.client.springsupport.ConsumerProperties;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.threadpool.TaskThreadFactory;
+import com.tsingj.sloth.common.threadpool.fixed.FixedThreadPoolExecutor;
 import com.tsingj.sloth.remoting.ResponseFuture;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
@@ -35,13 +36,16 @@ public class SlothRemoteConsumer {
 
     private MessageListener messageListener;
 
-    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1, new TaskThreadFactory("consumer-hb-"));
+    private final ExecutorService executorService;
 
+    private final ScheduledExecutorService scheduledExecutorService;
 
     public SlothRemoteConsumer(SlothClientProperties clientProperties, ConsumerProperties consumerProperties, SlothRemoteClient slothRemoteClient) {
         this.clientProperties = clientProperties;
         this.consumerProperties = consumerProperties;
         this.slothRemoteClient = slothRemoteClient;
+        this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1, new TaskThreadFactory("consumer-hb-"));
+        this.executorService = new FixedThreadPoolExecutor(consumerProperties.getMaxConsumePartitions(), consumerProperties.getMaxConsumePartitions(), 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(consumerProperties.getMaxConsumePartitions()), new TaskThreadFactory("consume-part"), new ThreadPoolExecutor.AbortPolicy());
     }
 
     /**
@@ -69,25 +73,20 @@ public class SlothRemoteConsumer {
         List<Integer> topicPartitions = this.heartbeat();
         //2、TopicPartitionConsumerManager
         if (topicPartitions != null && topicPartitions.size() > 0) {
-            //todo 定义max consumer
             for (Integer topicPartition : topicPartitions) {
                 TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.consumerProperties, topicPartition);
-                Thread thread = new Thread(topicPartitionConsumer);
-                thread.setName(this.topic + "-" + topicPartition);
-                thread.start();
+                executorService.execute(topicPartitionConsumer);
                 topicPartitionConsumerMap.put(topicPartition, topicPartitionConsumer);
             }
             log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, slothRemoteClient.getClientId(), topicPartitions);
         }
         //3、启动心跳和重平衡检查定时任务
-        executorService.scheduleAtFixedRate(new HeartBeatAndReBalanceCheckTimerTask(this.topic), 3000, 3000, TimeUnit.MILLISECONDS);
-
+        this.scheduledExecutorService.scheduleAtFixedRate(new HeartBeatAndReBalanceCheckTimerTask(this.topic), 3, 3, TimeUnit.SECONDS);
     }
 
     public void destroy() {
         log.info("sloth consumer {} destroy.", this.topic);
-        // TODO: 2022/3/31
-        executorService.shutdown();
+        this.scheduledExecutorService.shutdown();
     }
 
     /**
@@ -106,8 +105,12 @@ public class SlothRemoteConsumer {
         @Override
         public void run() {
             log.trace("run heartbeat timer task.");
-            SlothRemoteConsumer slothRemoteConsumer = SlothConsumerManager.get(this.topic);
-            slothRemoteConsumer.heartBeatAndReBalanceCheck();
+            try {
+                SlothRemoteConsumer slothRemoteConsumer = SlothConsumerManager.get(this.topic);
+                slothRemoteConsumer.heartBeatAndReBalanceCheck();
+            } catch (Throwable e) {
+                log.debug("heartBeatAndReBalanceCheckTimerTask run fail! {}", e.getMessage());
+            }
             log.trace("run heartbeat timer task done.");
         }
 
@@ -151,9 +154,7 @@ public class SlothRemoteConsumer {
             //2.2、新增缺少消费者的partition消费者线程
             if (!currentConsumePartitions.contains(shouldConsumerPartition)) {
                 TopicPartitionConsumer topicPartitionConsumer = new TopicPartitionConsumer(this.consumerProperties, shouldConsumerPartition);
-                Thread thread = new Thread(topicPartitionConsumer);
-                thread.setName(this.topic + "-" + shouldConsumerPartition);
-                thread.start();
+                executorService.execute(topicPartitionConsumer);
                 topicPartitionConsumerMap.put(shouldConsumerPartition, topicPartitionConsumer);
             }
         }
