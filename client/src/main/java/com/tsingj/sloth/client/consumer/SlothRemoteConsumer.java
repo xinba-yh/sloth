@@ -71,7 +71,7 @@ public class SlothRemoteConsumer {
         this.topic = this.consumerProperties.getTopic();
         this.groupName = this.consumerProperties.getGroupName();
         String consumeFromWhere = this.consumerProperties.getConsumeFromWhere();
-        Assert.isTrue(StringUtils.hasLength(consumeFromWhere) && (consumeFromWhere.equalsIgnoreCase(ConsumeFromWhere.EARLIEST) || consumeFromWhere.equalsIgnoreCase(ConsumeFromWhere.LATEST)), "please check consumer properties consumeFromWhere, " + consumeFromWhere + " unsupported !");
+        Assert.isTrue(StringUtils.hasLength(consumeFromWhere) && (consumeFromWhere.equalsIgnoreCase(ConsumeFromWhere.EARLIEST.getType()) || consumeFromWhere.equalsIgnoreCase(ConsumeFromWhere.LATEST.getType())), "please check consumer properties consumeFromWhere, " + consumeFromWhere + " unsupported !");
         //1.1、立即发送一次heartbeat，并与建立clientId与channel的绑定关系（client - server）。
         //1.2、响应分配好的partition（可能被截断）
         List<Integer> topicPartitions = this.heartbeat();

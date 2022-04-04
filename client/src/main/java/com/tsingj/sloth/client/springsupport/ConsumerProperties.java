@@ -1,6 +1,7 @@
 package com.tsingj.sloth.client.springsupport;
 
 import com.tsingj.sloth.client.consumer.ConsumeFromWhere;
+import com.tsingj.sloth.client.consumer.ConsumeMode;
 import lombok.Data;
 
 import java.util.Map;
@@ -13,15 +14,13 @@ public class ConsumerProperties {
 
     private String topic;
 
-    private String tag;
-
-    private String consumerMode = "cluster";
-
     private String groupName;
 
     private String listener;
 
-    private String consumeFromWhere = ConsumeFromWhere.EARLIEST;
+    private String consumeMode = ConsumeMode.CLUSTER.getType();
+
+    private String consumeFromWhere = ConsumeFromWhere.EARLIEST.getType();
 
     /**
      * 最大消费partition数量
