@@ -10,6 +10,14 @@ public class IndexEntry {
 
     private long indexValue;
 
+    public IndexEntry() {
+    }
+
+    public IndexEntry(long indexKey, long indexValue) {
+        this.indexKey = indexKey;
+        this.indexValue = indexValue;
+    }
+
     public long getIndexKey() {
         return indexKey;
     }

@@ -118,7 +118,7 @@ public class DataLogSegment implements DataRecovery {
 
     private void loadCurrentOffsetFromFile() {
         String logPath = this.logFile.getAbsolutePath();
-        Result<IndexEntry.OffsetPosition> indexFileLastOffsetResult = this.offsetIndex.getIndexFileLastOffset();
+        Result<IndexEntry.OffsetPosition> indexFileLastOffsetResult = this.offsetIndex.getOffsetIndexFileLastOffset();
         Assert.isTrue(indexFileLastOffsetResult.success(), "load logs from offsetIndexFile " + logPath + " fail!" + indexFileLastOffsetResult.getMsg());
         IndexEntry.OffsetPosition offsetPosition = indexFileLastOffsetResult.getData();
         long position = offsetPosition.getPosition();
@@ -207,11 +207,11 @@ public class DataLogSegment implements DataRecovery {
 
     public Result<ByteBuffer> getMessage(long offset) {
         //1、lookup logPosition slot range.
-        Result<OffsetIndex.LogPositionSlotRange> lookUpResult = this.offsetIndex.lookUp(offset);
+        Result<AbstractIndex.LogPositionSlotRange> lookUpResult = this.offsetIndex.lookUp(offset);
         if (lookUpResult.failure()) {
             return Results.failure(lookUpResult.getMsg());
         }
-        OffsetIndex.LogPositionSlotRange logPositionRange = lookUpResult.getData();
+        AbstractIndex.LogPositionSlotRange logPositionRange = lookUpResult.getData();
         //2、slot logFile position find real position
         Long startPosition = logPositionRange.getStart();
         Long endPosition = logPositionRange.getEnd() != null ? logPositionRange.getEnd() : this.wrotePosition;
