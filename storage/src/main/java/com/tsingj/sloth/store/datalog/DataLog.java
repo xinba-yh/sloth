@@ -120,8 +120,8 @@ public class DataLog {
             return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }
         try {
-            if (offset > dataLogSegment.getCurrentOffset()) {
-                return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, "consume offset > store offset!");
+            if (offset > dataLogSegment.getLargestOffset()) {
+                return new GetMessageResult(GetMessageStatus.OFFSET_NOT_FOUND, "consume offset gt store largestOffset!");
             }
             Result<ByteBuffer> getMessageResult = dataLogSegment.getMessage(offset);
             if (getMessageResult.failure()) {
@@ -144,7 +144,7 @@ public class DataLog {
         if (latestDataLogSegment == null) {
             return -1;
         }
-        return latestDataLogSegment.getCurrentOffset();
+        return latestDataLogSegment.getLargestOffset();
     }
 
     public long getMinOffset(String topic, int partition) {

@@ -2,7 +2,13 @@ package com.tsingj.sloth.store.utils;
 
 import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.constants.LogConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +17,8 @@ import java.util.Map;
  * @author yanghao
  */
 public class CommonUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(CommonUtil.class);
 
     public static int calStoreLength(int bodyLen, int topicLen, int propertiesLen) {
         return LogConstants.MessageKeyBytes.STORE_TIMESTAMP +
@@ -66,6 +74,24 @@ public class CommonUtil {
     public static long fileName2Offset(String fileName) {
         String segmentFileName = fileName.replace(LogConstants.FileSuffix.LOG, "");
         return Long.parseLong(segmentFileName);
+    }
+
+
+    public static long hourToMills(int hour){
+        return hour * 60L * 60L * 1000L;
+    }
+
+    public static void deleteExpireFile(FileChannel fileChannel, File file){
+        try {
+            try {
+                fileChannel.close();
+            } catch (Throwable t) {
+                logger.error("Failed to close channel!", t);
+            }
+            Files.deleteIfExists(file.toPath());
+        } catch (IOException e) {
+            logger.warn("Failed to delete file {}! info:{}", file.getAbsolutePath(), e.getMessage());
+        }
     }
 
 }

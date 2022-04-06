@@ -1,6 +1,7 @@
 package com.tsingj.sloth.store.datalog;
 
 
+import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.properties.StorageProperties;
@@ -257,10 +258,49 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
 
 
     /**
-     * 历史segment清理
+     * 过期log segment清理
      */
-    private void cleanupLogs() {
+    private synchronized void cleanupLogs() {
         logger.info("cleanupLogs");
+        //日志保存时间
+        int logRetentionHours = storageProperties.getLogRetentionHours();
+
+        //todo 日志保存大小
+        long logRetentionBytes = storageProperties.getLogRetentionBytes();
+
+        //符合其一则清理，按照segment为最小粒度。
+        //1、基于时间策略清理
+        //注意：如果一个segment开始时间符合，但结束时间不符合，不清理。
+        ConcurrentHashMap<String, ConcurrentSkipListMap<Long, DataLogSegment>> logSegmentsMapping = this.getLogSegmentsMapping();
+        if (logSegmentsMapping.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<String, ConcurrentSkipListMap<Long, DataLogSegment>> entry : logSegmentsMapping.entrySet()) {
+            String topicPartition = entry.getKey();
+            ConcurrentSkipListMap<Long, DataLogSegment> logSegmentSkipListMap = entry.getValue();
+            if (logSegmentSkipListMap.isEmpty()) {
+                continue;
+            }
+            for (Map.Entry<Long, DataLogSegment> logSegmentSkipListMapEntry : logSegmentSkipListMap.entrySet()) {
+                Long dataLogSegmentKey = logSegmentSkipListMapEntry.getKey();
+                DataLogSegment dataLogSegment = logSegmentSkipListMapEntry.getValue();
+                long largestTimestamp = dataLogSegment.getLargestTimestamp();
+                if (largestTimestamp == 0) {
+                    logger.warn("Topic-partition:{} logSegment:{} got largestTimestamp eq 0!", topicPartition, dataLogSegmentKey);
+                    continue;
+                }
+                if ((SystemClock.now() - CommonUtil.hourToMills(logRetentionHours)) > largestTimestamp) {
+                    //删除物理Log文件以及相关索引文件
+                    dataLogSegment.delete();
+                    logSegmentSkipListMap.remove(dataLogSegmentKey);
+                    logger.info("Deleted expire Log segment {} {}.", topicPartition, dataLogSegmentKey);
+                }
+            }
+        }
+
+        //2、基于保存大小清理
+        //注意：如果总大小 占用超过80% 则清理最早所有topic-partition 首个segment文件。
+
     }
 
 

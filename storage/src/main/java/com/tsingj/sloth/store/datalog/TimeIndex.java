@@ -13,7 +13,7 @@ public class TimeIndex extends AbstractIndex {
 
     @Override
     protected String indexType() {
-        return "OffsetIndex";
+        return "TimeIndex";
     }
 
 }

@@ -24,11 +24,6 @@ public class StorageProperties {
     private int logFlushInterval = 500;
 
     /**
-     * cleanup expired logs，default 10分钟
-     */
-    private int logCleanupInterval = 1000 * 60 * 10;
-
-    /**
      * consumerOffset persistence interval, default 5s
      */
     private int consumerOffsetPersistenceInterval = 1000 * 5;
@@ -47,6 +42,21 @@ public class StorageProperties {
      * sparse index interval bytes
      */
     private int logIndexIntervalBytes = 1024;
+
+    /**
+     * cleanup expired logs，default 10分钟
+     */
+    private int logCleanupInterval = 1000 * 60 * 10;
+
+    /**
+     * 日志保留时间，默认7天
+     */
+    private int logRetentionHours = 168;
+
+    /**
+     * 日志保留字节大小,默认512G
+     */
+    private long logRetentionBytes = 549755813888L;
 
 
     public String getDataPath() {
@@ -103,5 +113,21 @@ public class StorageProperties {
 
     public void setConsumerOffsetPersistenceInterval(int consumerOffsetPersistenceInterval) {
         this.consumerOffsetPersistenceInterval = consumerOffsetPersistenceInterval;
+    }
+
+    public int getLogRetentionHours() {
+        return logRetentionHours;
+    }
+
+    public void setLogRetentionHours(int logRetentionHours) {
+        this.logRetentionHours = logRetentionHours;
+    }
+
+    public long getLogRetentionBytes() {
+        return logRetentionBytes;
+    }
+
+    public void setLogRetentionBytes(long logRetentionBytes) {
+        this.logRetentionBytes = logRetentionBytes;
     }
 }

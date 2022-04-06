@@ -7,6 +7,7 @@ import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.datalog.lock.LogReentrantLock;
+import com.tsingj.sloth.store.utils.CommonUtil;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -184,6 +186,9 @@ public abstract class AbstractIndex implements DataRecovery {
         return Results.success(new LogPositionSlotRange(startIndexEntry.getIndexValue(), endIndexEntry != null ? endIndexEntry.getIndexValue() : null));
     }
 
+    public void delete() {
+        CommonUtil.deleteExpireFile(this.fileChannel, this.file);
+    }
 
     public static class LogPositionSlotRange {
 
