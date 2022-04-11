@@ -101,8 +101,16 @@ public class TopicPartitionConsumer implements Runnable {
                         }
                         //1.2、根据消息状态判断，如果没有可以消费的消息则休眠一段时间
                         if (getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.NOT_FOUND) {
-                            log.debug("fetch message topic:{} partition:{} offset:{}, got NOT_FOUND!", this.topic, this.partition, this.consumeOffset.get());
-                            this.waitMills(this.consumeWhenNoMessageInterval);
+                            Long maxOffset = slothConsumer.getMaxOffset(this.topic, this.partition);
+                            if (maxOffset != null && maxOffset != -1 && this.consumeOffset.get() < maxOffset) {
+                                //==null 通讯异常， == -1 代表没有logSegment，消费offset < maxOffset ！ 程序错误，或者log文件缺失
+                                log.warn("Unexpected retCode NOT_FOUND，consume offset:{}, maxOffset:{}, skip this offset!", this.consumeOffset.get(), maxOffset);
+                                this.consumeOffset.incrementAndGet();
+                                this.waitMills(this.consumeWhenNoMessageInterval);
+                            } else {
+                                log.debug("fetch message topic:{} partition:{} offset:{}, got NOT_FOUND!", this.topic, this.partition, this.consumeOffset.get());
+                                this.waitMills(this.consumeWhenNoMessageInterval);
+                            }
                         }//2、获取到消息，触发回调
                         else if (getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.FOUND) {
                             Remoting.GetMessageResult.Message message = getMessageResult.getMessage();
@@ -147,13 +155,13 @@ public class TopicPartitionConsumer implements Runnable {
             //1、-1为没有提交过consume offset，EARLIEST获取minOffset，LATEST获取maxOffset。
             if (consumerOffset == -1) {
                 //why EARLIEST需要获取最小的offset，而不是从0开始？ 因为可能已经超过了配置保留天数,minOffset不再是0。
-                if (ConsumeFromWhere.EARLIEST.equals(this.consumeFromWhere)) {
+                if (ConsumeFromWhere.EARLIEST.getType().equalsIgnoreCase(this.consumeFromWhere)) {
                     Long minOffset = slothConsumer.getMinOffset(this.topic, this.partition);
                     if (minOffset == null) {
                         return false;
                     }
                     this.consumeOffset = new AtomicLong(minOffset);
-                } else if (ConsumeFromWhere.LATEST.equals(this.consumeFromWhere)) {
+                } else if (ConsumeFromWhere.LATEST.getType().equalsIgnoreCase(this.consumeFromWhere)) {
                     Long maxOffset = slothConsumer.getMaxOffset(this.topic, this.partition);
                     if (maxOffset == null) {
                         return false;

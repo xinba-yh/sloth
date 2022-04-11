@@ -18,14 +18,13 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author yanghao
  */
-public abstract class AbstractIndex implements DataRecovery {
+public abstract class AbstractIndex {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractIndex.class);
 
@@ -72,9 +71,18 @@ public abstract class AbstractIndex implements DataRecovery {
         this.warmIndexEntries = Caffeine.newBuilder().initialCapacity(maxWarmIndexEntries / INDEX_BYTES).recordStats().build();
     }
 
-    @Override
     public void load() {
         long fileLength = this.file.length();
+        long errorSize = fileLength % INDEX_BYTES;
+        //如果文件大小不是INDEX_BYTES倍数，截断.
+        if (errorSize != 0) {
+            fileLength = fileLength - errorSize;
+            try {
+                this.fileChannel.truncate(fileLength);
+            } catch (IOException e) {
+                throw new DataLogRecoveryException("recovery index:" + this.file.getAbsolutePath() + " fail!", e);
+            }
+        }
         //1、load indexEntries
         this.indexSize = new AtomicLong(fileLength / INDEX_BYTES);
         //2、load warmEntries

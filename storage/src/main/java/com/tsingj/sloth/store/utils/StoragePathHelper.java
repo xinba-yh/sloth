@@ -21,7 +21,9 @@ public class StoragePathHelper {
         this.storageProperties = storageProperties;
     }
 
-
+    public String getLogDir() {
+        return storageProperties.getDataPath() + File.separator + logDir;
+    }
 
     public String getDataJsonDir() {
         return storageProperties.getDataPath() + File.separator + metadataDir;
@@ -35,8 +37,16 @@ public class StoragePathHelper {
         return getDataJsonDir() + File.separator + "consumerOffsets.json";
     }
 
-    public String getLogDir() {
-        return storageProperties.getDataPath() + File.separator + logDir;
+    public String getRecoveryPointOffsetCheckpointPath() {
+        return getDataJsonDir() + File.separator + "recoveryPointOffsetCheckpoint.json";
+    }
+
+    /**
+     * 判断是否为异常停止的文件
+     * @return
+     */
+    public String getShutdownCleanPath() {
+        return storageProperties.getDataPath() + File.separator + ".shutdownClean";
     }
 
 }

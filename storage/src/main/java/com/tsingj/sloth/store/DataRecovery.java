@@ -11,6 +11,6 @@ public interface DataRecovery {
     /**
      * 加载磁盘数据至内存
      */
-    void load();
+    void load(boolean checkPoint,long offsetCheckpoints);
 
 }

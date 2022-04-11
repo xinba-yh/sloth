@@ -2,8 +2,8 @@ package com.tsingj.sloth.store.datalog;
 
 
 import com.tsingj.sloth.common.SystemClock;
-import com.tsingj.sloth.store.DataRecovery;
 import com.tsingj.sloth.store.constants.LogConstants;
+import com.tsingj.sloth.store.datajson.checkpoints.OffsetCheckpointManager;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import com.tsingj.sloth.store.utils.StoragePathHelper;
@@ -36,18 +36,23 @@ import java.util.stream.Collectors;
  */
 @EnableScheduling
 @Component
-public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery {
+public class DataLogManager implements SchedulingConfigurer {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataLogSegmentManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataLogManager.class);
 
     private final StoragePathHelper storagePathHelper;
 
     private final StorageProperties storageProperties;
 
-    public DataLogSegmentManager(StorageProperties storageProperties, StoragePathHelper storagePathHelper) {
+    private final OffsetCheckpointManager offsetCheckpointManager;
+
+    public DataLogManager(StorageProperties storageProperties, StoragePathHelper storagePathHelper, OffsetCheckpointManager offsetCheckpointManager) {
         this.storageProperties = storageProperties;
         this.storagePathHelper = storagePathHelper;
+        this.offsetCheckpointManager = offsetCheckpointManager;
     }
+
+    private static final String TOPIC_PARTITION_SEPARATOR = "_";
 
     /**
      * topic-partition log文件内存映射。
@@ -60,11 +65,23 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
      * -- 加载dataPath目录下所有segment文件和index文件。
      */
     @PostConstruct
-    @Override
     public void load() {
-        logger.info("--------------------prepare load logSegment----------------------");
-        String logDirPath = storagePathHelper.getLogDir();
         try {
+            logger.info("--------------------prepare load offset checkpoint----------------------");
+            offsetCheckpointManager.load();
+            logger.info("--------------------prepare load logSegment----------------------");
+            //check abnormal stop!
+            boolean abnormalStop = CommonUtil.shutdownCleanFileExists(storagePathHelper.getShutdownCleanPath());
+            if (abnormalStop) {
+                logger.warn("Last time stop is unexpected， maybe abnormal stop!");
+            } else {
+                boolean newTmpFile = CommonUtil.createShutdownCleanFile(storagePathHelper.getShutdownCleanPath());
+                if (!newTmpFile) {
+                    return;
+                }
+            }
+            //load logs
+            String logDirPath = storagePathHelper.getLogDir();
             File logDir = new File(logDirPath);
             File[] topicFiles = logDir.listFiles();
             if (topicFiles == null || topicFiles.length == 0) {
@@ -79,23 +96,34 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
                     continue;
                 }
                 for (File partitionDir : partitionDirs) {
-                    long partition = Integer.parseInt(partitionDir.getName());
+                    int partition = Integer.parseInt(partitionDir.getName());
                     File[] segmentFiles = partitionDir.listFiles();
                     if (segmentFiles == null || segmentFiles.length == 0) {
                         continue;
                     }
                     List<File> segmentFileSortedList = Arrays.stream(segmentFiles).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
-                    for (File segmentFile : segmentFileSortedList) {
+                    for (int i = 0; i < segmentFileSortedList.size(); i++) {
+                        File segmentFile = segmentFileSortedList.get(i);
                         String segmentFileName = segmentFile.getName();
                         if (segmentFileName.endsWith(LogConstants.FileSuffix.LOG)) {
                             logger.info("prepare init topic:{} partition:{} segment:{}", topic, partition, segmentFileName);
+                            //最后一个文件，为活跃写入文件，异常停止进行checkpoint。
+                            boolean checkPoint = abnormalStop && i == segmentFileSortedList.size() - 1;
+                            long offsetCheckpoints = 0L;
+                            if (checkPoint) {
+                                //如果获取不到checkpoints则从头开始。
+                                Optional<Long> offsetCheckpointsOptional = offsetCheckpointManager.get(topic, partition);
+                                if (offsetCheckpointsOptional.isPresent()) {
+                                    offsetCheckpoints = offsetCheckpointsOptional.get();
+                                }
+                            }
                             /*
                              * 1、初始化LogSegment、OffsetIndex、TimeIndex
                              */
                             String logPath = segmentFile.getAbsolutePath().replace(LogConstants.FileSuffix.LOG, "");
                             long startOffset = CommonUtil.fileName2Offset(segmentFile.getName());
                             DataLogSegment dataLogSegment = new DataLogSegment(logPath, startOffset, storageProperties.getSegmentMaxFileSize(), storageProperties.getLogIndexIntervalBytes());
-                            dataLogSegment.load();
+                            dataLogSegment.load(checkPoint, offsetCheckpoints);
                             this.addLogSegment(topic, partition, dataLogSegment);
                         }
                     }
@@ -112,6 +140,7 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
     @PreDestroy
     public void shutdown() {
         logger.trace("storage prepare destroy.");
+        CommonUtil.delShutdownCleanFile(storagePathHelper.getShutdownCleanPath());
         showIndexCacheStats();
         flushDirtyLogs();
         logger.trace("storage destroy done.");
@@ -135,12 +164,18 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
         logger.info("add cleanupLogs interval {}s.", storageProperties.getLogCleanupInterval() / 1000);
         IntervalTask cleanupLogsTask = new IntervalTask(this::cleanupLogs, storageProperties.getLogCleanupInterval(), 0);
         taskRegistrar.addFixedDelayTask(cleanupLogsTask);
+
+        int offsetCheckpointSubmitInterval = storageProperties.getOffsetCheckpointSubmitInterval();
+        logger.info("add offsetCheckpoint submit interval {}s.", offsetCheckpointSubmitInterval / 1000);
+        IntervalTask offsetCheckpointSubmitTask = new IntervalTask(this::offsetCheckpointSubmit, offsetCheckpointSubmitInterval, offsetCheckpointSubmitInterval);
+        taskRegistrar.addFixedDelayTask(offsetCheckpointSubmitTask);
     }
+
 
     //----------------------------------------------------------public方法--------------------------------------------------------------------
 
     public DataLogSegment getLatestLogSegmentFile(String topic, int partition) {
-        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + TOPIC_PARTITION_SEPARATOR + partition);
         if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
             return null;
         } else {
@@ -149,7 +184,7 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
     }
 
     public DataLogSegment getFirstLogSegmentFile(String topic, int partition) {
-        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + TOPIC_PARTITION_SEPARATOR + partition);
         if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
             return null;
         } else {
@@ -182,7 +217,7 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
     }
 
     public DataLogSegment findLogSegmentByOffset(String topic, int partition, long offset) {
-        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + TOPIC_PARTITION_SEPARATOR + partition);
         if (logSegmentsSkipListMap == null || logSegmentsSkipListMap.isEmpty()) {
             return null;
         }
@@ -203,12 +238,12 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
     //----------------------------------------------------------private方法--------------------------------------------------------------------
 
     private void addLogSegment(String topic, long partition, DataLogSegment dataLogSegment) {
-        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + "_" + partition);
+        ConcurrentSkipListMap<Long, DataLogSegment> logSegmentsSkipListMap = this.DATA_LOGFILE_MAP.get(topic + TOPIC_PARTITION_SEPARATOR + partition);
         if (logSegmentsSkipListMap == null) {
             logSegmentsSkipListMap = new ConcurrentSkipListMap<>();
         }
         logSegmentsSkipListMap.put(dataLogSegment.getFileFromOffset(), dataLogSegment);
-        this.DATA_LOGFILE_MAP.put(topic + "_" + partition, logSegmentsSkipListMap);
+        this.DATA_LOGFILE_MAP.put(topic + TOPIC_PARTITION_SEPARATOR + partition, logSegmentsSkipListMap);
     }
 
     /**
@@ -256,6 +291,30 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
         logger.debug("flush dirtyLogs done.");
     }
 
+    /**
+     *
+     */
+    private void offsetCheckpointSubmit() {
+        logger.info("prepare offsetCheckpoint submit.");
+        ConcurrentHashMap<String, ConcurrentSkipListMap<Long, DataLogSegment>> logSegmentsMapping = this.getLogSegmentsMapping();
+        if (logSegmentsMapping.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<String, ConcurrentSkipListMap<Long, DataLogSegment>> entry : logSegmentsMapping.entrySet()) {
+            String topicPartition = entry.getKey();
+            String[] topicPartitionArr = topicPartition.split(TOPIC_PARTITION_SEPARATOR);
+            String topic = topicPartitionArr[0];
+            Integer partition = Integer.parseInt(topicPartitionArr[1]);
+            ConcurrentSkipListMap<Long, DataLogSegment> logSegmentSkipListMap = entry.getValue();
+            if (logSegmentSkipListMap.isEmpty()) {
+                continue;
+            }
+            DataLogSegment dataLogSegment = logSegmentSkipListMap.lastEntry().getValue();
+            logger.debug("Topic:{} partition:{} submit flushedOffset:{}.", topic, partition, dataLogSegment.getFlushedOffset());
+            offsetCheckpointManager.submit(topic, partition, dataLogSegment.getFlushedOffset());
+        }
+        offsetCheckpointManager.persist();
+    }
 
     /**
      * 过期log segment清理
@@ -305,3 +364,4 @@ public class DataLogSegmentManager implements SchedulingConfigurer, DataRecovery
 
 
 }
+

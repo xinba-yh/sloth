@@ -26,6 +26,7 @@ public class DataJsonManager implements SchedulingConfigurer {
 
     private final ConsumerGroupOffsetManager consumerGroupOffsetManager;
 
+
     public DataJsonManager(StorageProperties storageProperties, TopicManager topicManager, ConsumerGroupOffsetManager consumerGroupOffsetManager) {
         this.storageProperties = storageProperties;
         this.topicManager = topicManager;
@@ -46,13 +47,15 @@ public class DataJsonManager implements SchedulingConfigurer {
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        logger.info("add consumerOffset persistence interval {}ms.", storageProperties.getConsumerOffsetPersistenceInterval());
-        IntervalTask consumerOffsetPersistenceTask = new IntervalTask(this::consumerOffsetPersistence, storageProperties.getConsumerOffsetPersistenceInterval(), 10);
+        int consumerOffsetPersistenceInterval = storageProperties.getConsumerOffsetPersistenceInterval();
+        logger.info("add consumerOffset persistence interval {}ms.", consumerOffsetPersistenceInterval);
+        IntervalTask consumerOffsetPersistenceTask = new IntervalTask(this::consumerOffsetPersistence, consumerOffsetPersistenceInterval, consumerOffsetPersistenceInterval);
         taskRegistrar.addFixedDelayTask(consumerOffsetPersistenceTask);
     }
 
     private void consumerOffsetPersistence() {
         consumerGroupOffsetManager.persist();
     }
+
 
 }

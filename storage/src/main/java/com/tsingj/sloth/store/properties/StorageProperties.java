@@ -29,6 +29,11 @@ public class StorageProperties {
     private int consumerOffsetPersistenceInterval = 1000 * 5;
 
     /**
+     * offsetCheckpoint persistence interval, default 5s
+     */
+    private int offsetCheckpointSubmitInterval = 1000 * 5;
+
+    /**
      * max message size
      */
     private int messageMaxSize = 1024 * 1024 * 4;
@@ -129,5 +134,13 @@ public class StorageProperties {
 
     public void setLogRetentionBytes(long logRetentionBytes) {
         this.logRetentionBytes = logRetentionBytes;
+    }
+
+    public int getOffsetCheckpointSubmitInterval() {
+        return offsetCheckpointSubmitInterval;
+    }
+
+    public void setOffsetCheckpointSubmitInterval(int offsetCheckpointSubmitInterval) {
+        this.offsetCheckpointSubmitInterval = offsetCheckpointSubmitInterval;
     }
 }

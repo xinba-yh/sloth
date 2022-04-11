@@ -31,6 +31,10 @@ public class DataLogSegment implements DataRecovery {
      */
     private long fileFromOffset;
 
+    /**
+     * 记录flush offset
+     */
+    private AtomicLong flushedOffset;
 
     /**
      * #日志最大偏移量
@@ -118,21 +122,68 @@ public class DataLogSegment implements DataRecovery {
     //----------------------------------------------------------loadLogs--------------------------------------------------------------------
 
     @Override
-    public void load() {
+    public void load(boolean checkPoint, long offsetCheckpoints) {
         /*
          * 根据文件信息，补齐属性
          * -- logSegment -> largestOffset  通过offsetIndex取出最后一个索引并按照索引查找至文件结尾
-         * -- logSegment -> wrotePosition  当前文件大小
+         *                  largestTimestamp
+         *                  flushedOffset
+         *                  wrotePosition  当前文件大小
          * -- offsetIndex -> indexEntries  index数量
          * -- timeIndex -> indexEntries    index数量
          */
         this.offsetIndex.load();
         this.timeIndex.load();
-        this.wrotePosition = new AtomicLong(this.logFile.length());
-        this.loadLargestMessagePropertiesFromFile();
+        if (checkPoint) {
+            Result<AbstractIndex.LogPositionSlotRange> logPositionSlotRangeResult = this.offsetIndex.lookUp(offsetCheckpoints);
+            //根据checkPoints记录的offset，进行物理位置查找。
+            Assert.isTrue(logPositionSlotRangeResult.success(), "lookUp offsetCheckpoints " + offsetCheckpoints + " fail!");
+            AbstractIndex.LogPositionSlotRange logPositionSlotRange = logPositionSlotRangeResult.getData();
+            Long validPosition = logPositionSlotRange.getStart();
+            Long endPosition = this.logFile.length();
+            //从物理位置开始循环查看数据直至文件结尾
+            long largestOffset = 0;
+            long largestTimestamp = 0;
+            while (validPosition < endPosition) {
+                try {
+                    this.readWriteLock.lock();
+                    logFileChannel.position(validPosition);
+                    ByteBuffer headerByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.LOG_OVERHEAD);
+                    logFileChannel.read(headerByteBuffer);
+                    headerByteBuffer.rewind();
+                    largestOffset = headerByteBuffer.getLong();
+                    int storeSize = headerByteBuffer.getInt();
+                    ByteBuffer timestampByteBuffer = ByteBuffer.allocate(LogConstants.MessageKeyBytes.STORE_TIMESTAMP);
+                    logFileChannel.read(timestampByteBuffer);
+                    timestampByteBuffer.rewind();
+                    largestTimestamp = timestampByteBuffer.getLong();
+                    validPosition = validPosition + (LogConstants.MessageKeyBytes.LOG_OVERHEAD + storeSize);
+                } catch (Throwable e) {
+                    logger.warn("recovery logs:{} valid bytes {} ,total bytes {}. ", this.logFile.getAbsolutePath(), validPosition, endPosition);
+                    break;
+                } finally {
+                    this.readWriteLock.unlock();
+                }
+            }
+            if (endPosition - validPosition > 0) {
+                try {
+                    this.logFileChannel.truncate(validPosition);
+                } catch (IOException e) {
+                    throw new DataLogRecoveryException("recovery logs:" + this.logFile.getAbsolutePath() + " fail!", e);
+                }
+            }
+            this.wrotePosition = new AtomicLong(validPosition);
+            this.largestOffset = new AtomicLong(largestOffset);
+            this.flushedOffset = new AtomicLong(largestOffset);
+            this.largestTimestamp = new AtomicLong(largestTimestamp);
+        } else {
+            this.wrotePosition = new AtomicLong(this.logFile.length());
+            this.loadLargestMessagePropertiesFromFile();
+        }
     }
 
     private void loadLargestMessagePropertiesFromFile() {
+        // TODO: 2022/4/11 merge 下方逻辑，与checkPoint。
         String logPath = this.logFile.getAbsolutePath();
         Result<IndexEntry.OffsetPosition> indexFileLastOffsetResult = this.offsetIndex.getOffsetIndexFileLastOffset();
         Assert.isTrue(indexFileLastOffsetResult.success(), "load logs from offsetIndexFile " + logPath + " fail!" + indexFileLastOffsetResult.getMsg());
@@ -166,6 +217,7 @@ public class DataLogSegment implements DataRecovery {
         }
         logger.info("logSegment load largestOffset:{} largestTimestamp:{} from {}.", lastOffset, largestTimestamp, logPath);
         this.largestOffset = new AtomicLong(lastOffset);
+        this.flushedOffset = new AtomicLong(lastOffset);
         this.largestTimestamp = new AtomicLong(largestTimestamp);
     }
 
@@ -196,7 +248,7 @@ public class DataLogSegment implements DataRecovery {
 
             //记录最大偏移量插入时间
             if (largestTimestamp.get() < storeTimestamp) {
-                largestOffset.set(storeTimestamp);
+                largestTimestamp.set(storeTimestamp);
             }
 
             //记录上一次index插入后，新存入的消息
@@ -264,7 +316,12 @@ public class DataLogSegment implements DataRecovery {
 
     public void flush() {
         try {
+            if (this.flushedOffset.get() == this.largestTimestamp.get()) {
+                return;
+            }
             this.logFileChannel.force(true);
+            //刷新flushedOffset
+            this.flushedOffset.set(this.largestOffset.get());
         } catch (IOException ignored) {
         }
     }
@@ -275,6 +332,10 @@ public class DataLogSegment implements DataRecovery {
 
     public long getLargestTimestamp() {
         return this.largestTimestamp.get();
+    }
+
+    public long getFlushedOffset() {
+        return this.flushedOffset.get();
     }
 
     //----------------------------------------------------------private方法--------------------------------------------------------------------

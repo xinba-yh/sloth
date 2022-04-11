@@ -67,9 +67,7 @@ public class ConsumerGroupOffsetManager extends AbstractCachePersistence {
         Long storeOffset = partitionOffsetMap.put(partitionId, offset);
         if (storeOffset != null && storeOffset > offset) {
             logger.warn("commit consumerOffset < current offset. group [{}] topic [{}] partitionId [{}] commit [{}], current [{}].", group, topic, partitionId, offset, storeOffset);
-            return;
         }
-        TOPIC_GROUP_OFFSETS.put(key, partitionOffsetMap);
     }
 
     public long queryOffset(final String group, final String topic, final int partitionId) {

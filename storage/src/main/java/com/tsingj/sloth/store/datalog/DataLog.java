@@ -29,10 +29,10 @@ public class DataLog {
 
     private static final Logger logger = LoggerFactory.getLogger(DataLog.class);
 
-    private final DataLogSegmentManager dataLogSegmentManager;
+    private final DataLogManager dataLogManager;
 
-    public DataLog(DataLogSegmentManager dataLogSegmentManager) {
-        this.dataLogSegmentManager = dataLogSegmentManager;
+    public DataLog(DataLogManager dataLogManager) {
+        this.dataLogManager = dataLogManager;
     }
 
     /**
@@ -62,12 +62,12 @@ public class DataLog {
             //lock start
             lock.lock();
             //find latest logSegmentFile
-            DataLogSegment latestDataLogSegment = dataLogSegmentManager.getLatestLogSegmentFile(topic, partition);
+            DataLogSegment latestDataLogSegment = dataLogManager.getLatestLogSegmentFile(topic, partition);
             //1、not found create
             //2、full rolling logSegmentFile with index
             if (latestDataLogSegment == null || latestDataLogSegment.isFull()) {
                 offset = latestDataLogSegment == null ? 0 : latestDataLogSegment.incrementOffsetAndGet();
-                latestDataLogSegment = dataLogSegmentManager.newLogSegmentFile(topic, partition, offset);
+                latestDataLogSegment = dataLogManager.newLogSegmentFile(topic, partition, offset);
                 if (latestDataLogSegment == null) {
                     logger.error("create dataLog files error, topic: " + topic + " partition: " + partition);
                     return new PutMessageResult(PutMessageStatus.CREATE_LOG_FILE_FAILED);
@@ -115,7 +115,7 @@ public class DataLog {
      * @return
      */
     public GetMessageResult getMessage(String topic, int partition, long offset) {
-        DataLogSegment dataLogSegment = dataLogSegmentManager.findLogSegmentByOffset(topic, partition, offset);
+        DataLogSegment dataLogSegment = dataLogManager.findLogSegmentByOffset(topic, partition, offset);
         if (dataLogSegment == null) {
             return new GetMessageResult(GetMessageStatus.LOG_SEGMENT_NOT_FOUND);
         }
@@ -140,7 +140,7 @@ public class DataLog {
     }
 
     public long getMaxOffset(String topic, int partition) {
-        DataLogSegment latestDataLogSegment = dataLogSegmentManager.getLatestLogSegmentFile(topic, partition);
+        DataLogSegment latestDataLogSegment = dataLogManager.getLatestLogSegmentFile(topic, partition);
         if (latestDataLogSegment == null) {
             return -1;
         }
@@ -148,7 +148,7 @@ public class DataLog {
     }
 
     public long getMinOffset(String topic, int partition) {
-        DataLogSegment firstLogSegmentFile = dataLogSegmentManager.getFirstLogSegmentFile(topic, partition);
+        DataLogSegment firstLogSegmentFile = dataLogManager.getFirstLogSegmentFile(topic, partition);
         if (firstLogSegmentFile == null) {
             return 0;
         }

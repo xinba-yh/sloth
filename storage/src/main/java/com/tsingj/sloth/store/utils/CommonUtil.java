@@ -2,6 +2,7 @@ package com.tsingj.sloth.store.utils;
 
 import com.tsingj.sloth.store.constants.CommonConstants;
 import com.tsingj.sloth.store.constants.LogConstants;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,11 +78,11 @@ public class CommonUtil {
     }
 
 
-    public static long hourToMills(int hour){
+    public static long hourToMills(int hour) {
         return hour * 60L * 60L * 1000L;
     }
 
-    public static void deleteExpireFile(FileChannel fileChannel, File file){
+    public static void deleteExpireFile(FileChannel fileChannel, File file) {
         try {
             try {
                 fileChannel.close();
@@ -94,4 +95,29 @@ public class CommonUtil {
         }
     }
 
+    public static void delShutdownCleanFile(String shutdownCleanPath) {
+        File file = new File(shutdownCleanPath);
+        file.deleteOnExit();
+    }
+
+
+    public static boolean shutdownCleanFileExists(String shutdownCleanPath) {
+        File file = new File(shutdownCleanPath);
+        return file.exists();
+    }
+
+    public static boolean createShutdownCleanFile(String shutdownCleanPath) {
+        File file = new File(shutdownCleanPath);
+        try {
+            if (!file.exists()) {
+                return file.createNewFile();
+            } else {
+                logger.warn("Tmp shutdownClean file exists!");
+                return false;
+            }
+        } catch (IOException e) {
+            logger.error("Create tmp shutdownClean file fail!", e);
+            return false;
+        }
+    }
 }
