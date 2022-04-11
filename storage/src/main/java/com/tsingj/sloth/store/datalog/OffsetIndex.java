@@ -2,6 +2,7 @@ package com.tsingj.sloth.store.datalog;
 
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.common.result.Results;
+import com.tsingj.sloth.store.constants.LogConstants;
 
 import java.io.*;
 
@@ -17,7 +18,7 @@ public class OffsetIndex extends AbstractIndex {
 
     @Override
     protected String indexType() {
-        return "OffsetIndex";
+        return LogConstants.FileSuffix.OFFSET_INDEX;
     }
 
 

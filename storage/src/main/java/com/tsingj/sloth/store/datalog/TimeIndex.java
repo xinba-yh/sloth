@@ -1,5 +1,7 @@
 package com.tsingj.sloth.store.datalog;
 
+import com.tsingj.sloth.store.constants.LogConstants;
+
 import java.io.*;
 
 /**
@@ -13,7 +15,7 @@ public class TimeIndex extends AbstractIndex {
 
     @Override
     protected String indexType() {
-        return "TimeIndex";
+        return LogConstants.FileSuffix.TIMESTAMP_INDEX;
     }
 
 }

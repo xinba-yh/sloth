@@ -295,7 +295,7 @@ public class DataLogManager implements SchedulingConfigurer {
      *
      */
     private void offsetCheckpointSubmit() {
-        logger.info("prepare offsetCheckpoint submit.");
+        logger.debug("prepare offsetCheckpoint submit.");
         ConcurrentHashMap<String, ConcurrentSkipListMap<Long, DataLogSegment>> logSegmentsMapping = this.getLogSegmentsMapping();
         if (logSegmentsMapping.isEmpty()) {
             return;

@@ -62,7 +62,7 @@ public abstract class AbstractIndex {
 
     public AbstractIndex(String logPath) throws FileNotFoundException {
         //init offsetIndex file operator
-        this.file = new File(logPath + LogConstants.FileSuffix.OFFSET_INDEX);
+        this.file = new File(logPath + this.indexType());
         this.fileChannel = new RandomAccessFile(file, "rw").getChannel();
         this.readWriteLock = new LogReentrantLock();
         //init other properties
