@@ -8,7 +8,9 @@ import static com.tsingj.sloth.client.springsupport.CommonConstants.EventGroupMo
  * @author yanghao
  */
 @Data
-public class ConnectProperties {
+public class RemoteProperties {
+
+    private String brokerUrl;
 
     /**
      * The connect timeout.

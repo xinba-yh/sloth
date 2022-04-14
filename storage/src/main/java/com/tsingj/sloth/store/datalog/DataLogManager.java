@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.IntervalTask;
@@ -34,7 +33,6 @@ import java.util.stream.Collectors;
  * 1、服务启动时完成topic-partition历史数据加载
  * 2、服务启动后按照topic-partition管理logsegment
  */
-@EnableScheduling
 @Component
 public class DataLogManager implements SchedulingConfigurer {
 

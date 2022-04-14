@@ -12,12 +12,8 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "spring.sloth")
 public class SlothClientProperties {
 
-    private String brokerUrl;
+    private Map<String, ConsumerProperties> consumers;
 
-    private ProducerProperties producer;
-
-    private Map<String, ConsumerProperties> consumer;
-
-    private ConnectProperties connect;
+    private RemoteProperties remote;
 
 }

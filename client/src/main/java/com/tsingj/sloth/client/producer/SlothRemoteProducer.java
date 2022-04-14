@@ -3,13 +3,15 @@ package com.tsingj.sloth.client.producer;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tsingj.sloth.client.RemoteCorrelationManager;
 import com.tsingj.sloth.client.SlothRemoteClient;
-import com.tsingj.sloth.client.springsupport.SlothClientProperties;
+import com.tsingj.sloth.client.SlothRemoteClientSingleton;
+import com.tsingj.sloth.client.springsupport.RemoteProperties;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.remoting.ResponseFuture;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.DataPackage;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 
 /**
  * @author yanghao
@@ -17,15 +19,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SlothRemoteProducer {
 
-    private final SlothRemoteClient slothRemoteClient;
+    private SlothRemoteClient slothRemoteClient;
 
-    private final SlothClientProperties clientProperties;
+    private RemoteProperties remoteProperties;
 
-    public SlothRemoteProducer(SlothClientProperties clientProperties, SlothRemoteClient slothRemoteClient) {
-        this.clientProperties = clientProperties;
-        this.slothRemoteClient = slothRemoteClient;
+
+    public void setRemoteProperties(RemoteProperties remoteProperties) {
+        this.remoteProperties = remoteProperties;
     }
 
+    public void start() {
+        this.slothRemoteClient = SlothRemoteClientSingleton.getInstance(this.remoteProperties);
+    }
 
     //----------------------------------------------
 
@@ -38,12 +43,12 @@ public class SlothRemoteProducer {
                 .timestamp(SystemClock.now())
                 .data(message.toByteArray())
                 .build();
-        slothRemoteClient.getChannel().writeAndFlush(dataPackage);
+        this.slothRemoteClient.getChannel().writeAndFlush(dataPackage);
     }
 
     public Remoting.SendResult send(Remoting.Message message) {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.remoteProperties.getOnceTalkTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {
@@ -58,7 +63,7 @@ public class SlothRemoteProducer {
                     .build();
 
             //send data
-            slothRemoteClient.getChannel().writeAndFlush(dataPackage);
+            this.slothRemoteClient.getChannel().writeAndFlush(dataPackage);
 
             DataPackage responseData = responseFuture.waitResponse();
             if (responseData == null) {
@@ -75,5 +80,10 @@ public class SlothRemoteProducer {
             RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.remove(currentCorrelationId);
         }
     }
+
+    private void destroy() {
+        this.slothRemoteClient.closeConnect();
+    }
+
 
 }

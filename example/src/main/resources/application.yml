@@ -2,16 +2,14 @@ spring:
   application:
     name: example
   sloth:
-    brokerUrl: 127.0.0.1:9000
-    connect:
+    remote:
+      brokerUrl: 127.0.0.1:9000
       onceTalkTimeout: 1000
       connectTimeout: 3100
-    consumer:
+    consumers:
       test-topic:
         topic: test-topic
-        tag: aaa
         groupName: test-topic-group
-        listener: com.tsingj.sloth.example.listener.MessageOrderedListener
 logging:
   level:
     com.tsingj.sloth: info

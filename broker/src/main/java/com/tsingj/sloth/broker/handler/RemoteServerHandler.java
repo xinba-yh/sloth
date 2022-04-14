@@ -29,7 +29,15 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
                     break;
 
                 case ProtocolConstants.Command.GET_MESSAGE:
-                    this.processGetMessage(ctx, msg);
+                    this.processGetMessage(ctx, msg, ProtocolConstants.Command.GET_MESSAGE);
+                    break;
+
+                case ProtocolConstants.Command.GET_MAX_OFFSET:
+                    this.processGetMessage(ctx, msg, ProtocolConstants.Command.GET_MAX_OFFSET);
+                    break;
+
+                case ProtocolConstants.Command.GET_MIN_OFFSET:
+                    this.processGetMessage(ctx, msg, ProtocolConstants.Command.GET_MIN_OFFSET);
                     break;
 
                 case ProtocolConstants.Command.CONSUMER_GROUP_HEARTBEAT:
@@ -84,8 +92,8 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
         }
     }
 
-    private void processGetMessage(ChannelHandlerContext ctx, DataPackage request) throws Exception {
-        DataPackage response = RemoteRequestProcessorSelector.select(ProtocolConstants.Command.GET_MESSAGE).process(request, ctx);
+    private void processGetMessage(ChannelHandlerContext ctx, DataPackage request, byte command) throws Exception {
+        DataPackage response = RemoteRequestProcessorSelector.select(command).process(request, ctx);
         ctx.channel().writeAndFlush(response);
     }
 

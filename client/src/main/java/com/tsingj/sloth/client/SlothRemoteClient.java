@@ -1,8 +1,7 @@
 package com.tsingj.sloth.client;
 
 import com.tsingj.sloth.client.springsupport.CommonConstants;
-import com.tsingj.sloth.client.springsupport.ConnectProperties;
-import com.tsingj.sloth.client.springsupport.SlothClientProperties;
+import com.tsingj.sloth.client.springsupport.RemoteProperties;
 import com.tsingj.sloth.common.exception.ClientConnectException;
 import com.tsingj.sloth.common.exception.ClientConnectTimeoutException;
 import io.netty.bootstrap.Bootstrap;
@@ -15,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author yanghao
@@ -27,7 +24,7 @@ public class SlothRemoteClient {
     /**
      * The rpc client options.
      */
-    private final SlothClientProperties clientProperties;
+    private final RemoteProperties remoteProperties;
 
     /**
      * The worker group.
@@ -37,7 +34,7 @@ public class SlothRemoteClient {
     /**
      * The Constant CLIENT_T_NAME.
      */
-    private String pollName = "sloth";
+    private final static String POLL_NAME = "sloth";
 
     private final Bootstrap bootstrap = new Bootstrap();
 
@@ -52,32 +49,33 @@ public class SlothRemoteClient {
     private volatile boolean stopped = false;
 
 
-    public SlothRemoteClient(SlothClientProperties clientProperties) {
-        this.clientProperties = clientProperties;
+    public SlothRemoteClient(RemoteProperties remoteProperties) {
+        this.remoteProperties = remoteProperties;
+        this.initConnect();
     }
 
     public void initConnect() {
-        ConnectProperties connectProperties = clientProperties.getConnect();
-        if (connectProperties.getIoEventGroupType() == CommonConstants.EventGroupMode.POLL_EVENT_GROUP) {
-            this.workerGroup = new NioEventLoopGroup(connectProperties.getWorkGroupThreadSize(),
-                    new DefaultThreadFactory(this.pollName));
+        if (this.remoteProperties.getIoEventGroupType() == CommonConstants.EventGroupMode.POLL_EVENT_GROUP) {
+            this.workerGroup = new NioEventLoopGroup(this.remoteProperties.getWorkGroupThreadSize(),
+                    new DefaultThreadFactory(POLL_NAME));
         } else {
-            this.workerGroup = new EpollEventLoopGroup(connectProperties.getWorkGroupThreadSize(),
-                    new DefaultThreadFactory(this.pollName));
+            this.workerGroup = new EpollEventLoopGroup(this.remoteProperties.getWorkGroupThreadSize(),
+                    new DefaultThreadFactory(POLL_NAME));
         }
 
         this.bootstrap.group(this.workerGroup).channel(NioSocketChannel.class)
-                .option(ChannelOption.SO_REUSEADDR, connectProperties.getReuseAddress())
-                .option(ChannelOption.SO_KEEPALIVE, connectProperties.getKeepAlive())
-                .option(ChannelOption.TCP_NODELAY, connectProperties.getTcpNoDelay())
-                .option(ChannelOption.SO_SNDBUF, connectProperties.getSndBufSize())
-                .option(ChannelOption.SO_RCVBUF, connectProperties.getRcvBufSize())
-                .handler(new RemoteClientChannelInitializer(connectProperties.getMaxSize()));
+                .option(ChannelOption.SO_REUSEADDR, this.remoteProperties.getReuseAddress())
+                .option(ChannelOption.SO_KEEPALIVE, this.remoteProperties.getKeepAlive())
+                .option(ChannelOption.TCP_NODELAY, this.remoteProperties.getTcpNoDelay())
+                .option(ChannelOption.SO_SNDBUF, this.remoteProperties.getSndBufSize())
+                .option(ChannelOption.SO_RCVBUF, this.remoteProperties.getRcvBufSize())
+                .handler(new RemoteClientChannelInitializer(this.remoteProperties.getMaxSize()));
         try {
-            String[] brokerUrlArr = clientProperties.getBrokerUrl().split(":");
+            String[] brokerUrlArr = this.remoteProperties.getBrokerUrl().split(":");
             ChannelFuture channelFuture = bootstrap.connect(brokerUrlArr[0], Integer.parseInt(brokerUrlArr[1]));
             this.channel = channelFuture.sync().channel();
             this.clientId = UUID.randomUUID().toString();
+
         } catch (Throwable e) {
             log.warn("Init sloth client fail!");
         }
@@ -100,8 +98,8 @@ public class SlothRemoteClient {
             synchronized (lock) {
                 if (!this.channel.isActive() && !this.stopped) {
                     log.info("thread:{} channel unActive! try reconnect!", Thread.currentThread().getId());
-                    Integer connectTimeout = this.clientProperties.getConnect().getConnectTimeout();
-                    String[] brokerUrlArr = clientProperties.getBrokerUrl().split(":");
+                    Integer connectTimeout = this.remoteProperties.getConnectTimeout();
+                    String[] brokerUrlArr = this.remoteProperties.getBrokerUrl().split(":");
                     ChannelFuture channelFuture = this.bootstrap.connect(brokerUrlArr[0], Integer.parseInt(brokerUrlArr[1]));
                     //awaitUninterruptibly 底层为有锁。
                     if (channelFuture.awaitUninterruptibly(connectTimeout, TimeUnit.MILLISECONDS)) {

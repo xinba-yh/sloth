@@ -1,11 +1,6 @@
 package com.tsingj.sloth.client.consumer;
 
-import com.tsingj.sloth.client.SlothRemoteClient;
-import com.tsingj.sloth.client.springsupport.ConsumerProperties;
-import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.ReflectUtils;
-import org.springframework.util.ReflectionUtils;
 
 
 import java.util.Map;
@@ -17,45 +12,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class SlothConsumerManager {
 
-    private final SlothRemoteClient slothRemoteClient;
-
-    private final SlothClientProperties slothClientProperties;
-
-    public SlothConsumerManager(SlothClientProperties slothClientProperties, SlothRemoteClient slothRemoteClient) {
-        this.slothClientProperties = slothClientProperties;
-        this.slothRemoteClient = slothRemoteClient;
-    }
 
     private final static Map<String, SlothRemoteConsumer> SLOTH_CONSUMER_MAP = new ConcurrentHashMap<>();
 
-    private void init() {
-        Map<String, ConsumerProperties> consumerMap = slothClientProperties.getConsumer();
-        if (consumerMap == null || consumerMap.size() == 0) {
-            return;
-        }
-        for (Map.Entry<String, ConsumerProperties> entry : consumerMap.entrySet()) {
-            log.info("prepare init consumer {}.", entry.getKey());
-            try {
-                ConsumerProperties consumerProperties = entry.getValue();
-                SlothRemoteConsumer slothConsumer = new SlothRemoteConsumer(slothClientProperties, consumerProperties, slothRemoteClient);
-                String listener = consumerProperties.getListener();
-                Class<MessageListener> messageListenerClass = (Class<MessageListener>) Class.forName(listener);
-                MessageListener messageListener = messageListenerClass.newInstance();
-                slothConsumer.registerListener(messageListener);
-                SLOTH_CONSUMER_MAP.put(entry.getKey(), slothConsumer);
-                slothConsumer.start();
-                log.info("init consumer {} success.", entry.getKey());
-            } catch (Throwable e) {
-                log.error("init consumer {} error!", entry.getKey(), e);
-                throw new RuntimeException(e);
-            }
-        }
+
+    public static void register(SlothRemoteConsumer slothRemoteConsumer) {
+        SLOTH_CONSUMER_MAP.put(slothRemoteConsumer.getTopic(), slothRemoteConsumer);
     }
 
-    private void destroy() {
-        for (SlothRemoteConsumer slothConsumer : SLOTH_CONSUMER_MAP.values()) {
-            slothConsumer.destroy();
-        }
+    public static void unregister(String topic) {
+        SLOTH_CONSUMER_MAP.remove(topic);
     }
 
     public static SlothRemoteConsumer get(String topic) {

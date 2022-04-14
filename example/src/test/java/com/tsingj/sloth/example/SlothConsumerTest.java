@@ -26,16 +26,16 @@ public class SlothConsumerTest {
         Thread.sleep(50000);
     }
 
-    @Test
-    public void newListener() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-
-        String listenerClass = slothClientProperties.getConsumer().get("test-topic").getListener();
-        Class<MessageListener> messageListenerClass = (Class<MessageListener>) Class.forName(listenerClass);
-        MessageListener messageListener = messageListenerClass.newInstance();
-
-        messageListener.consumeMessage(Remoting.GetMessageResult.Message.newBuilder().setTopic("123").build());
-
-    }
+//    @Test
+//    public void newListener() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+//
+//        String listenerClass = slothClientProperties.getConsumer().get("test-topic").getListener();
+//        Class<MessageListener> messageListenerClass = (Class<MessageListener>) Class.forName(listenerClass);
+//        MessageListener messageListener = messageListenerClass.newInstance();
+//
+//        messageListener.consumeMessage(Remoting.GetMessageResult.Message.newBuilder().setTopic("123").build());
+//
+//    }
 
     @Test
     public void reBalanceTest1() throws InterruptedException {

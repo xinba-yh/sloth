@@ -3,8 +3,9 @@ package com.tsingj.sloth.client.consumer;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tsingj.sloth.client.RemoteCorrelationManager;
 import com.tsingj.sloth.client.SlothRemoteClient;
+import com.tsingj.sloth.client.SlothRemoteClientSingleton;
 import com.tsingj.sloth.client.springsupport.ConsumerProperties;
-import com.tsingj.sloth.client.springsupport.SlothClientProperties;
+import com.tsingj.sloth.client.springsupport.RemoteProperties;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.threadpool.TaskThreadFactory;
 import com.tsingj.sloth.common.threadpool.fixed.FixedThreadPoolExecutor;
@@ -27,27 +28,29 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SlothRemoteConsumer {
 
-    /**
-     * The rpc client options.
-     */
-    private final SlothClientProperties clientProperties;
+    private RemoteProperties remoteProperties;
 
-    private final ConsumerProperties consumerProperties;
+    private ConsumerProperties consumerProperties;
 
-    private final SlothRemoteClient slothRemoteClient;
+    private SlothRemoteClient slothRemoteClient;
 
     private MessageListener messageListener;
 
-    private final ExecutorService executorService;
+    private ExecutorService executorService;
 
-    private final ScheduledExecutorService scheduledExecutorService;
+    private ScheduledExecutorService scheduledExecutorService;
 
-    public SlothRemoteConsumer(SlothClientProperties clientProperties, ConsumerProperties consumerProperties, SlothRemoteClient slothRemoteClient) {
-        this.clientProperties = clientProperties;
+
+    public void setConsumerProperties(ConsumerProperties consumerProperties) {
         this.consumerProperties = consumerProperties;
-        this.slothRemoteClient = slothRemoteClient;
-        this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1, new TaskThreadFactory("consumer-hb-"));
-        this.executorService = new FixedThreadPoolExecutor(consumerProperties.getMaxConsumePartitions(), consumerProperties.getMaxConsumePartitions(), 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(consumerProperties.getMaxConsumePartitions()), new TaskThreadFactory("consume-part"), new ThreadPoolExecutor.AbortPolicy());
+    }
+
+    public void setRemoteProperties(RemoteProperties remoteProperties) {
+        this.remoteProperties = remoteProperties;
+    }
+
+    public String getTopic() {
+        return topic;
     }
 
     /**
@@ -68,8 +71,13 @@ public class SlothRemoteConsumer {
     }
 
     public void start() {
+        this.slothRemoteClient = SlothRemoteClientSingleton.getInstance(this.remoteProperties);
         this.topic = this.consumerProperties.getTopic();
         this.groupName = this.consumerProperties.getGroupName();
+        this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1, new TaskThreadFactory("consumer-hb-"));
+        this.executorService = new FixedThreadPoolExecutor(consumerProperties.getMaxConsumePartitions(), consumerProperties.getMaxConsumePartitions(), 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(consumerProperties.getMaxConsumePartitions()), new TaskThreadFactory("consume-part"), new ThreadPoolExecutor.AbortPolicy());
+        //注册自身
+        SlothConsumerManager.register(this);
         String consumeFromWhere = this.consumerProperties.getConsumeFromWhere();
         Assert.isTrue(StringUtils.hasLength(consumeFromWhere) && (consumeFromWhere.equalsIgnoreCase(ConsumeFromWhere.EARLIEST.getType()) || consumeFromWhere.equalsIgnoreCase(ConsumeFromWhere.LATEST.getType())), "please check consumer properties consumeFromWhere, " + consumeFromWhere + " unsupported !");
         //1.1、立即发送一次heartbeat，并与建立clientId与channel的绑定关系（client - server）。
@@ -85,12 +93,13 @@ public class SlothRemoteConsumer {
             log.info("sloth topic {} consumer {} partitions {} init done.", this.topic, slothRemoteClient.getClientId(), topicPartitions);
         }
         //3、启动心跳和重平衡检查定时任务
-        this.scheduledExecutorService.scheduleAtFixedRate(new HeartBeatAndReBalanceCheckTimerTask(this.topic), 3, 3, TimeUnit.SECONDS);
+        this.scheduledExecutorService.scheduleAtFixedRate(new HeartBeatAndReBalanceCheckTimerTask(this), 3, 3, TimeUnit.SECONDS);
     }
 
     public void destroy() {
         log.info("sloth consumer {} destroy.", this.topic);
         this.scheduledExecutorService.shutdown();
+        SlothConsumerManager.unregister(this.topic);
     }
 
     /**
@@ -100,18 +109,17 @@ public class SlothRemoteConsumer {
     @Slf4j
     public static class HeartBeatAndReBalanceCheckTimerTask extends TimerTask {
 
-        private final String topic;
+        private final SlothRemoteConsumer consumer;
 
-        public HeartBeatAndReBalanceCheckTimerTask(String topic) {
-            this.topic = topic;
+        public HeartBeatAndReBalanceCheckTimerTask(SlothRemoteConsumer consumer) {
+            this.consumer = consumer;
         }
 
         @Override
         public void run() {
             log.trace("run heartbeat timer task.");
             try {
-                SlothRemoteConsumer slothRemoteConsumer = SlothConsumerManager.get(this.topic);
-                slothRemoteConsumer.heartBeatAndReBalanceCheck();
+                consumer.heartBeatAndReBalanceCheck();
             } catch (Throwable e) {
                 log.debug("heartBeatAndReBalanceCheckTimerTask run fail! {}", e.getMessage());
             }
@@ -184,7 +192,7 @@ public class SlothRemoteConsumer {
     public List<Integer> heartbeat() {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
         log.debug("prepare heartbeat currentCorrelationId:{}.", currentCorrelationId);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.remoteProperties.getOnceTalkTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {
@@ -238,7 +246,7 @@ public class SlothRemoteConsumer {
 
     public Long getConsumerOffset(String groupName, String topic, int partition) {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.remoteProperties.getOnceTalkTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {
@@ -284,7 +292,7 @@ public class SlothRemoteConsumer {
 
     public Long getMinOffset(String topic, Integer partition) {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.remoteProperties.getOnceTalkTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {
@@ -329,7 +337,7 @@ public class SlothRemoteConsumer {
 
     public Long getMaxOffset(String topic, Integer partition) {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.remoteProperties.getOnceTalkTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {
@@ -375,7 +383,7 @@ public class SlothRemoteConsumer {
 
     public Remoting.GetMessageResult fetchMessage(String topic, int partition, long offset) {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.remoteProperties.getOnceTalkTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {
@@ -416,7 +424,7 @@ public class SlothRemoteConsumer {
 
     public Remoting.SubmitConsumerOffsetResult submitOffset(String groupName, String topic, Integer partition, long offset) {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.clientProperties.getConnect().getOnceTalkTimeout());
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.remoteProperties.getOnceTalkTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {

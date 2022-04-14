@@ -4,12 +4,15 @@ import com.tsingj.sloth.client.consumer.ConsumeStatus;
 import com.tsingj.sloth.client.consumer.MessageListener;
 import com.tsingj.sloth.remoting.message.Remoting;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author yanghao
  * one partition one thread.
  */
+
 @Slf4j
+@Component
 public class MessageOrderedListener implements MessageListener {
 
     @Override
