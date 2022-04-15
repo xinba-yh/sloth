@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author yanghao
+ * 暂时使用SlothConsumerManager管理多个consumer连接获取和远程通讯问题。
  */
 @Slf4j
 public class SlothConsumerManager {
