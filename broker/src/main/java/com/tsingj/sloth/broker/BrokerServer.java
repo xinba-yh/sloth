@@ -40,7 +40,6 @@ public class BrokerServer {
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, brokerProperties.getBackLogSize())
                     .option(ChannelOption.SO_REUSEADDR, brokerProperties.isReuseAddress())
-//                    .option(ChannelOption.SO_KEEPALIVE, false)
                     .childHandler(new RemoteServerChannelInitializer(storageProperties.getMessageMaxSize()))
                     .childOption(ChannelOption.TCP_NODELAY, brokerProperties.isTcpNoDelay())
                     .childOption(ChannelOption.SO_SNDBUF, brokerProperties.getSndBufSize())

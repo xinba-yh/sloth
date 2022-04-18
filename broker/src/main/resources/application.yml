@@ -1,3 +1,5 @@
-broker:
-  port: 9000
-  loseConsumerHbMaxMills: 9
+spring:
+  sloth:
+    broker:
+      port: 9000
+      loseConsumerHbMaxMills: 9

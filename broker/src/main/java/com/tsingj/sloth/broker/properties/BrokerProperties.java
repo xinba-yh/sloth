@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author yanghao
  */
-@ConfigurationProperties(prefix = "broker")
+@ConfigurationProperties(prefix = "spring.sloth.broker")
 @Component
 public class BrokerProperties {
 
