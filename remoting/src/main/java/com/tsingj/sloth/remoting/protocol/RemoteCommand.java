@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class DataPackage {
+public class RemoteCommand {
 
     //-------------head-------------
 

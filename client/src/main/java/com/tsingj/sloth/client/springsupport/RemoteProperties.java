@@ -2,8 +2,6 @@ package com.tsingj.sloth.client.springsupport;
 
 import lombok.Data;
 
-import static com.tsingj.sloth.client.springsupport.CommonConstants.EventGroupMode.POLL_EVENT_GROUP;
-
 /**
  * @author yanghao
  */
@@ -11,6 +9,8 @@ import static com.tsingj.sloth.client.springsupport.CommonConstants.EventGroupMo
 public class RemoteProperties {
 
     private String brokerUrl;
+
+//    private Integer remoteCallWay = CommonConstants.RemoteCallWay.NETTY;
 
     /**
      * The connect timeout.
@@ -30,7 +30,7 @@ public class RemoteProperties {
     /**
      * The io event group type.
      */
-    private Integer ioEventGroupType = POLL_EVENT_GROUP; // 0=poll, 1=epoll
+    private Integer ioEventGroupType = CommonConstants.EventGroupMode.POLL_EVENT_GROUP; // 0=poll, 1=epoll
 
 
     /**

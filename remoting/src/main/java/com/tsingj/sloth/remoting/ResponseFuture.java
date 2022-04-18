@@ -17,7 +17,7 @@
 package com.tsingj.sloth.remoting;
 
 import com.tsingj.sloth.common.SystemClock;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +31,7 @@ public class ResponseFuture {
 
     private final long timeoutMillis;
 
-    private volatile DataPackage dataPackage = null;
+    private volatile RemoteCommand remoteCommand = null;
 
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -49,16 +49,16 @@ public class ResponseFuture {
         return SystemClock.now() - this.startTimestamp > this.timeoutMillis;
     }
 
-    public DataPackage waitResponse() throws InterruptedException {
+    public RemoteCommand waitResponse() throws InterruptedException {
         boolean await = this.countDownLatch.await(this.timeoutMillis, TimeUnit.MILLISECONDS);
         if (!await) {
             throw new InterruptedException("timeout!");
         }
-        return this.dataPackage;
+        return this.remoteCommand;
     }
 
-    public void putResponse(final DataPackage dataPackage) {
-        this.dataPackage = dataPackage;
+    public void putResponse(final RemoteCommand remoteCommand) {
+        this.remoteCommand = remoteCommand;
         this.countDownLatch.countDown();
     }
 

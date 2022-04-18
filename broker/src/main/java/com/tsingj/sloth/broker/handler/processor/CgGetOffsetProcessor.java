@@ -4,7 +4,7 @@ import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.store.datajson.offset.ConsumerGroupOffsetManager;
 import com.tsingj.sloth.store.datajson.topic.TopicConfig;
@@ -36,7 +36,7 @@ public class CgGetOffsetProcessor implements RemoteRequestProcessor {
     }
 
     @Override
-    public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
+    public RemoteCommand process(RemoteCommand request, ChannelHandlerContext ctx) throws Exception {
         log.debug("receive GET_CONSUMER_GROUP_OFFSET command.");
         Remoting.GetConsumerOffsetRequest getConsumerOffsetRequest = Remoting.GetConsumerOffsetRequest.parseFrom(request.getData());
 
@@ -65,24 +65,24 @@ public class CgGetOffsetProcessor implements RemoteRequestProcessor {
         return this.respSuccess(request, offset);
     }
 
-    private DataPackage respError(DataPackage request, String errMsg) {
+    private RemoteCommand respError(RemoteCommand request, String errMsg) {
         log.warn("process command GET_CONSUMER_OFFSET fail! {}", errMsg);
         Remoting.GetConsumerOffsetResult result = Remoting.GetConsumerOffsetResult.newBuilder()
                 .setRetCode(Remoting.RetCode.ERROR)
                 .setErrorInfo(errMsg)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(result.toByteArray());
         return response;
     }
 
-    private DataPackage respSuccess(DataPackage request, long offset) {
+    private RemoteCommand respSuccess(RemoteCommand request, long offset) {
         Remoting.GetConsumerOffsetResult result = Remoting.GetConsumerOffsetResult.newBuilder()
                 .setRetCode(Remoting.RetCode.SUCCESS)
                 .setOffset(offset)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(result.toByteArray());
         return response;

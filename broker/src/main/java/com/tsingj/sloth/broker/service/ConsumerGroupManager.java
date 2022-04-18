@@ -5,7 +5,7 @@ import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.common.result.Results;
 import com.tsingj.sloth.remoting.ChannelAttributeConstants;
 import com.tsingj.sloth.remoting.message.Remoting;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.store.datajson.topic.TopicConfig;
 import com.tsingj.sloth.store.datajson.topic.TopicManager;
@@ -88,12 +88,12 @@ public class ConsumerGroupManager {
             ConsumerChannel consumerChannel = entry.getValue();
             List<Integer> partitions = consumerChannel.getPartitions();
             log.info("notify consumer clientId:{} reBalance partitions:{}.", clientId, partitions);
-            DataPackage dataPackage = this.buildNotify(groupName, topic, partitions);
-            consumerChannel.getChannel().writeAndFlush(dataPackage);
+            RemoteCommand remoteCommand = this.buildNotify(groupName, topic, partitions);
+            consumerChannel.getChannel().writeAndFlush(remoteCommand);
         }
     }
 
-    private DataPackage buildNotify(String groupName, String topic, List<Integer> partitions) {
+    private RemoteCommand buildNotify(String groupName, String topic, List<Integer> partitions) {
         Remoting.Notify.TopicConsumer topicConsumer = Remoting.Notify.TopicConsumer.newBuilder()
                 .setGroup(groupName)
                 .setTopic(topic)
@@ -105,7 +105,7 @@ public class ConsumerGroupManager {
                 .setTopicConsumer(topicConsumer)
                 .build();
 
-        return DataPackage.builder()
+        return RemoteCommand.builder()
                 .magicCode(ProtocolConstants.MAGIC_CODE)
                 .version(ProtocolConstants.VERSION)
                 .command(ProtocolConstants.Command.BROKER_NOTIFY)

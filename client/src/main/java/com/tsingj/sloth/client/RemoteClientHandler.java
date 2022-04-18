@@ -5,7 +5,7 @@ import com.tsingj.sloth.client.consumer.SlothRemoteConsumer;
 import com.tsingj.sloth.client.consumer.TopicPartitionConsumer;
 import com.tsingj.sloth.remoting.ResponseFuture;
 import com.tsingj.sloth.remoting.message.Remoting;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -18,16 +18,16 @@ import java.util.List;
  * @author yanghao
  */
 @Slf4j
-public class RemoteClientHandler extends SimpleChannelInboundHandler<DataPackage> {
+public class RemoteClientHandler extends SimpleChannelInboundHandler<RemoteCommand> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, DataPackage dataPackage) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RemoteCommand remoteCommand) throws Exception {
         //同步消息
-        if (ProtocolConstants.RequestType.SYNC == dataPackage.getRequestType()) {
+        if (ProtocolConstants.RequestType.SYNC == remoteCommand.getRequestType()) {
             //client主动发送消息，等待响应
-            Long correlationId = dataPackage.getCorrelationId();
+            Long correlationId = remoteCommand.getCorrelationId();
             log.debug("client receive CONSUMER_GROUP_HEARTBEAT correlationId:{}", correlationId);
-            byte[] responseData = dataPackage.getData();
+            byte[] responseData = remoteCommand.getData();
             ResponseFuture responseFuture = RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.get(correlationId);
             if (responseFuture == null) {
                 log.warn("invalid correlationId:{}!", correlationId);
@@ -37,13 +37,13 @@ public class RemoteClientHandler extends SimpleChannelInboundHandler<DataPackage
                 log.warn("correlationId:{} response null!", correlationId);
                 return;
             }
-            responseFuture.putResponse(dataPackage);
+            responseFuture.putResponse(remoteCommand);
             //broker主动消息，client需要回复
             // TODO: 2022/4/1 暂无此类消息。
         } else {
-            if (dataPackage.getCommand() == ProtocolConstants.Command.BROKER_NOTIFY) {
+            if (remoteCommand.getCommand() == ProtocolConstants.Command.BROKER_NOTIFY) {
                 log.info("receive BROKER_NOTIFY.");
-                Remoting.Notify notify = Remoting.Notify.parseFrom(dataPackage.getData());
+                Remoting.Notify notify = Remoting.Notify.parseFrom(remoteCommand.getData());
                 //process RE_BALANCE_BROADCAST event
                 if (notify.getEvent() == Remoting.Notify.Event.RE_BALANCE_BROADCAST) {
                     Remoting.Notify.TopicConsumer topicConsumer = notify.getTopicConsumer();
@@ -71,7 +71,7 @@ public class RemoteClientHandler extends SimpleChannelInboundHandler<DataPackage
                     topicPartitionConsumer.weekUp();
                 }
             } else {
-                log.warn("unsupported command:{}!", dataPackage.getCommand());
+                log.warn("unsupported command:{}!", remoteCommand.getCommand());
             }
         }
     }

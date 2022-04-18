@@ -4,7 +4,7 @@ import com.google.protobuf.ByteString;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.store.StorageEngine;
 import com.tsingj.sloth.store.pojo.*;
@@ -32,7 +32,7 @@ public class GetMessageProcessor implements RemoteRequestProcessor {
     }
 
     @Override
-    public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
+    public RemoteCommand process(RemoteCommand request, ChannelHandlerContext ctx) throws Exception {
         log.debug("receive GET_MESSAGE command.");
         Remoting.GetMessageRequest getMessageRequest = Remoting.GetMessageRequest.parseFrom(request.getData());
 
@@ -62,7 +62,7 @@ public class GetMessageProcessor implements RemoteRequestProcessor {
         }
     }
 
-    private DataPackage respFound(DataPackage request, Message message) {
+    private RemoteCommand respFound(RemoteCommand request, Message message) {
         Remoting.GetMessageResult.Message respMessage = Remoting.GetMessageResult.Message.newBuilder()
                 .setTopic(message.getTopic())
                 .setPartition(message.getPartition())
@@ -77,30 +77,30 @@ public class GetMessageProcessor implements RemoteRequestProcessor {
                 .setRetCode(Remoting.GetMessageResult.RetCode.FOUND)
                 .setMessage(respMessage)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(sendResult.toByteArray());
         return response;
     }
 
-    private DataPackage respError(DataPackage request, String errMsg) {
+    private RemoteCommand respError(RemoteCommand request, String errMsg) {
         log.warn("process command GET_MESSAGE fail! {}", errMsg);
         Remoting.SendResult sendResult = Remoting.SendResult.newBuilder()
                 .setRetCode(Remoting.SendResult.RetCode.ERROR)
                 .setErrorInfo(errMsg)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(sendResult.toByteArray());
         return response;
     }
 
-    private DataPackage respNotFound(DataPackage request, String errorMsg) {
+    private RemoteCommand respNotFound(RemoteCommand request, String errorMsg) {
         Remoting.GetMessageResult sendResult = Remoting.GetMessageResult.newBuilder()
                 .setRetCode(Remoting.GetMessageResult.RetCode.NOT_FOUND)
                 .setErrorInfo(errorMsg != null ? errorMsg : "")
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(sendResult.toByteArray());
         return response;

@@ -2,7 +2,7 @@ package com.tsingj.sloth.broker;
 
 import com.tsingj.sloth.broker.handler.LiftCycleHandler;
 import com.tsingj.sloth.common.SystemClock;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.PackageCodec;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import io.netty.bootstrap.Bootstrap;
@@ -95,8 +95,8 @@ public class MyClient {
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             for (int i = 0; i < 1; i++) {
                 byte[] data = ("helloworld-"+i).getBytes(StandardCharsets.UTF_8);
-                DataPackage dataPackage = DataPackage.builder().magicCode(ProtocolConstants.MAGIC_CODE).version((byte) 1).command((byte) 1).requestType(ProtocolConstants.RequestType.SYNC).correlationId(1L).timestamp(SystemClock.now()).data(data).build();
-                ByteBuf byteBuf = PackageCodec.encode(dataPackage);
+                RemoteCommand remoteCommand = RemoteCommand.builder().magicCode(ProtocolConstants.MAGIC_CODE).version((byte) 1).command((byte) 1).requestType(ProtocolConstants.RequestType.SYNC).correlationId(1L).timestamp(SystemClock.now()).data(data).build();
+                ByteBuf byteBuf = PackageCodec.encode(remoteCommand);
                 ctx.channel().writeAndFlush(byteBuf);
             }
             System.out.println("11111111");

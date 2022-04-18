@@ -1,6 +1,6 @@
 package com.tsingj.sloth.remoting;
 
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public interface RemoteRequestProcessor {
 
-    DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception;
+    RemoteCommand process(RemoteCommand request, ChannelHandlerContext ctx) throws Exception;
 
     byte getCommand();
 

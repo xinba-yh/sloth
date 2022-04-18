@@ -3,7 +3,7 @@ package com.tsingj.sloth.broker.handler.processor;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.store.StorageEngine;
 import io.netty.channel.ChannelHandlerContext;
@@ -30,7 +30,7 @@ public class GetMinOffsetProcessor implements RemoteRequestProcessor {
     }
 
     @Override
-    public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
+    public RemoteCommand process(RemoteCommand request, ChannelHandlerContext ctx) throws Exception {
         log.debug("receive GET_MIN_OFFSET command.");
         Remoting.GetOffsetRequest getOffsetRequest = Remoting.GetOffsetRequest.parseFrom(request.getData());
 
@@ -50,24 +50,24 @@ public class GetMinOffsetProcessor implements RemoteRequestProcessor {
         return this.respSuccess(request, offset);
     }
 
-    private DataPackage respSuccess(DataPackage request, long offset) {
+    private RemoteCommand respSuccess(RemoteCommand request, long offset) {
         Remoting.GetOffsetResult getOffsetResult = Remoting.GetOffsetResult.newBuilder()
                 .setRetCode(Remoting.RetCode.SUCCESS)
                 .setOffset(offset)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(getOffsetResult.toByteArray());
         return response;
     }
 
-    private DataPackage respError(DataPackage request, String errMsg) {
+    private RemoteCommand respError(RemoteCommand request, String errMsg) {
         log.warn("process command GET_MIN_OFFSET fail! {}", errMsg);
         Remoting.GetOffsetResult getOffsetResult = Remoting.GetOffsetResult.newBuilder()
                 .setRetCode(Remoting.RetCode.ERROR)
                 .setErrorInfo(errMsg)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(getOffsetResult.toByteArray());
         return response;

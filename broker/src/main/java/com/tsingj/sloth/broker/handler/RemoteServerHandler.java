@@ -3,7 +3,7 @@ package com.tsingj.sloth.broker.handler;
 import com.tsingj.sloth.broker.handler.processor.RemoteRequestProcessorSelector;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.remoting.message.Remoting;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.remoting.utils.CommonUtils;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,10 +14,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author yanghao
  */
 @Slf4j
-public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage> {
+public class RemoteServerHandler extends SimpleChannelInboundHandler<RemoteCommand> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, DataPackage msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RemoteCommand msg) throws Exception {
         try {
             switch (msg.getCommand()) {
                 case ProtocolConstants.Command.PRODUCER_HEARTBEAT:
@@ -60,21 +60,21 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
         } catch (Exception e) {
             log.error("process command:{} exception", msg.getCommand(), e);
             if (msg.getRequestType() == ProtocolConstants.RequestType.SYNC) {
-                DataPackage responseDataPackage = msg;
-                responseDataPackage.setTimestamp(SystemClock.now());
-                responseDataPackage.setData(
+                RemoteCommand responseRemoteCommand = msg;
+                responseRemoteCommand.setTimestamp(SystemClock.now());
+                responseRemoteCommand.setData(
                         Remoting.SendResult.newBuilder()
                                 .setRetCode(Remoting.SendResult.RetCode.ERROR)
                                 .setErrorInfo(CommonUtils.simpleErrorInfo(e))
                                 .build()
                                 .toByteArray());
-                ctx.channel().writeAndFlush(responseDataPackage);
+                ctx.channel().writeAndFlush(responseRemoteCommand);
             }
         }
     }
 
-    private void processSendMessage(ChannelHandlerContext ctx, DataPackage request) throws Exception {
-        DataPackage response;
+    private void processSendMessage(ChannelHandlerContext ctx, RemoteCommand request) throws Exception {
+        RemoteCommand response;
         if (request.getRequestType() == ProtocolConstants.RequestType.ONE_WAY) {
             Remoting.Message message = Remoting.Message.parseFrom(request.getData());
             int reqId = Integer.parseInt(message.getRequestId());
@@ -92,14 +92,14 @@ public class RemoteServerHandler extends SimpleChannelInboundHandler<DataPackage
         }
     }
 
-    private void processGetMessage(ChannelHandlerContext ctx, DataPackage request, byte command) throws Exception {
-        DataPackage response = RemoteRequestProcessorSelector.select(command).process(request, ctx);
+    private void processGetMessage(ChannelHandlerContext ctx, RemoteCommand request, byte command) throws Exception {
+        RemoteCommand response = RemoteRequestProcessorSelector.select(command).process(request, ctx);
         ctx.channel().writeAndFlush(response);
     }
 
 
-    private void processConsumerGroupRequest(ChannelHandlerContext ctx, DataPackage request, byte command) throws Exception {
-        DataPackage response = RemoteRequestProcessorSelector.select(command).process(request, ctx);
+    private void processConsumerGroupRequest(ChannelHandlerContext ctx, RemoteCommand request, byte command) throws Exception {
+        RemoteCommand response = RemoteRequestProcessorSelector.select(command).process(request, ctx);
         ctx.channel().writeAndFlush(response);
     }
 

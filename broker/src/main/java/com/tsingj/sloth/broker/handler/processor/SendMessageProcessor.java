@@ -5,7 +5,7 @@ import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.store.datajson.topic.TopicConfig;
 import com.tsingj.sloth.store.datajson.topic.TopicManager;
@@ -40,7 +40,7 @@ public class SendMessageProcessor implements RemoteRequestProcessor {
     }
 
     @Override
-    public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
+    public RemoteCommand process(RemoteCommand request, ChannelHandlerContext ctx) throws Exception {
         log.debug("receive SEND_MESSAGE command.");
         Remoting.Message msg = Remoting.Message.parseFrom(request.getData());
 
@@ -90,25 +90,25 @@ public class SendMessageProcessor implements RemoteRequestProcessor {
 
     }
 
-    private DataPackage respError(DataPackage request, String errMsg) {
+    private RemoteCommand respError(RemoteCommand request, String errMsg) {
         log.warn("process command sendMessage fail! {}", errMsg);
         Remoting.SendResult sendResult = Remoting.SendResult.newBuilder()
                 .setRetCode(Remoting.SendResult.RetCode.ERROR)
                 .setErrorInfo(errMsg)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(sendResult.toByteArray());
         return response;
     }
 
-    private DataPackage respSuccess(DataPackage request, PutMessageResult putMessageResult) {
+    private RemoteCommand respSuccess(RemoteCommand request, PutMessageResult putMessageResult) {
 //        log.info("process command sendMessage success! {} {} {}", putMessageResult.getTopic(), putMessageResult.getPartition(), putMessageResult.getOffset());
         Remoting.SendResult sendResult = Remoting.SendResult.newBuilder()
                 .setRetCode(Remoting.SendResult.RetCode.SUCCESS)
                 .setResultInfo(Remoting.SendResult.ResultInfo.newBuilder().setOffset(putMessageResult.getOffset()).setTopic(putMessageResult.getTopic()).setPartition(putMessageResult.getPartition()).build())
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(sendResult.toByteArray());
         return response;

@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 public class PackageCodec {
 
     //已在上层完成TCP粘包
-    public static DataPackage decode(ByteBuf byteBuf) {
+    public static RemoteCommand decode(ByteBuf byteBuf) {
 
         // Make sure if the length field was received.
         if (byteBuf.readableBytes() < ProtocolConstants.FieldLength.HEAD_ALL) {
@@ -76,7 +76,7 @@ public class PackageCodec {
         byte[] dataBytes = new byte[dataLen];
         byteBuf.readBytes(dataBytes);
 
-        return DataPackage.builder()
+        return RemoteCommand.builder()
                 .magicCode(magicCode)
                 .version(version)
                 .command(command)
@@ -87,28 +87,28 @@ public class PackageCodec {
                 .build();
     }
 
-    public static ByteBuf encode(DataPackage dataPackage) {
+    public static ByteBuf encode(RemoteCommand remoteCommand) {
 
         int headLen = ProtocolConstants.FieldLength.HEAD_ALL;
-        int metaLen = ProtocolConstants.FieldLength.REQUEST_TYPE + (dataPackage.getRequestType() == ProtocolConstants.RequestType.ONE_WAY ? 0 : ProtocolConstants.FieldLength.CORRELATION_ID) + ProtocolConstants.FieldLength.TIMESTAMP;
-        int dataLen = ProtocolConstants.FieldLength.DATA_LEN + dataPackage.getData().length;
+        int metaLen = ProtocolConstants.FieldLength.REQUEST_TYPE + (remoteCommand.getRequestType() == ProtocolConstants.RequestType.ONE_WAY ? 0 : ProtocolConstants.FieldLength.CORRELATION_ID) + ProtocolConstants.FieldLength.TIMESTAMP;
+        int dataLen = ProtocolConstants.FieldLength.DATA_LEN + remoteCommand.getData().length;
 
         int totalLen = headLen + metaLen + dataLen;
         ByteBuf byteBuf = Unpooled.buffer(totalLen, totalLen);
 
         byte[] magicCodeBytes = ProtocolConstants.MAGIC_CODE.getBytes(StandardCharsets.UTF_8);
         byteBuf.writeBytes(magicCodeBytes);
-        byteBuf.writeByte(dataPackage.getVersion());
-        byteBuf.writeByte(dataPackage.getCommand());
+        byteBuf.writeByte(remoteCommand.getVersion());
+        byteBuf.writeByte(remoteCommand.getCommand());
         byteBuf.writeInt(metaLen + dataLen);
 
-        byteBuf.writeByte(dataPackage.getRequestType());
-        if(dataPackage.getRequestType() == ProtocolConstants.RequestType.SYNC){
-            byteBuf.writeLong(dataPackage.getCorrelationId());
+        byteBuf.writeByte(remoteCommand.getRequestType());
+        if(remoteCommand.getRequestType() == ProtocolConstants.RequestType.SYNC){
+            byteBuf.writeLong(remoteCommand.getCorrelationId());
         }
-        byteBuf.writeLong(dataPackage.getTimestamp());
-        byteBuf.writeInt(dataPackage.getData().length);
-        byteBuf.writeBytes(dataPackage.getData());
+        byteBuf.writeLong(remoteCommand.getTimestamp());
+        byteBuf.writeInt(remoteCommand.getData().length);
+        byteBuf.writeBytes(remoteCommand.getData());
 
         return byteBuf;
     }

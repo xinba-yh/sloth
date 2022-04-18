@@ -4,7 +4,7 @@ import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
-import com.tsingj.sloth.remoting.protocol.DataPackage;
+import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
 import com.tsingj.sloth.store.datajson.offset.ConsumerGroupOffsetManager;
 import com.tsingj.sloth.store.datajson.topic.TopicConfig;
@@ -36,7 +36,7 @@ public class CgSubmitOffsetProcessor implements RemoteRequestProcessor {
     }
 
     @Override
-    public DataPackage process(DataPackage request, ChannelHandlerContext ctx) throws Exception {
+    public RemoteCommand process(RemoteCommand request, ChannelHandlerContext ctx) throws Exception {
         log.debug("receive SUBMIT_CONSUMER_GROUP_OFFSET command.");
         Remoting.SubmitConsumerOffsetRequest submitConsumerOffsetRequest = Remoting.SubmitConsumerOffsetRequest.parseFrom(request.getData());
 
@@ -64,23 +64,23 @@ public class CgSubmitOffsetProcessor implements RemoteRequestProcessor {
 
     }
 
-    private DataPackage respError(DataPackage request, String errMsg) {
+    private RemoteCommand respError(RemoteCommand request, String errMsg) {
         log.warn("process command SUBMIT_CONSUMER_OFFSET fail! {}", errMsg);
         Remoting.SubmitConsumerOffsetResult result = Remoting.SubmitConsumerOffsetResult.newBuilder()
                 .setRetCode(Remoting.RetCode.ERROR)
                 .setErrorInfo(errMsg)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(result.toByteArray());
         return response;
     }
 
-    private DataPackage respSuccess(DataPackage request) {
+    private RemoteCommand respSuccess(RemoteCommand request) {
         Remoting.SubmitConsumerOffsetResult result = Remoting.SubmitConsumerOffsetResult.newBuilder()
                 .setRetCode(Remoting.RetCode.SUCCESS)
                 .build();
-        DataPackage response = request;
+        RemoteCommand response = request;
         response.setTimestamp(SystemClock.now());
         response.setData(result.toByteArray());
         return response;
