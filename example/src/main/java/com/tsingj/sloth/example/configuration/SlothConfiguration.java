@@ -35,7 +35,7 @@ public class SlothConfiguration {
     private MessageOrderedListener messageOrderedListener;
 
     @Bean(destroyMethod = "destroy")
-    @ConditionalOnProperty(prefix = "sloth.producer", name = "enable", havingValue = "true")
+    @ConditionalOnProperty(prefix = "spring.sloth.producer", name = "enabled", havingValue = "true")
     public SlothRemoteProducer slothProducer() {
         this.checkClientProperties(slothClientProperties);
         RemoteProperties remoteProperties = slothClientProperties.getRemote();
@@ -47,8 +47,8 @@ public class SlothConfiguration {
         return slothRemoteProducer;
     }
 
-    @Bean(initMethod = "start", destroyMethod = "destroy")
-    @ConditionalOnProperty(prefix = "sloth.consumer", name = "enable", havingValue = "true")
+    @Bean(destroyMethod = "destroy")
+    @ConditionalOnProperty(prefix = "spring.sloth.consumer", value = "enabled", havingValue = "true")
     public SlothRemoteConsumer slothConsumer() {
         this.checkClientProperties(slothClientProperties);
         RemoteProperties remoteProperties = slothClientProperties.getRemote();

@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 public class Consumer {
 
-    private boolean enable;
+    private boolean enabled;
 
     private Map<String, ConsumerProperties> consumers;
 

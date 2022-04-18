@@ -28,7 +28,7 @@ public class SlothProducerTest {
      */
     @Test
     public void sendOneWayTest() throws InterruptedException {
-        int count = 10;
+        int count = 100000;
         AtomicLong ID = new AtomicLong(1);
         int threadCount = 4;
         for (int i = 0; i < threadCount; i++) {
@@ -65,7 +65,7 @@ public class SlothProducerTest {
 
     /**
      * 通信1S 4W
-     * 通信+存储数据 1S
+     * 通信+存储数据 1S 1W+
      * 单client、多client性能一致。
      * @throws InterruptedException
      */
@@ -75,7 +75,7 @@ public class SlothProducerTest {
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 16;
+                int count = 100000;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();
@@ -109,8 +109,8 @@ public class SlothProducerTest {
                 countDownLatch.countDown();
             }).start();
         }
-        countDownLatch.await(10, TimeUnit.SECONDS);
-        Thread.sleep(20000);
+        countDownLatch.await(60, TimeUnit.SECONDS);
+//        Thread.sleep(20000);
     }
 
 }

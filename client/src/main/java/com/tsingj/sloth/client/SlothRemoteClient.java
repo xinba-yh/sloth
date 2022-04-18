@@ -77,7 +77,7 @@ public class SlothRemoteClient {
             this.clientId = UUID.randomUUID().toString();
 
         } catch (Throwable e) {
-            log.warn("Init sloth client fail!");
+            throw new ClientConnectException("sloth client channel connect fail!");
         }
     }
 

@@ -61,7 +61,7 @@ public class ConsumerGroupOffsetManager extends AbstractCachePersistence {
     }
 
 
-    public void commitOffset(String group, String topic, int partitionId, long offset) {
+    public synchronized void commitOffset(String group, String topic, int partitionId, long offset) {
         String key = topic + TOPIC_GROUP_SEPARATOR + group;
         ConcurrentMap<Integer, Long> partitionOffsetMap = TOPIC_GROUP_OFFSETS.computeIfAbsent(key, s -> new ConcurrentHashMap<>(8));
         Long storeOffset = partitionOffsetMap.put(partitionId, offset);

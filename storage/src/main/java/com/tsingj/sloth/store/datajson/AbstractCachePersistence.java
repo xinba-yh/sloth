@@ -87,7 +87,7 @@ public abstract class AbstractCachePersistence implements CachePersistence {
             if (!rename) {
                 logger.warn("rename " + tmpTopicConfigFile.getAbsolutePath() + " to " + prevFile.getName() + " fail!");
             }
-
+            logger.debug("persistence {} done.", filePath);
         } catch (IOException e) {
             logger.error("persistence {} fail!", filePath, e);
         }

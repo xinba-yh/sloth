@@ -54,7 +54,7 @@ public class CgHeartBeatProcessor implements RemoteRequestProcessor {
 
         Result<List<Integer>> heartbeatResult = consumerGroupManager.heartbeat(clientId, groupName, topic, ctx.channel());
         DataPackage dataPackage = heartbeatResult.success() ? this.respSuccess(request, heartbeatResult.getData()) : this.respError(request, heartbeatResult.getMsg());
-        log.info("CONSUMER_GROUP_HEARTBEAT command done，correlationId:{}",request.getCorrelationId());
+        log.debug("CONSUMER_GROUP_HEARTBEAT command done，correlationId:{}",request.getCorrelationId());
         return dataPackage;
 
     }

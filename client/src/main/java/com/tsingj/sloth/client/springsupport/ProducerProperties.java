@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class ProducerProperties {
 
-    private boolean enable;
+    private boolean enabled;
 
     /**
      * 每次超时时间,默认：1000ms
