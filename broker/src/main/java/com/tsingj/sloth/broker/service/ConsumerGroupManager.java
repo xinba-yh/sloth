@@ -7,8 +7,6 @@ import com.tsingj.sloth.remoting.ChannelAttributeConstants;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
-import com.tsingj.sloth.store.datajson.topic.TopicConfig;
-import com.tsingj.sloth.store.datajson.topic.TopicManager;
 import io.netty.channel.Channel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +43,7 @@ public class ConsumerGroupManager {
         channel.attr(ChannelAttributeConstants.CLIENT_ID).set(clientId);
 
         //get topicConfig, not exist create
-        Result<TopicConfig> topicResult = topicManager.getTopic(topic, true);
+        Result<TopicManager.TopicConfig> topicResult = topicManager.getTopic(topic, true);
         if (topicResult.failure()) {
             return Results.failure(topicResult.getMsg());
         }
@@ -60,7 +58,7 @@ public class ConsumerGroupManager {
         //新连接client
         if (newConsumer.get()) {
             //reBalance topic partition
-            TopicConfig topicConfig = topicResult.getData();
+            TopicManager.TopicConfig topicConfig = topicResult.getData();
             //assign partitions
             this.roundRibbonAssignPartitions(groupName, topic, topicConfig.getAllPartitions());
             //notify consumers reBalance

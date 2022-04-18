@@ -1,9 +1,9 @@
 package com.tsingj.sloth.broker;
 
 import com.alibaba.fastjson.JSON;
+import com.tsingj.sloth.broker.service.TopicManager;
+
 import com.tsingj.sloth.common.result.Result;
-import com.tsingj.sloth.store.datajson.topic.TopicConfig;
-import com.tsingj.sloth.store.datajson.topic.TopicManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,20 +22,20 @@ public class TopicManagerTest {
 
     @Test
     public void getOrCreateTopicTest() {
-        Result<TopicConfig> getTopicConfigResult = topicManager.getTopic("test-topic", true);
+        Result<TopicManager.TopicConfig> getTopicConfigResult = topicManager.getTopic("test-topic", true);
         System.out.println(JSON.toJSONString(getTopicConfigResult));
     }
 
     @Test
     public void getTest() {
-        Result<TopicConfig> getTopicConfigResult = topicManager.getTopic("test-topic", false);
+        Result<TopicManager.TopicConfig> getTopicConfigResult = topicManager.getTopic("test-topic", false);
         System.out.println(JSON.toJSONString(getTopicConfigResult));
     }
 
     @Test
     public void autoAssignPartition() {
-        Result<TopicConfig> getTopicConfigResult = topicManager.getTopic("test-topic", true);
-        TopicConfig topicConfig = getTopicConfigResult.getData();
+        Result<TopicManager.TopicConfig> getTopicConfigResult = topicManager.getTopic("test-topic", true);
+        TopicManager.TopicConfig topicConfig = getTopicConfigResult.getData();
         for (int i = 0; i < 10; i++) {
             int assignPartition = topicManager.autoAssignPartition(topicConfig);
             log.info("time:{} assign partition:{}", i + 1, assignPartition);

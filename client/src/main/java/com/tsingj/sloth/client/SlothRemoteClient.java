@@ -60,7 +60,6 @@ public class SlothRemoteClient {
     public SlothRemoteClient(RemoteProperties remoteProperties) {
         this.remoteProperties = remoteProperties;
         this.initConnect();
-
     }
 
     public void initConnect() {

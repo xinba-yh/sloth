@@ -23,7 +23,4 @@ public class RemoteCorrelationManager {
     public static final ConcurrentMap<Long /* correlationId */, ResponseFuture> CORRELATION_ID_RESPONSE_MAP = new ConcurrentHashMap<>(256);
 
 
-    //todo add clear
-
-
 }

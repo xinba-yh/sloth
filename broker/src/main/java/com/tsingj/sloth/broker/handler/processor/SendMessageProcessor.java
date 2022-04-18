@@ -1,14 +1,14 @@
 package com.tsingj.sloth.broker.handler.processor;
 
 import com.google.protobuf.ByteString;
+import com.tsingj.sloth.broker.service.TopicManager;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
-import com.tsingj.sloth.store.datajson.topic.TopicConfig;
-import com.tsingj.sloth.store.datajson.topic.TopicManager;
+
 import com.tsingj.sloth.store.StorageEngine;
 import com.tsingj.sloth.store.pojo.*;
 import io.netty.channel.ChannelHandlerContext;
@@ -56,11 +56,11 @@ public class SendMessageProcessor implements RemoteRequestProcessor {
             return this.respError(request, "IllegalArgument messageBody is empty!");
         }
         //get topicConfig, not exist create
-        Result<TopicConfig> topicResult = topicManager.getTopic(topic, true);
+        Result<TopicManager.TopicConfig> topicResult = topicManager.getTopic(topic, true);
         if (topicResult.failure()) {
             return this.respError(request, topicResult.getMsg());
         }
-        TopicConfig topicConfig = topicResult.getData();
+        TopicManager.TopicConfig topicConfig = topicResult.getData();
         int partition = msg.getPartition();
         if (partition > topicConfig.getPartition()) {
             return this.respError(request, "IllegalArgument partition is too large! topic:" + topic + " maximum:" + topicConfig.getPartition());

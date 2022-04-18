@@ -1,14 +1,14 @@
 package com.tsingj.sloth.broker.handler.processor;
 
+import com.tsingj.sloth.broker.service.ConsumerGroupOffsetManager;
+import com.tsingj.sloth.broker.service.TopicManager;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.common.result.Result;
 import com.tsingj.sloth.remoting.RemoteRequestProcessor;
 import com.tsingj.sloth.remoting.message.Remoting;
 import com.tsingj.sloth.remoting.protocol.RemoteCommand;
 import com.tsingj.sloth.remoting.protocol.ProtocolConstants;
-import com.tsingj.sloth.store.datajson.offset.ConsumerGroupOffsetManager;
-import com.tsingj.sloth.store.datajson.topic.TopicConfig;
-import com.tsingj.sloth.store.datajson.topic.TopicManager;
+
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -52,7 +52,7 @@ public class CgSubmitOffsetProcessor implements RemoteRequestProcessor {
             return this.respError(request, "IllegalArgument groupName is empty!");
         }
 
-        Result<TopicConfig> topicConfigResult = topicManager.getTopic(topic, false);
+        Result<TopicManager.TopicConfig> topicConfigResult = topicManager.getTopic(topic, false);
         if (topicConfigResult.failure() || topicConfigResult.getData() == null) {
             return this.respError(request, "topic " + topic + " invalid !");
         }

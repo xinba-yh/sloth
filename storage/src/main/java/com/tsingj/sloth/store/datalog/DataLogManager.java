@@ -3,7 +3,7 @@ package com.tsingj.sloth.store.datalog;
 
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.store.constants.LogConstants;
-import com.tsingj.sloth.store.datajson.checkpoints.OffsetCheckpointManager;
+import com.tsingj.sloth.store.datalog.checkpoints.OffsetCheckpointManager;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import com.tsingj.sloth.store.utils.CommonUtil;
 import com.tsingj.sloth.store.utils.StoragePathHelper;

@@ -70,4 +70,7 @@ public class ResponseFuture {
         this.cause = cause;
     }
 
+    public long getCorrelationId() {
+        return correlationId;
+    }
 }

@@ -1,4 +1,4 @@
-package com.tsingj.sloth.store.datajson.offset;
+package com.tsingj.sloth.broker.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;

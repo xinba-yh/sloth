@@ -1,8 +1,6 @@
 package com.tsingj.sloth.example;
 
-import com.tsingj.sloth.client.consumer.MessageListener;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
-import com.tsingj.sloth.remoting.message.Remoting;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

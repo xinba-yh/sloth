@@ -111,8 +111,10 @@ public class DataLogSegment implements DataRecovery {
         logger.info("init logFile success... \n logFile:{} \n offsetIndexFile:{} \n timeIndexFile:{}.", logPath + LogConstants.FileSuffix.LOG, logPath + LogConstants.FileSuffix.OFFSET_INDEX, logPath + LogConstants.FileSuffix.TIMESTAMP_INDEX);
 
         this.maxFileSize = maxFileSize;
+        this.flushedOffset = new AtomicLong(startOffset);
         this.largestOffset = new AtomicLong(startOffset);
         this.largestTimestamp = new AtomicLong(SystemClock.now());
+
         this.fileFromOffset = startOffset;
         this.wrotePosition = new AtomicLong(0);
         this.logIndexIntervalBytes = logIndexIntervalBytes;
@@ -284,7 +286,7 @@ public class DataLogSegment implements DataRecovery {
 
     public void flush() {
         try {
-            if (this.flushedOffset.get() == this.largestTimestamp.get()) {
+            if (this.flushedOffset.get() == this.largestOffset.get()) {
                 return;
             }
             this.logFileChannel.force(true);
