@@ -88,7 +88,7 @@ public class SlothRemoteProducer {
 
     private Result<Remoting.SendResult> sendMessage(Remoting.Message message) {
         long currentCorrelationId = RemoteCorrelationManager.CORRELATION_ID.getAndAdd(1);
-        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, this.remoteProperties.getOnceTalkTimeout());
+        ResponseFuture responseFuture = new ResponseFuture(currentCorrelationId, producerProperties.getTimeout());
         //add 关联关系，handler或者超时的定时任务将会清理。
         RemoteCorrelationManager.CORRELATION_ID_RESPONSE_MAP.put(currentCorrelationId, responseFuture);
         try {

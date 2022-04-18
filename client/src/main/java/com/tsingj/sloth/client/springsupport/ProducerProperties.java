@@ -11,7 +11,12 @@ public class ProducerProperties {
     private boolean enable;
 
     /**
-     * 重试次数：默认：0
+     * 每次超时时间,默认：1000ms
+     */
+    private int timeout = 1000;
+
+    /**
+     * 重试次数,默认：0
      */
     private int retryTimes = 0;
 

@@ -4,10 +4,10 @@ spring:
   sloth:
     remote:
       brokerUrl: 127.0.0.1:9000
-      onceTalkTimeout: 1000
-      connectTimeout: 3100
+      connectTimeout: 3000
     producer:
       enable: true
+      timeout: 1000
       messageMaxBytes: 4096
       retryTimes: 2
       retryInterval: 200
