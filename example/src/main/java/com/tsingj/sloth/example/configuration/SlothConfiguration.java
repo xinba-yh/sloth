@@ -3,10 +3,12 @@ package com.tsingj.sloth.example.configuration;
 import com.tsingj.sloth.client.consumer.SlothRemoteConsumer;
 import com.tsingj.sloth.client.producer.SlothRemoteProducer;
 import com.tsingj.sloth.client.springsupport.ConsumerProperties;
+import com.tsingj.sloth.client.springsupport.ProducerProperties;
 import com.tsingj.sloth.client.springsupport.RemoteProperties;
 import com.tsingj.sloth.client.springsupport.SlothClientProperties;
 import com.tsingj.sloth.example.listener.MessageOrderedListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,22 +35,26 @@ public class SlothConfiguration {
     private MessageOrderedListener messageOrderedListener;
 
     @Bean(destroyMethod = "destroy")
+    @ConditionalOnProperty(prefix = "sloth.producer", name = "enable", havingValue = "true")
     public SlothRemoteProducer slothProducer() {
         this.checkClientProperties(slothClientProperties);
         RemoteProperties remoteProperties = slothClientProperties.getRemote();
+        ProducerProperties producerProperties = slothClientProperties.getProducer();
         SlothRemoteProducer slothRemoteProducer = new SlothRemoteProducer();
         slothRemoteProducer.setRemoteProperties(remoteProperties);
+        slothRemoteProducer.setProducerProperties(producerProperties);
         slothRemoteProducer.start();
         return slothRemoteProducer;
     }
 
     @Bean(initMethod = "start", destroyMethod = "destroy")
+    @ConditionalOnProperty(prefix = "sloth.consumer", name = "enable", havingValue = "true")
     public SlothRemoteConsumer slothConsumer() {
         this.checkClientProperties(slothClientProperties);
         RemoteProperties remoteProperties = slothClientProperties.getRemote();
-        Map<String, ConsumerProperties> consumerPropertiesMap = slothClientProperties.getConsumers();
+        Map<String, ConsumerProperties> consumerPropertiesMap = slothClientProperties.getConsumer().getConsumers();
         ConsumerProperties consumerProperties = consumerPropertiesMap.get("test-topic");
-        Assert.notNull(consumerProperties,"");
+        Assert.notNull(consumerProperties, "Please check your config, topic config invalid!");
         SlothRemoteConsumer slothRemoteConsumer = new SlothRemoteConsumer();
         slothRemoteConsumer.setRemoteProperties(remoteProperties);
         slothRemoteConsumer.setConsumerProperties(consumerProperties);

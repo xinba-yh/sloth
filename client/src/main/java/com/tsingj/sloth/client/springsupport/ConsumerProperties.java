@@ -4,7 +4,6 @@ import com.tsingj.sloth.client.consumer.ConsumeFromWhere;
 import com.tsingj.sloth.client.consumer.ConsumeMode;
 import lombok.Data;
 
-import java.util.Map;
 
 /**
  * @author yanghao
@@ -55,5 +54,6 @@ public class ConsumerProperties {
      * 消息失败最大次数
      */
     private Integer consumeWhenListenerErrorMaxTimes = 16;
+
 
 }

@@ -6,7 +6,13 @@ spring:
       brokerUrl: 127.0.0.1:9000
       onceTalkTimeout: 1000
       connectTimeout: 3100
-    consumers:
+    producer:
+      enable: true
+      messageMaxBytes: 4096
+      retryTimes: 2
+      retryInterval: 200
+    consumer:
+      enable: true
       test-topic:
         topic: test-topic
         groupName: test-topic-group
