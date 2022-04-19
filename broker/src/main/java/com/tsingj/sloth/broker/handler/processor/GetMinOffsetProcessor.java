@@ -46,7 +46,7 @@ public class GetMinOffsetProcessor implements RemoteRequestProcessor {
             return this.respError(request, "IllegalArgument partition is default 0!");
         }
 
-        long offset = storageEngine.getMaxOffset(topic, partition);
+        long offset = storageEngine.getMinOffset(topic, partition);
         return this.respSuccess(request, offset);
     }
 

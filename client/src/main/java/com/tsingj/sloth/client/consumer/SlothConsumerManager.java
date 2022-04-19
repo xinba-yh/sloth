@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author yanghao
@@ -13,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class SlothConsumerManager {
 
+    public final static AtomicBoolean READY = new AtomicBoolean(false);
 
     private final static Map<String, SlothRemoteConsumer> SLOTH_CONSUMER_MAP = new ConcurrentHashMap<>();
-
 
     public static void register(SlothRemoteConsumer slothRemoteConsumer) {
         SLOTH_CONSUMER_MAP.put(slothRemoteConsumer.getTopic(), slothRemoteConsumer);

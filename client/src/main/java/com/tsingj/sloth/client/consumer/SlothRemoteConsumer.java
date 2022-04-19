@@ -28,7 +28,7 @@ public class SlothRemoteConsumer {
 
     private SlothRemoteClient slothRemoteClient;
 
-    private MessageListener messageListener;
+    private volatile MessageListener messageListener;
 
     private ExecutorService executorService;
 

@@ -76,6 +76,13 @@ public class TopicPartitionConsumer implements Runnable {
 
     @Override
     public void run() {
+        //wait init.
+        while (!SlothConsumerManager.READY.get()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {
+            }
+        }
         //1、询问broker，应该从哪里开始消费
         SlothRemoteConsumer slothConsumer = SlothConsumerManager.get(topic);
         Assert.notNull(slothConsumer, "topic:" + topic + " consumer is null!");
@@ -86,14 +93,16 @@ public class TopicPartitionConsumer implements Runnable {
             log.error("reset topic:{} partition:{} consumeOffset fail!", this.topic, this.partition);
             return;
         }
-        log.info("start consumer topic:{} partition:{} offset {}.", this.topic, this.partition, this.consumeOffset);
+        log.info("start consume topic:{} partition:{} offset {}.", this.topic, this.partition, this.consumeOffset);
         //2、开始消费
         try {
             while (running) {
                 try {
                     //1、获取消息
+                    log.debug("prepare consume topic:{} partition:{} offset {}.", this.topic, this.partition, this.consumeOffset);
                     Remoting.GetMessageResult getMessageResult = slothConsumer.fetchMessage(this.topic, this.partition, this.consumeOffset.get());
                     if (getMessageResult == null || getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.ERROR) {
+                        log.debug("consume topic:{} partition:{} offset {} fetchMessage fail!.", this.topic, this.partition, this.consumeOffset);
                         this.errorSleep();
                     } else {
                         if (this.errorTimes.get() != 0) {
@@ -108,12 +117,13 @@ public class TopicPartitionConsumer implements Runnable {
                                 this.consumeOffset.incrementAndGet();
                                 this.waitMills(this.consumeWhenNoMessageInterval);
                             } else {
-                                log.debug("fetch message topic:{} partition:{} offset:{}, got NOT_FOUND!", this.topic, this.partition, this.consumeOffset.get());
+                                log.warn("fetch message topic:{} partition:{} offset:{}, got NOT_FOUND!", this.topic, this.partition, this.consumeOffset.get());
                                 this.waitMills(this.consumeWhenNoMessageInterval);
                             }
                         }//2、获取到消息，触发回调
                         else if (getMessageResult.getRetCode() == Remoting.GetMessageResult.RetCode.FOUND) {
                             Remoting.GetMessageResult.Message message = getMessageResult.getMessage();
+                            log.debug("consume topic:{} partition:{} offset {} prepare callback.", this.topic, this.partition, this.consumeOffset);
                             ConsumeStatus consumeStatus = slothConsumer.getMessageListener().consumeMessage(message);
                             //2.1、用户消费成功,提交offset
                             if (consumeStatus == ConsumeStatus.SUCCESS) {
@@ -121,6 +131,7 @@ public class TopicPartitionConsumer implements Runnable {
                                     this.consumeFailTimes.set(0);
                                 }
                                 this.submitOffset(slothConsumer);
+                                log.debug("submit topic:{} partition:{} offset {}.", this.topic, this.partition, this.consumeOffset);
                             } else {
                                 //2.2、用户消费失败，重试maxTimes后，提交offset，skip当前message，未来支持死信队列。
                                 long currConsumeFailTimes = this.consumeFailTimes.incrementAndGet();

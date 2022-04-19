@@ -11,12 +11,6 @@ spring:
       messageMaxBytes: 4096
       retryTimes: 2
       retryInterval: 200
-    consumer:
-      enabled: true
-      consumers:
-        test-topic:
-          topic: test-topic
-          groupName: test-topic-group
 logging:
   level:
     com.tsingj.sloth: info

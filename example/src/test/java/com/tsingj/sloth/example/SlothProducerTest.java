@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StopWatch;
 
@@ -16,7 +17,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
-@SpringBootTest()
+@SpringBootTest
+@ActiveProfiles("producer")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SlothProducerTest {
 
@@ -25,9 +27,8 @@ public class SlothProducerTest {
 
     /**
      * 通信1S 4W
-     * 通信+存储数据 1S 1W+
+     * 通信+存储数据 1S 1W
      * 单client、多client性能一致。
-     * @throws InterruptedException
      */
     @Test
     public void sendSyncResponseTest() throws InterruptedException {
@@ -35,7 +36,7 @@ public class SlothProducerTest {
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 100000;
+                int count = 10000;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();
@@ -69,11 +70,11 @@ public class SlothProducerTest {
                 countDownLatch.countDown();
             }).start();
         }
-        countDownLatch.await(60, TimeUnit.SECONDS);
+        countDownLatch.await(120, TimeUnit.SECONDS);
     }
 
     /**
-     * 1S 10W server收到
+     * 1S 2W server收到
      */
     @Test
     public void sendOneWayTest() throws InterruptedException {
@@ -103,7 +104,6 @@ public class SlothProducerTest {
                             "//        }\n" +
                             "//    }------------------" + reqId));
                     builder.setTopic("test-topic");
-//                    builder.setPartition(1);
                     builder.setRequestId("" + reqId);
                     slothProducer.sendOneway(builder.build());
                 }

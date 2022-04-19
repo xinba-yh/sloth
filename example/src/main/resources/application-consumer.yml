@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: example
+  sloth:
+    remote:
+      brokerUrl: 127.0.0.1:9000
+      connectTimeout: 3000
+    consumer:
+      enabled: true
+      consumers:
+        test-topic:
+          topic: test-topic
+          groupName: test-topic-group
+test:
+  consumer:
+    count: 1000
+
+
+logging:
+  level:
+    com.tsingj.sloth: info

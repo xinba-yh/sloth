@@ -2,6 +2,8 @@ package com.tsingj.sloth.store;
 
 import com.tsingj.sloth.store.mock.ConsumerClient;
 import com.tsingj.sloth.store.mock.ProducerClient;
+import com.tsingj.sloth.store.pojo.GetMessageResult;
+import com.tsingj.sloth.store.pojo.GetMessageStatus;
 import com.tsingj.sloth.store.properties.StorageProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.StopWatch;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -25,7 +28,7 @@ public class StorageEngineTest {
 
     private static final String topic = "test-topic";
 
-    private static final int count = 100000;
+    private static final int count = 1000;
 
     private static final int threadNum = 8;
 
@@ -224,6 +227,32 @@ public class StorageEngineTest {
         ConsumerClient consumerClient = new ConsumerClient(topic, partitionMsgCount, partitionCount, storageEngine);
         consumerClient.start();
 
+    }
+
+
+    @Test
+    public void loopMessageTest() {
+        int partition = 8;
+        for (int j = 1; j <= partition; j++) {
+            //random get message
+            int loopCount = 100;
+            StopWatch sw = new StopWatch();
+            sw.start();
+            for (int i = 0; i < loopCount; i++) {
+                long offset = i;
+                GetMessageResult result = storageEngine.getMessage(topic, partition, offset);
+                if (result.getStatus() != GetMessageStatus.FOUND) {
+                    logger.warn("partition:{} get msg fail,{}:{}! ", partition, result.getStatus(), result.getErrorMsg());
+                } else {
+                    if (offset != result.getMessage().getOffset()) {
+                        logger.warn("partition:{} get msg fail，query:{}，got:{}! ", partition, offset, result.getMessage().getOffset());
+                    }
+                    logger.info("partition:{} get message offset:{} message:{}", partition, offset, result.getMessage().getOffset());
+                }
+            }
+            sw.stop();
+            logger.info("data count {} , query {} times , cost:{}", count, loopCount, sw.getTotalTimeMillis());
+        }
     }
 
 }

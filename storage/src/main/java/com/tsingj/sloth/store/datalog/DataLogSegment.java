@@ -143,6 +143,7 @@ public class DataLogSegment implements DataRecovery {
             Assert.isTrue(indexFileLastOffsetResult.success(), "load logs from offsetIndexFile " + this.logFile.getAbsolutePath() + " fail!" + indexFileLastOffsetResult.getMsg());
             this.loadPropertiesFromOffset(indexFileLastOffsetResult.getData().getOffset());
         }
+        logger.info("logSegment load star startOffset:{} largestOffset:{} largestTimestamp:{} wrotePosition:{} from {}.", fileFromOffset, largestOffset, largestTimestamp, this.wrotePosition, this.logFile.getAbsolutePath());
     }
 
 
@@ -188,7 +189,6 @@ public class DataLogSegment implements DataRecovery {
         this.largestOffset = new AtomicLong(largestOffset);
         this.flushedOffset = new AtomicLong(largestOffset);
         this.largestTimestamp = new AtomicLong(largestTimestamp);
-        logger.info("logSegment load largestOffset:{} largestTimestamp:{} wrotePosition:{} from {}.", largestOffset, largestTimestamp, this.wrotePosition, this.logFile.getAbsolutePath());
     }
 
     /**
@@ -292,7 +292,8 @@ public class DataLogSegment implements DataRecovery {
             this.logFileChannel.force(true);
             //刷新flushedOffset
             this.flushedOffset.set(this.largestOffset.get());
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            logger.error("LogSegment flush fail! {}", e.getMessage());
         }
     }
 

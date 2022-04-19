@@ -318,7 +318,7 @@ public class DataLogManager implements SchedulingConfigurer {
      * 过期log segment清理
      */
     private synchronized void cleanupLogs() {
-        logger.info("cleanupLogs");
+        logger.debug("cleanupLogs");
         //日志保存时间
         int logRetentionHours = storageProperties.getLogRetentionHours();
 
