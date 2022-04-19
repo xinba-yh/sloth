@@ -76,7 +76,7 @@ public class TopicPartitionConsumer implements Runnable {
 
     @Override
     public void run() {
-        //wait init.
+        //wait spring ready.
         while (!SlothConsumerManager.READY.get()) {
             try {
                 Thread.sleep(100);

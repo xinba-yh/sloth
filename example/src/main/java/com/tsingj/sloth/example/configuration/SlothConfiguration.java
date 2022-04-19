@@ -1,6 +1,5 @@
 package com.tsingj.sloth.example.configuration;
 
-import com.tsingj.sloth.client.consumer.MessageListener;
 import com.tsingj.sloth.client.consumer.SlothConsumerManager;
 import com.tsingj.sloth.client.consumer.SlothRemoteConsumer;
 import com.tsingj.sloth.client.producer.SlothRemoteProducer;
@@ -43,7 +42,7 @@ public class SlothConfiguration implements ApplicationListener<ApplicationReadyE
     @Autowired
     private MessageOrderedListener messageOrderedListener;
 
-    @Value("${test.consumer.count}")
+    @Value("${test.consumer.count:100}")
     private int testConsumerCount;
 
     @Bean(destroyMethod = "destroy")
@@ -84,11 +83,9 @@ public class SlothConfiguration implements ApplicationListener<ApplicationReadyE
         Assert.isTrue(brokerUrlArr.length == 2, "please check your brokerUrl! not expect [host:port] !");
     }
 
-
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (!readFlag) {
-            System.out.println("-----------sloth begin consume----------");
             SlothConsumerManager.READY.set(true);
             readFlag = true;
         }
