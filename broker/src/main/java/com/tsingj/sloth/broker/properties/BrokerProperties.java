@@ -12,11 +12,6 @@ public class BrokerProperties {
 
     private int port;
 
-    /**
-     * 丢失消费者心跳的最大时间，S为单位。
-     */
-    private int loseConsumerHbMaxMills = 9;
-
     private int backLogSize = 1024;
 
     /**
@@ -88,11 +83,4 @@ public class BrokerProperties {
         this.rcvBufSize = rcvBufSize;
     }
 
-    public int getLoseConsumerHbMaxMills() {
-        return loseConsumerHbMaxMills;
-    }
-
-    public void setLoseConsumerHbMaxMills(int loseConsumerHbMaxMills) {
-        this.loseConsumerHbMaxMills = loseConsumerHbMaxMills;
-    }
 }

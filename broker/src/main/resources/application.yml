@@ -2,4 +2,3 @@ spring:
   sloth:
     broker:
       port: 9000
-      loseConsumerHbMaxMills: 9
