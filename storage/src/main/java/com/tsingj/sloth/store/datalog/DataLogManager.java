@@ -65,8 +65,22 @@ public class DataLogManager implements SchedulingConfigurer {
     @PostConstruct
     public void load() {
         try {
+            //load logs
+            String logDirPath = storagePathHelper.getLogDir();
+            File logDir = new File(logDirPath);
+            if (!logDir.exists()) {
+                logDir.mkdirs();
+                logger.info("logDirPath:{} not exists , initialization logDir.", logDirPath);
+                return;
+            }
+            File[] topicFiles = logDir.listFiles();
+            if (topicFiles == null || topicFiles.length == 0) {
+                logger.info("logDirPath:{} is empty dir, skip initialization.", logDirPath);
+                return;
+            }
             logger.info("--------------------prepare load offset checkpoint----------------------");
             offsetCheckpointManager.load();
+
             logger.info("--------------------prepare load logSegment----------------------");
             //check abnormal stop!
             boolean abnormalStop = CommonUtil.shutdownCleanFileExists(storagePathHelper.getShutdownCleanPath());
@@ -78,14 +92,7 @@ public class DataLogManager implements SchedulingConfigurer {
                     return;
                 }
             }
-            //load logs
-            String logDirPath = storagePathHelper.getLogDir();
-            File logDir = new File(logDirPath);
-            File[] topicFiles = logDir.listFiles();
-            if (topicFiles == null || topicFiles.length == 0) {
-                logger.info("logDirPath:{} is empty dir, skip initialization.", logDirPath);
-                return;
-            }
+
             //initialization segments file memory mapping.
             for (File topicDir : topicFiles) {
                 String topic = topicDir.getName();

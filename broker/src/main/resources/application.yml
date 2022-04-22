@@ -1,4 +1,3 @@
 spring:
-  sloth:
-    broker:
-      port: 9000
+  profiles:
+    active: standalone

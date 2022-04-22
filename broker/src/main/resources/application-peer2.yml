@@ -1,0 +1,9 @@
+spring:
+  sloth:
+    broker:
+      port: 9002
+    storage:
+      mode: raft
+      raft-group: sloth
+      raft-server-id: 127.0.0.1:8082
+      raft-server-list: 127.0.0.1:8081,127.0.0.1:8082,127.0.0.1:8083

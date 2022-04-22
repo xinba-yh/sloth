@@ -9,6 +9,8 @@ public enum PutMessageStatus {
     OK,
     //日志文件追加失败
     LOG_FILE_APPEND_FAIL,
+    //日志文件复制失败
+    LOG_FILE_REPLICA_FAIL,
     //创建日志文件失败
     CREATE_LOG_FILE_FAILED,
     //encode失败

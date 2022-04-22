@@ -119,4 +119,11 @@ public class CommonUtil {
             return false;
         }
     }
+
+    public static void createDirIfNotExists(String dir) {
+        File file = new File(dir);
+        if(!file.exists()){
+            file.mkdirs();
+        }
+    }
 }

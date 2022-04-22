@@ -4,6 +4,8 @@ import com.tsingj.sloth.store.properties.StorageProperties;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
  * @author yanghao
@@ -17,12 +19,19 @@ public class StoragePathHelper {
 
     private final String logDir = "logs";
 
+    private final String raftLogDir = "raft";
+
     public StoragePathHelper(StorageProperties storageProperties) {
         this.storageProperties = storageProperties;
     }
 
+
     public String getLogDir() {
         return storageProperties.getDataPath() + File.separator + logDir;
+    }
+
+    public String getRaftLogDir() {
+        return storageProperties.getDataPath() + File.separator + raftLogDir;
     }
 
     public String getDataJsonDir() {
@@ -43,6 +52,7 @@ public class StoragePathHelper {
 
     /**
      * 判断是否为异常停止的文件
+     *
      * @return
      */
     public String getShutdownCleanPath() {

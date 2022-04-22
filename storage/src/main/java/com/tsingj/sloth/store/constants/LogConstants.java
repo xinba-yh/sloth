@@ -5,6 +5,18 @@ package com.tsingj.sloth.store.constants;
  */
 public class LogConstants {
 
+    public static class StoreMode {
+        /**
+         * 单机模式
+         */
+        public final static String STANDALONE = "standalone";
+
+        /**
+         * raft集群模式
+         */
+        public final static String RAFT = "raft";
+    }
+
     public static class FileSuffix {
 
         public final static String LOG = ".log";

@@ -10,14 +10,37 @@ import java.io.File;
  * @author yanghao
  */
 @Component
-@ConfigurationProperties(prefix = "storage")
+@ConfigurationProperties(prefix = "spring.sloth.storage")
 public class StorageProperties {
+
+    /**
+     * storage 模式
+     */
+    private String mode = "standalone";
 
     /**
      * storage path
      */
     private String dataPath = System.getProperty("user.home") + File.separator + "store";
 
+    //-------------------raft设置开始-------------------
+
+    /**
+     * raft副本设置
+     */
+    private String raftGroup = "default";
+
+    /**
+     * 当前broker ip:port，示例：127.0.0.1:8081
+     */
+    private String raftServerId;
+
+    /**
+     * 集群ip:port列表，示例：127.0.0.1:8081,127.0.0.1:8082,127.0.0.1:8083
+     */
+    private String raftServerList;
+
+    //-------------------raft设置结束-------------------
     /**
      * flush log to disk interval，default 500ms
      */
@@ -143,4 +166,37 @@ public class StorageProperties {
     public void setOffsetCheckpointSubmitInterval(int offsetCheckpointSubmitInterval) {
         this.offsetCheckpointSubmitInterval = offsetCheckpointSubmitInterval;
     }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getRaftGroup() {
+        return raftGroup;
+    }
+
+    public void setRaftGroup(String raftGroup) {
+        this.raftGroup = raftGroup;
+    }
+
+    public String getRaftServerId() {
+        return raftServerId;
+    }
+
+    public void setRaftServerId(String raftServerId) {
+        this.raftServerId = raftServerId;
+    }
+
+    public String getRaftServerList() {
+        return raftServerList;
+    }
+
+    public void setRaftServerList(String raftServerList) {
+        this.raftServerList = raftServerList;
+    }
+
 }

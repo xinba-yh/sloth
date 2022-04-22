@@ -32,7 +32,6 @@ public class BrokerServer {
     private final EventLoopGroup workGroup = new NioEventLoopGroup();
 
     public void start() throws Exception {
-
         try {
             ServerBootstrap b = new ServerBootstrap()
                     .group(bossGroup, workGroup)
@@ -45,7 +44,7 @@ public class BrokerServer {
                     .childOption(ChannelOption.SO_SNDBUF, brokerProperties.getSndBufSize())
                     .childOption(ChannelOption.SO_RCVBUF, brokerProperties.getRcvBufSize());
             Channel ch = b.bind(brokerProperties.getPort()).sync().channel();
-            log.info("broker server start on port:" + brokerProperties.getPort());
+            log.info("Started broker server start at port:{}.", brokerProperties.getPort());
             ch.closeFuture().sync();
         } finally {
             close();
@@ -56,7 +55,7 @@ public class BrokerServer {
     public void close() {
         bossGroup.shutdownGracefully();
         workGroup.shutdownGracefully();
-        log.error("broker server stopped!");
+        log.error("Broker server stopped!");
     }
 
 

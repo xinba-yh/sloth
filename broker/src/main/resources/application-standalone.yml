@@ -1,0 +1,6 @@
+spring:
+  sloth:
+    broker:
+      port: 9000
+    storage:
+      mode: standalone

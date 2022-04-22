@@ -3,7 +3,7 @@ spring:
     name: example
   sloth:
     remote:
-      brokerUrl: 127.0.0.1:9000
+      brokerUrl: 127.0.0.1:9001
       connectTimeout: 3000
     producer:
       enabled: true

@@ -1,13 +1,20 @@
 package com.tsingj.sloth.store;
 
+import com.alipay.sofa.jraft.entity.Task;
+import com.tsingj.sloth.common.ProtoStuffSerializer;
 import com.tsingj.sloth.common.SystemClock;
 import com.tsingj.sloth.store.constants.CommonConstants;
+import com.tsingj.sloth.store.constants.LogConstants;
 import com.tsingj.sloth.store.datalog.DataLog;
 import com.tsingj.sloth.store.pojo.*;
 import com.tsingj.sloth.store.properties.StorageProperties;
+import com.tsingj.sloth.store.replication.LogClosure;
+import com.tsingj.sloth.store.replication.LogOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.nio.ByteBuffer;
 
 /**
  * @author yanghao
@@ -23,11 +30,14 @@ public class StorageEngine implements Storage {
 
     private final StorageProperties storageProperties;
 
+    private final RaftReplicationServer raftReplicationServer;
 
-    public StorageEngine(DataLog dataLog, StorageProperties storageProperties) {
+    public StorageEngine(DataLog dataLog, StorageProperties storageProperties, RaftReplicationServer raftReplicationServer) {
         this.dataLog = dataLog;
         this.storageProperties = storageProperties;
+        this.raftReplicationServer = raftReplicationServer;
     }
+
 
     @Override
     public PutMessageResult putMessage(Message message) {
@@ -45,7 +55,31 @@ public class StorageEngine implements Storage {
         }
 
         long beginTime = SystemClock.now();
-        PutMessageResult result = dataLog.putMessage(message);
+        boolean raft = storageProperties.getMode().equals(LogConstants.StoreMode.RAFT);
+        PutMessageResult result;
+        if (raft) {
+            //定义log operation
+            LogOperation logOperation = LogOperation.createPutMessageOp(message);
+            //定义log callback
+            LogClosure logClosure = new LogClosure(logOperation, 3000);
+            //定义raft task
+            Task task = new Task();
+            task.setData(ByteBuffer.wrap(ProtoStuffSerializer.serialize(logOperation)));
+            task.setDone(logClosure);
+            raftReplicationServer.getNode().apply(task);
+            //wait process
+            logClosure.waitTimeMills();
+            //超时，返回副本异常。
+            if (logClosure.timeouted()) {
+                result = new PutMessageResult(PutMessageStatus.LOG_FILE_REPLICA_FAIL, logClosure.getErrMsg());
+            }
+            //非超时，返回执行结果。
+            else {
+                result = ProtoStuffSerializer.deserialize(logClosure.getResponse(), PutMessageResult.class);
+            }
+        } else {
+            result = dataLog.putMessage(message);
+        }
         long costTime = SystemClock.now() - beginTime;
         if (costTime > CommonConstants.DATA_LOG_STORE_WAIN_TIME) {
             logger.warn("putMessage cost time(ms)={}, bodyLength={}", costTime, message.getBody().length);
@@ -71,12 +105,12 @@ public class StorageEngine implements Storage {
 
     @Override
     public long getMaxOffset(String topic, int partitionId) {
-        return dataLog.getMaxOffset(topic,partitionId);
+        return dataLog.getMaxOffset(topic, partitionId);
     }
 
     @Override
     public long getMinOffset(String topic, int partitionId) {
-        return dataLog.getMinOffset(topic,partitionId);
+        return dataLog.getMinOffset(topic, partitionId);
     }
 
 

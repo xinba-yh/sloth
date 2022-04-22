@@ -35,6 +35,7 @@ public class DataLog {
         this.dataLogManager = dataLogManager;
     }
 
+
     /**
      * 消息存储
      *
@@ -90,19 +91,17 @@ public class DataLog {
                 return new PutMessageResult(PutMessageStatus.DATA_ENCODE_FAIL, encodeResult.getMsg());
             }
             ByteBuffer messageBytes = encodeResult.getData();
-
-            //追加文件
             Result appendResult = latestDataLogSegment.doAppend(messageBytes, offset, message.getStoreTimestamp());
             if (!appendResult.success()) {
                 return new PutMessageResult(PutMessageStatus.LOG_FILE_APPEND_FAIL, appendResult.getMsg());
             }
+            return new PutMessageResult(PutMessageStatus.OK, topic, partition, offset);
         } catch (Throwable e) {
             logger.error("put message error!", e);
             return new PutMessageResult(PutMessageStatus.UNKNOWN_ERROR, e.getMessage());
         } finally {
             lock.unlock();
         }
-        return new PutMessageResult(PutMessageStatus.OK, topic, partition, offset);
     }
 
 
@@ -219,6 +218,7 @@ public class DataLog {
 
         public static Result<Message> decode(long offset, ByteBuffer storeByteBuffer) {
             try {
+                storeByteBuffer.rewind();
                 Message message = new Message();
                 //1、offset - 8
                 message.setOffset(offset);
