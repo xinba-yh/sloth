@@ -26,9 +26,12 @@ public class SlothProducerTest {
     private SlothRemoteProducer slothProducer;
 
     /**
+     * -local
      * 通信1S 4W
      * 通信+存储数据 1S 1W
      * 单client、多client性能一致。
+     *-服务器
+     *
      */
     @Test
     public void sendSyncResponseTest() throws InterruptedException {
