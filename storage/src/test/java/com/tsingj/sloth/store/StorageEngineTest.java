@@ -203,13 +203,12 @@ public class StorageEngineTest {
     public void mockPutClientTest() {
         //定义每个partition发送message数量 -> 总数量为：(9 * count)
         int partitionMsgCount = 100000;
-        int partitionCount = 9;
+        int partitionCount = 8;
         /*
          *  1、producer put message mock
          */
         ProducerClient producerClient = new ProducerClient(topic, partitionMsgCount, partitionCount, storageEngine);
         producerClient.start();
-
     }
 
 
@@ -218,12 +217,11 @@ public class StorageEngineTest {
      */
     @Test
     public void mockGetClientTest() {
-        //定义每个partition发送message数量 -> 总数量为：(9 * count)
+        //定义每个partition发送message数量 -> 总数量为：(8 * count)
         int partitionMsgCount = 100000;
-        int partitionCount = 9;
+        int partitionCount = 8;
 
         //2、consumer get message mock
-
         ConsumerClient consumerClient = new ConsumerClient(topic, partitionMsgCount, partitionCount, storageEngine);
         consumerClient.start();
 
@@ -235,11 +233,12 @@ public class StorageEngineTest {
         int partition = 8;
         for (int j = 1; j <= partition; j++) {
             //random get message
-            int loopCount = 100;
+            int skipCount = 90000;
+            int loopCount = 10;
             StopWatch sw = new StopWatch();
             sw.start();
             for (int i = 0; i < loopCount; i++) {
-                long offset = i;
+                long offset = i + skipCount;
                 GetMessageResult result = storageEngine.getMessage(topic, partition, offset);
                 if (result.getStatus() != GetMessageStatus.FOUND) {
                     logger.warn("partition:{} get msg fail,{}:{}! ", partition, result.getStatus(), result.getErrorMsg());
@@ -251,7 +250,7 @@ public class StorageEngineTest {
                 }
             }
             sw.stop();
-            logger.info("data count {} , query {} times , cost:{}", count, loopCount, sw.getTotalTimeMillis());
+            logger.info("data count {} , query {} count , cost:{}", count, loopCount, sw.getTotalTimeMillis());
         }
     }
 

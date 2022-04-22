@@ -61,7 +61,7 @@ public class ProducerClient {
 
         try {
             countDownLatch.await(10, TimeUnit.SECONDS);
-            LOGGER.info("producer count:{} cost:{}", partitionMessageCount * 9, SystemClock.now() - producerStartTime);
+            LOGGER.info("producer count:{} cost:{}", partitionMessageCount * partitionCount, SystemClock.now() - producerStartTime);
             executorService.shutdown();
         } catch (InterruptedException ignored) {
         }
