@@ -39,7 +39,7 @@ public class SlothProducerTest {
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; i++) {
             new Thread(() -> {
-                int count = 3000;
+                int count = 10000;
                 StopWatch stopWatch = new StopWatch();
                 for (int j = 0; j < count; j++) {
                     stopWatch.start();
