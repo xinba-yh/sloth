@@ -198,6 +198,7 @@ public class StorageEngineTest {
 
     /**
      * 8S 90W
+     * producer count:800000 cost:3197
      */
     @Test
     public void mockPutClientTest() {
@@ -214,6 +215,8 @@ public class StorageEngineTest {
 
     /**
      * 5.5S -> 90W
+     * consumer cost:3225
+     * success count 800000.
      */
     @Test
     public void mockGetClientTest() {
